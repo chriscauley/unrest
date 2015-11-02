@@ -1,0 +1,23 @@
+{
+  "name": "unrest",
+  "version": "0.0.0",
+  "authors": [
+    "chriscauley <chris@lablackey.com>"
+  ],
+  "description": "baby's first bower package",
+  "main": "test.js",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "riot.js"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
