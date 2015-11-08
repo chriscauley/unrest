@@ -3,12 +3,8 @@
   <div if={ selected }>selected!!!</div>
   <div class="week" each={ calendar.weeks }>
     <div class="day { current: current, desktop: !occurrences }" each={ days }>
-      <div class="desktop dom">{ moment.date() }</div>
-      <div class="mobile dom">{ moment.format("dddd MM/D") }</div>
-      <div class="occurrence btn btn-primary btn-xs" each={ occurrences } onclick={ parent.select }
-           data-prefix="RSVP: ">
-        { moment.format("h:mm a") }
-      </div>
+      <div class="dom">{ moment.date() }</div>
+      <div each={ occurrences }><yield/></div>
     </div>
   </div>
   <modal if={ active } cancel={ cancel } class="absolute">
@@ -53,6 +49,7 @@
 
   this.on("update", function() {
     var first_date;
+    this.opts.occurrences = this.opts.occurrences || [];
     if (this.opts.date) { first_date = this.opts.date; }
     else if (this.opts.occurrences && this.opts.occurrences.length) {
       first_date = this.opts.occurrences[0].start;
@@ -61,7 +58,6 @@
     this.day_occurrences = {};
     for (var i=0;i<this.opts.occurrences.length;i++) {
       var o = this.opts.occurrences[i];
-      o.name = this.opts.name;
       o.moment = moment(o.start);
       var d = o.moment.dayOfYear();
       this.day_occurrences[d] = this.day_occurrences[d] || [];
@@ -89,5 +85,7 @@
       current_moment.add(1,'day')
     }
   });
-
+  foo(e) {
+    console.log(e)
+  }
 </calendar>
