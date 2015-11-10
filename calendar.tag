@@ -1,18 +1,11 @@
 <calendar>
   <h1>{ moment.format("MMMM YYYY") }</h1>
-  <div if={ selected }>selected!!!</div>
   <div class="week" each={ calendar.weeks }>
     <div class="day { current: current, desktop: !occurrences }" each={ days }>
       <div class="dom">{ moment.date() }</div>
-      <div each={ occurrences }><yield/></div>
+      <yield/>
     </div>
   </div>
-  <modal if={ active } cancel={ cancel } class="absolute">
-    <h2>{ parent.opts.name }</h2>
-    { parent.active.moment.format("dddd MMMM Do, YYYY") }
-    <br />
-    { parent.active.moment.format("h:mm a") } - { window.moment(parent.active.end).format("h:mm a"); }
-  </modal>
 
   <style scoped>
     :scope { display: block; position: relative; }
@@ -38,12 +31,14 @@
 
   var that = this;
   select(e) {
-    this.active = e.item;
+    e.item.active = true;
+    this.active_item = e.item;
     this.update();
   }
 
   cancel(e) {
-    this.active = null;
+    this.active_item.active = false;
+    this.active_item = null;
     this.update();
   }
 
@@ -59,6 +54,7 @@
     for (var i=0;i<this.opts.occurrences.length;i++) {
       var o = this.opts.occurrences[i];
       o.moment = moment(o.start);
+      if (o.end) { o.end_moment = moment(o.end); }
       var d = o.moment.dayOfYear();
       this.day_occurrences[d] = this.day_occurrences[d] || [];
       this.day_occurrences[d].push(o);

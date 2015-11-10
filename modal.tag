@@ -63,6 +63,7 @@
   }
   </style>
 
+  var that = this;
   cancel(e) {
     (this.opts.cancel || function(){})(e);
     this.unmount();

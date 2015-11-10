@@ -5,7 +5,9 @@ request.start().then( function(response) {
   for (var date in holidays) {
     dates.push(date)
   }
-  occurrences = []
+  occurrences = [
+    { 'start': '2015-6-20 7:00 pm', 'name': 'My birthday party', 'end': '2015-6-20 9:00 pm' }
+  ];
   for (var i=0;i<dates.length;i++) {
     var d = dates[i];
     for (var i2=0;i2<holidays[d].length;i2++) {
@@ -16,3 +18,7 @@ request.start().then( function(response) {
   }
   riot.mount("calendar",{occurrences: occurrences});
 });
+
+function foo(e) {
+  alert("foo "+e);
+}
