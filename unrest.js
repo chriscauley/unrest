@@ -51,17 +51,47 @@ var uR = (function() {
     });
   }
 
-  var bounceOuts = {};
-  function bounce(f,args,delay) {
-    delay = delay | 500;
-    clearTimeout(bounceOuts[f.name]);
-    bounceOuts[f.name] = setTimeout(function() { f.apply(this,args); },delay);
+  function debounce(func,wait,immediate) {
+    var timeout, wait = wait || 200;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      };
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
   }
 
+  function dedribble(func, wait, end_bounce) {
+    var timeout, wait = wait || 200, end_bounce = end_bounce && true ;
+    var last = new Date();
+    return function() {
+      var context = this, args = arguments;
+      if (end_bounce) {
+        var later = function() {
+          timeout = null;
+          func.apply(context, args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      }
+      if (new Date() - last > wait) { func.apply(context, args); last = new Date(); }
+    };
+  };
+
+  function forEach(array,func) {
+    for (var i=0;i<array.length;i++) { func(array[i],i,array); }
+  }
   return {
     serialize: serialize,
     ajax: ajax,
-    bounce: bounce,
+    debounce: debounce,
+    forEach: forEach,
+    dedribble: dedribble,
   }
 })()
   
