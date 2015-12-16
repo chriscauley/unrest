@@ -19,36 +19,67 @@ var uR = (function() {
     return s.join('&').replace(/%20/g, '+');
   }
 
+  cookie = {
+    set: function (name,value,days) {
+      var expires = "";
+      if (days) {
+        var date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expires = "; expires="+date.toGMTString();
+      }
+      document.cookie = name+"="+value+expires+"; path=/";
+    },
+    get: function(name) {
+      var nameEQ = name + "=";
+      var ca = document.cookie.split(';');
+      for(var i=0;i < ca.length;i++) {
+        var c = ca[i];
+        while (c.charAt(0)==' ') c = c.substring(1,c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+      }
+      return null;
+    },
+    delete: function (name) { createCookie(name,"",-1); }
+  }
+
   function ajax(opts) {
-    opts.type = opts.type || "GET";
-    opts.data = opts.data || {};
-    opts.success = opts.success || function(data) {};
-    opts.error = opts.error || function(jxqhr) {};
-    that = opts.that;
-    if (opts.form) { form.setAttribute("loading","loading"); }
-    $.ajax({
-      url: "/api-token-auth/",
-      type: "POST",
-      data: uR.serialize(form),
-      success: function(data) {
-        if (opts.form) {
-          form.removeAttribute("loading");
-          forEach(that.fields,function(item,i) { item.error = ''; });
-          that.non_field_errors = '';
-        }
-        opts.success(data);
-      },
-      error: function(jqxhr) {
-        if (opts.form) {
-          form.removeAttribute("loading");
-          var errors = JSON.parse(jqxhr.responseText);
-          forEach(that.fields,function(el,i) { el.error = errors[el.name]; });
-          that.non_field_errors = errors.non_field_errors;
-        }
-        opts.error(jqxhr);
-        that.update()
-      },
-    });
+    var type = opts.type || "GET";
+    var data = opts.data || {};
+    var field = opts.target || opts.form;
+    var url = opts.url || opts.form.action;
+    var loading_attribute = opts.loading_attribute || "";
+    var success = opts.success || function(data,request) {};
+    var error = opts.error || function(data,request) {};
+    var that = opts.that;
+    if (field) { field.setAttribute("data-loading",loading_attribute); }
+    var form_data = new FormData();
+    form_data.append('csrfmiddlewaretoken', cookie.get("csrftoken"));
+    for (var key in data) { form_data.append(key,data[key]) };
+    var request = new XMLHttpRequest();
+    request.open(type, url , true);
+    request.onload = function(){
+      try { var data = JSON.parse(request.response); }
+      catch (e) {
+          var data = {};
+      }
+      if (field) { field.removeAttribute('data-loading'); }
+      var errors = data.errors || {};
+      if (!data.errors && request.status != 200) {
+        var e = "An unknown error has occurred";
+        errors = { non_field_errors: e };
+      }
+      if (that) {
+        forEach(that.fields,function(field,i) {
+          field.errors = field.errors || [];
+          if (errors[field.name]) { field.errors.push(errors[field.name]); }
+        });
+        if (errors.non_field_errors) { that.non_field_errors.push(errors.non_field_errors); }
+      }
+      var callback = (request.status == 200)?success:error;
+      callback(data,request);
+      that.update();
+    };
+    request.send(form_data);
   }
 
   function debounce(func,wait,immediate) {
@@ -63,6 +94,7 @@ var uR = (function() {
       clearTimeout(timeout);
       timeout = setTimeout(later, wait);
       if (callNow) func.apply(context, args);
+      return true;
     };
   }
 
@@ -92,6 +124,7 @@ var uR = (function() {
     debounce: debounce,
     forEach: forEach,
     dedribble: dedribble,
+    cookie: cookie
   }
 })()
   
