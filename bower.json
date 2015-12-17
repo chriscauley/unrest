@@ -6,9 +6,6 @@
   ],
   "description": "baby's first bower package",
   "main": "test.js",
-  "moduleType": [
-    "globals"
-  ],
   "keywords": [
     "riot.js"
   ],
@@ -18,6 +15,11 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
-  ]
+    "tests",
+    "*~"
+  ],
+  "homepage": "https://github.com/chriscauley/unrest",
+  "dependencies": {
+    "riot": "~2.3.12"
+  }
 }
