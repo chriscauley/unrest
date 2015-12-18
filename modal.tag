@@ -72,5 +72,5 @@
     (this.opts.success || function(){})();
     this.unmount();
   }
-  this.parent.on("update",function() { that.update() });
+  if (this.parent) { this.parent.on("update",function() { that.update() }); }
 </modal>
