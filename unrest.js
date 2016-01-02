@@ -43,20 +43,39 @@ var uR = (function() {
   }
 
   function ajax(opts) {
+    // create default options
     var type = opts.type || "GET";
-    var data = opts.data || {};
+    var data = opts.data;
     var field = opts.target || opts.form;
     var url = opts.url || opts.form.action;
     var loading_attribute = opts.loading_attribute || "";
     var success = opts.success || function(data,request) {};
     var error = opts.error || function(data,request) {};
     var that = opts.that;
+
+    // mark as loading
     if (field) { field.setAttribute("data-loading",loading_attribute); }
+
+    // create form_data from data or form
+    if (!data && opts.form) {
+      data = {};
+      var elements = opts.form.elements;
+      for (var i=0;i<elements.length;i++) {
+        data[elements[i].name] = elements[i].value;
+      }
+    }
+    // POST uses FormData, GET uses query string
     var form_data = new FormData();
-    form_data.append('csrfmiddlewaretoken', cookie.get("csrftoken"));
-    for (var key in data) { form_data.append(key,data[key]) };
+    if (type=="POST") { for (var key in data) { form_data.append(key,data[key]); }; }
+    else {
+      url += "?"
+      for (key in data) { url += key + "=" + data[key] + "&" }
+    }
+
+    // create and send XHR
     var request = new XMLHttpRequest();
     request.open(type, url , true);
+    if (type == "POST") { request.setRequestHeader("X-CSRFToken",cookie.get("csrftoken")); }
     request.onload = function(){
       try { var data = JSON.parse(request.response); }
       catch (e) {
@@ -70,14 +89,13 @@ var uR = (function() {
       }
       if (that) {
         forEach(that.fields,function(field,i) {
-          field.errors = field.errors || [];
           if (errors[field.name]) { field.errors.push(errors[field.name]); }
         });
         if (errors.non_field_errors) { that.non_field_errors.push(errors.non_field_errors); }
       }
       var callback = (request.status == 200)?success:error;
       callback(data,request);
-      that.update();
+      if (that) { that.update(); }
     };
     request.send(form_data);
   }

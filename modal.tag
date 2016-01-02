@@ -65,12 +65,12 @@
 
   var that = this;
   cancel(e) {
-    (this.opts.cancel || function(){})(e);
-    this.unmount();
+    (that.opts.cancel || function(){})(e);
+    that.unmount();
   }
   success(e) {
-    (this.opts.success || function(){})();
-    this.unmount();
+    (that.opts.success || function(){})();
+    that.unmount();
   }
   if (this.parent) { this.parent.on("update",function() { that.update() }); }
 </modal>
