@@ -42,6 +42,11 @@ var uR = (function() {
     delete: function (name) { createCookie(name,"",-1); }
   }
 
+  function isEmpty(obj) {
+    for (key in obj) { return false; }
+    return true;
+  }
+
   function ajax(opts) {
     // create default options
     var type = opts.type || "GET";
@@ -75,6 +80,7 @@ var uR = (function() {
     // create and send XHR
     var request = new XMLHttpRequest();
     request.open(type, url , true);
+
     if (type == "POST") { request.setRequestHeader("X-CSRFToken",cookie.get("csrftoken")); }
     request.onload = function(){
       try { var data = JSON.parse(request.response); }
@@ -83,11 +89,12 @@ var uR = (function() {
       }
       if (field) { field.removeAttribute('data-loading'); }
       var errors = data.errors || {};
-      if (!data.errors && request.status != 200) {
-        var e = "An unknown error has occurred";
+      if (isEmpty(errors) && request.status != 200) {
+        var e = opts.default_error || "An unknown error has occurred";
         errors = { non_field_errors: e };
       }
       if (that) {
+        that.non_field_errors = [];
         forEach(that.fields,function(field,i) {
           if (errors[field.name]) { field.errors.push(errors[field.name]); }
         });
