@@ -1,6 +1,7 @@
 <html>
 <head></head>
 <body>
+<h1>Calendar</h1>
 <calendar date="2015-6-1">
   <div each="{ occurrences }">
     <div onclick="{ select }">
@@ -14,10 +15,12 @@
     </modal>
   </div>
 </calendar>
+<hr/>
 </body>
 <script src="moment.js"></script>
 <script src="calendar.tag" type="riot/tag"></script>
 <script src="modal.tag" type="riot/tag"></script>
+<script src="tabs.tag" type="riot/tag"></script>
 <script src="//cdn.jsdelivr.net/g/riot@2.2(riot.min.js+compiler.min.js)"></script>
 <script src="http.min.js"></script>
 <script src="unrest.js"></script>
