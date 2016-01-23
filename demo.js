@@ -22,3 +22,5 @@ request.start().then( function(response) {
 function foo(e) {
   alert("foo "+e);
 }
+
+riot.mount("markdown,ur-tabs");

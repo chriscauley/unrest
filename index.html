@@ -1,6 +1,25 @@
 <html>
 <head></head>
 <body>
+
+<h1>Markdown</h1>
+<markdown>
+header
+=====
+
+testing
+
+and more!
+
+<b>tag!</b>
+</markdown>
+<hr/>
+<h1>Tabs</h1>
+<ur-tabs>
+  <ur-tab id="Some Content">yay</ur-tab>
+  <ur-tab id="More Content">yay again</ur-tab>
+</ur-tabs>
+<hr/>
 <h1>Calendar</h1>
 <calendar date="2015-6-1">
   <div each="{ occurrences }">
@@ -21,6 +40,8 @@
 <script src="calendar.tag" type="riot/tag"></script>
 <script src="modal.tag" type="riot/tag"></script>
 <script src="tabs.tag" type="riot/tag"></script>
+<script src="markdown.tag" type="riot/tag"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
 <script src="//cdn.jsdelivr.net/g/riot@2.2(riot.min.js+compiler.min.js)"></script>
 <script src="http.min.js"></script>
 <script src="unrest.js"></script>
