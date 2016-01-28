@@ -1,6 +1,6 @@
 <modal>
   <div class="mask" onclick={ cancel }></div>
-  <div class="inner">
+  <div class="inner { opts.modal_class }">
     <a onclick={ cancel } class="cancel">X</a>
     <div class="title">{ opts.title }</div>
     <yield/>
@@ -15,7 +15,7 @@
     display: flex;
     justify-content: center;
     overflow: auto;
-    z-index: 1000;
+    z-index: 10000;
   }
   :scope.absolute { position: absolute; }
   @media (max-width: 480px) { /* we'll need all the space we can get in mobile */
@@ -63,14 +63,14 @@
   }
   </style>
 
-  var that = this;
+  var self = this;
   cancel(e) {
-    (that.opts.cancel || function(){})(e);
-    that.unmount();
+    (self.opts.cancel || function(){})(e);
+    self.unmount();
   }
   success(e) {
-    (that.opts.success || function(){})();
-    that.unmount();
+    (self.opts.success || function(){})();
+    self.unmount();
   }
-  if (this.parent) { this.parent.on("update",function() { that.update() }); }
+  if (this.parent) { this.parent.on("update",function() { self.update() }); }
 </modal>

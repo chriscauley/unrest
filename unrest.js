@@ -51,7 +51,7 @@ var uR = (function() {
     // create default options
     var type = opts.type || "GET";
     var data = opts.data;
-    var field = opts.target || opts.form;
+    var target = opts.target || opts.form;
     var url = opts.url || opts.form.action;
     var loading_attribute = opts.loading_attribute || "";
     var success = opts.success || function(data,request) {};
@@ -59,7 +59,7 @@ var uR = (function() {
     var that = opts.that;
 
     // mark as loading
-    if (field) { field.setAttribute("data-loading",loading_attribute); }
+    if (target) { target.setAttribute("data-loading",loading_attribute); }
 
     // create form_data from data or form
     if (!data && opts.form) {
@@ -81,13 +81,15 @@ var uR = (function() {
     var request = new XMLHttpRequest();
     request.open(type, url , true);
 
-    if (type == "POST") { request.setRequestHeader("X-CSRFToken",cookie.get("csrftoken")); }
+    if (type == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
+      request.setRequestHeader("X-CSRFToken",document.querySelector("[name=csrfmiddlewaretoken]").value);
+    }
     request.onload = function(){
       try { var data = JSON.parse(request.response); }
       catch (e) {
           var data = {};
       }
-      if (field) { field.removeAttribute('data-loading'); }
+      if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
       if (isEmpty(errors) && request.status != 200) {
         var e = opts.default_error || "An unknown error has occurred";
@@ -100,7 +102,7 @@ var uR = (function() {
         });
         if (errors.non_field_errors) { that.non_field_errors.push(errors.non_field_errors); }
       }
-      var callback = (request.status == 200)?success:error;
+      var callback = (request.status == 200 && isEmpty(errors))?success:error;
       callback(data,request);
       if (that) { that.update(); }
     };
@@ -143,6 +145,7 @@ var uR = (function() {
   function forEach(array,func) {
     for (var i=0;i<array.length;i++) { func(array[i],i,array); }
   }
+
   return {
     serialize: serialize,
     ajax: ajax,

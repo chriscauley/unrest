@@ -2,8 +2,8 @@
   <label for={ id } if={ label } class={ required: required }>{ label }</label>
   <input if={ tagname == "textinput" } type={ type } name={ name } id={ id } onkeyup={ onKeyUp } onblur={ showErrors }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
-         class={ empty:empty } value={ value }>
-  <select if={ tagname == "select" } onchange={ onChange } id={ id }>
+         class={ empty:empty } value={ value } autocomplete="off">
+  <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ name }>
     <option if={ placeholder } value="">{ placeholder }</option>
     <option each={ choice in choice_tuples } value={ choice[0] }>{ choice[1] }</option>
   </select>
@@ -11,6 +11,7 @@
     <li class="error fa-exclamation-circle fa" each={ error in errors }> { error }</li>
   </ul>
 
+  var self = this;
   onChange(e) {
     this.showErrors(e);
     this.onKeyUp(e);
@@ -18,13 +19,15 @@
 
   onKeyUp(e) {
     var value = e.target.value;
+    if (this.last_value == value) { return; }
+    this.last_value = value;
     this.errors = [];
     this.empty = !value;
     if (this.required && !value.length) {
       this.errors.push(this.verbose_name + " is required.");
     }
     else if (value.length < this.minlength) {
-      var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers."
+      var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
       this.errors.push(this.verbose_name + " must be at least " + this.minlength + type);
     }
     else if (this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
@@ -38,9 +41,12 @@
     this.update();
   }
   this.on("mount", function() {
-    this.verbose_name = this.verbose_name || this.label || this.placeholder || this.name;
+    // name is kind of a reserved word for riot since <element name="some_name"> appears as this.some_name
+    // if the schema.name == "name" then it causes massive issues
+    this._name = (typeof(this.name) == "object")?this.name[0]:this.name;
+    this.verbose_name = this.verbose_name || this.label || this.placeholder || this._name;
     if (!this.label) { this.placeholder = this.placeholder || this.verbose_name; }
-    this.id = this.id || "id_" + this.name + this.parent.suffix;
+    this.id = this.id || "id_" + this._name + this.parent.suffix;
     this.validate = this.validate || function() {};
     this.type = this.type || "text";
     if (this.required == undefined) { this.required = true; }
@@ -57,11 +63,20 @@
       }
     }
     if (this.parent && this.parent.fields) { this.parent.fields.push(this); }
+
+    // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
+    var interval = setTimeout(function() {
+      var e = document.querySelector("#"+self.id);
+      if (e && e.value) {
+        clearInterval(interval);
+        self.onChange({target: e});
+      }
+    },1000);
     this.update();
   });
   this.on("update", function() {
     if (!this.parent.inputs) { this.parent.inputs = {} }
-    if (this.id) { this.parent.inputs[this.name] = document.getElementById(this.id); }
+    if (this.id) { this.parent.inputs[this._name] = document.getElementById(this.id); }
     this.parent.update();
   });
 </ur-input>
