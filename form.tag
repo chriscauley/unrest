@@ -1,6 +1,7 @@
 <ur-input>
   <label for={ id } if={ label } class={ required: required }>{ label }</label>
-  <input if={ tagname == "textinput" } type={ type } name={ name } id={ id } onkeyup={ onKeyUp } onblur={ showErrors }
+  <input if={ tagname == "textinput" } type={ type } name={ name } id={ id }
+         onkeyup={ onKeyUp } onblur={ onChange } onChange={ onChange }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
          class={ empty:empty } value={ value } autocomplete="off">
   <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ name }>
@@ -12,10 +13,6 @@
   </ul>
 
   var self = this;
-  onChange(e) {
-    this.showErrors(e);
-    this.onKeyUp(e);
-  }
 
   onKeyUp(e) {
     var value = e.target.value;
@@ -33,12 +30,12 @@
     else if (this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
       this.errors.push("Please enter a valid email address.")
     }
-    if (!this.errors.length) { this.bounceValidate(value,this); }
+    if (!this.errors.length) { this._validate(value,this); }
     this.update();
   }
-  showErrors(e) {
+  onChange(e) {
     this.show_errors = true;
-    this.update();
+    this.onKeyUp(e);
   }
   this.on("mount", function() {
     // name is kind of a reserved word for riot since <element name="some_name"> appears as this.some_name
@@ -51,7 +48,7 @@
     this.type = this.type || "text";
     if (this.required == undefined) { this.required = true; }
     this.value = this.value || "";
-    this.bounceValidate = uR.debounce(this.validate,500);
+    this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
     this.onKeyUp({target:{value:this.value}});
     this.tagname = "textinput";
     if (this.type == "select") {
@@ -65,9 +62,11 @@
     if (this.parent && this.parent.fields) { this.parent.fields.push(this); }
 
     // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
+    var i_tries = 0;
     var interval = setTimeout(function() {
       var e = document.querySelector("#"+self.id);
-      if (e && e.value) {
+      i_tries += 1;
+      if (e && (i_tries++ > 5 || e.value)) {
         clearInterval(interval);
         self.onChange({target: e});
       }
@@ -83,16 +82,16 @@
 
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
-    <ur-input each={ parent.schema } class="{ name } { type }"/>
+    <ur-input each={ parent.schema || parent.opts.schema || opts.schema } class="{ name } { type }"/>
     <yield/>
     <ul class="errorlist" if={ non_field_errors.length }>
       <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
       <li>
         If you need assistance contact
-        <a href="mailto:support@homerapp.com">mailto:support@homerapp.com</a>
+        <a href="mailto:support@homerapp.com">support@homerapp.com</a>
       </li>
     </ul>
-    <button disabled={ !valid } class="btn blue">{ button_text }</button>
+    <button disabled={ !valid } class="btn blue" id="submit_button">{ button_text }</button>
   </form>
 
   var that = this;
@@ -104,16 +103,15 @@
         url: this.opts.action,
         type: this.opts.method,
         form: this.form_element,
-        loading_attribute: "mask",
-        success: function(data) {
-          if (that.parent && that.parent.ajax_success) { that.parent.ajax_success(data); }
-        },
+        success: this.ajax_success,
+        target: this.submit_button,
         that: that
       });
     }
   }
 
   this.on("mount",function() {
+    this.ajax_success = this.opts.ajax_success || function() {};
     this.suffix = this.opts.suffix || "";
     this.button_text = this.opts.button_text || "Submit";
     this.fields = [];

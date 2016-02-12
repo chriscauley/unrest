@@ -1,6 +1,6 @@
 <modal>
   <div class="mask" onclick={ cancel }></div>
-  <div class="inner { opts.modal_class }">
+  <div class="inner">
     <a onclick={ cancel } class="cancel">X</a>
     <div class="title">{ opts.title }</div>
     <yield/>
@@ -73,4 +73,7 @@
     self.unmount();
   }
   if (this.parent) { this.parent.on("update",function() { self.update() }); }
+  this.on("update",function() {
+    this.root.className = this.opts.modal_class;
+  });
 </modal>

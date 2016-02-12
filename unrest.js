@@ -18,6 +18,11 @@ var uR = (function() {
     }
     return s.join('&').replace(/%20/g, '+');
   }
+  function getQueryParameter(name) {
+    var regexp = new RegExp("[\?&](?:"   +name+")=([^&]+)");
+    var _sd = window.location.search.match(regexp);
+    if (_sd) { return _sd[1]; }
+  }
 
   cookie = {
     set: function (name,value,days) {
@@ -95,7 +100,7 @@ var uR = (function() {
         var e = opts.default_error || "An unknown error has occurred";
         errors = { non_field_errors: e };
       }
-      if (that) {
+      if (that && that.fields) {
         that.non_field_errors = [];
         forEach(that.fields,function(field,i) {
           if (errors[field.name]) { field.errors.push(errors[field.name]); }
@@ -152,7 +157,8 @@ var uR = (function() {
     debounce: debounce,
     forEach: forEach,
     dedribble: dedribble,
-    cookie: cookie
+    cookie: cookie,
+    getQueryParameter: getQueryParameter
   }
 })()
   
