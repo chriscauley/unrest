@@ -41,7 +41,11 @@
     // name is kind of a reserved word for riot since <element name="some_name"> appears as this.some_name
     // if the schema.name == "name" then it causes massive issues
     this._name = (typeof(this.name) == "object")?this.name[0]:this.name;
-    this.verbose_name = this.verbose_name || this.label || this.placeholder || this._name;
+    this.verbose_name = this.verbose_name || this.label || this.placeholder;
+    if (!this.verbose_name) {
+      var f = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
+      this.verbose_name = this._name.replace(/[-_]/g," ").replace(/\w\S*/g, f);
+    }
     if (!this.label) { this.placeholder = this.placeholder || this.verbose_name; }
     this.id = this.id || "id_" + this._name + this.parent.suffix;
     this.validate = this.validate || function() {};
@@ -82,7 +86,7 @@
 
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
-    <ur-input each={ parent.schema || parent.opts.schema || opts.schema } class="{ name } { type }"/>
+    <ur-input each={ schema } class="{ name } { type }"/>
     <yield/>
     <ul class="errorlist" if={ non_field_errors.length }>
       <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
@@ -111,23 +115,23 @@
   }
 
   this.on("mount",function() {
-    this.ajax_success = this.opts.ajax_success || function() {};
+    this.ajax_success = this.opts.ajax_success || this.parent.ajax_success|| function() {};
+    this.schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
     this.suffix = this.opts.suffix || "";
     this.button_text = this.opts.button_text || "Submit";
     this.fields = [];
     this.update();
-  });
-  this.on("update", function() {
-    this.parent.update();
+    setTimeout(function() {that.root.querySelector("input").focus() },0)
   });
   this.on("update",function() {
     this.valid = true;
     this.hide_errors = false;
-    uR.forEach(this.fields,function(field) {
+    uR.forEach(this.fields,function(field,i) {
       that.valid = that.valid && !field.errors.length;
       // hide errors unless a field with errors is marked as show_errors
       that.hide_errors = that.hide_errors && !field.errors.length && !field.show_errors;
     })
+    this.parent.update();
   });
 
 </ur-form>

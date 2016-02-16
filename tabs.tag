@@ -6,6 +6,7 @@
 
   <style scoped>
     :scope .tab-anchors a {
+      cursor: pointer;
       display: inline-block;
       padding: 5px;
       border: 1px solid;
@@ -39,7 +40,6 @@
       display: block;
       height: 400px;
       overflow-y: auto;
-      padding: 20px;
       width: 500px;
     }
     :scope.hidden { display: none; }
