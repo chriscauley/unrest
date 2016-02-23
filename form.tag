@@ -27,7 +27,7 @@
       var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
       this.errors.push(this.verbose_name + " must be at least " + this.minlength + type);
     }
-    else if (this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
+    else if (value && this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
       this.errors.push("Please enter a valid email address.")
     }
     if (!this.errors.length) { this._validate(value,this); }
