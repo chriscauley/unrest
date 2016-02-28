@@ -39,8 +39,9 @@
       box-sizing: border-box;
       display: block;
       height: 400px;
+      max-width: 100%;
       overflow-y: auto;
-      width: 500px;
+      width: 650px;
     }
     :scope.hidden { display: none; }
   </style>
