@@ -1,7 +1,7 @@
 <ur-input>
   <label for={ id } if={ label } class={ required: required }>{ label }</label>
   <input if={ tagname == "textinput" } type={ type } name={ name } id={ id }
-         onkeyup={ onKeyUp } onblur={ onChange } onChange={ onChange }
+         onkeyup={ onKeyUp } onChange={ onChange } onfocus= { onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
          class={ empty:empty } value={ value } autocomplete="off">
   <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ name }>
@@ -13,6 +13,17 @@
   </ul>
 
   var self = this;
+
+  onFocus(e) {
+    var i = this.parent.fields.indexOf(this);
+    if (i != 0) { this.parent.fields[i-1].show_errors = true; }
+  }
+
+  onBlur(e) {
+    var i = this.parent.fields.indexOf(this);
+    if (i !=0) { this.show_errors = true; }
+    uR.onBlur(this);
+  }
 
   onKeyUp(e) {
     var value = e.target.value;
@@ -27,7 +38,7 @@
       var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
       this.errors.push(this.verbose_name + " must be at least " + this.minlength + type);
     }
-    else if (value && this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
+    else if (this.type == "email" && !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value)) {
       this.errors.push("Please enter a valid email address.")
     }
     if (!this.errors.length) { this._validate(value,this); }
@@ -100,6 +111,7 @@
 
   var that = this;
   submit(e) {
+    this.non_field_errors = [];
     if (this.parent.submit) {
       this.parent.submit(this);
     } else {
@@ -115,7 +127,7 @@
   }
 
   this.on("mount",function() {
-    this.ajax_success = this.opts.ajax_success || this.parent.ajax_success|| function() {};
+    this.ajax_success = this.opts.ajax_success || this.parent.opts.ajax_success || this.parent.ajax_success || function() {};
     this.schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
     this.suffix = this.opts.suffix || "";
     this.button_text = this.opts.button_text || "Submit";
