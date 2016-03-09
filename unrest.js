@@ -85,6 +85,7 @@ var uR = (function() {
     // create and send XHR
     var request = new XMLHttpRequest();
     request.open(type, url , true);
+    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
     if (type == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
       request.setRequestHeader("X-CSRFToken",document.querySelector("[name=csrfmiddlewaretoken]").value);
@@ -107,14 +108,15 @@ var uR = (function() {
         });
         if (errors.non_field_errors) { that.non_field_errors.push(errors.non_field_errors); }
       }
-      var callback = (request.status == 200 && isEmpty(errors))?success:error;
-      callback(data,request);
+      var complete = (request.status == 200 && isEmpty(errors));
+      (complete?success:error)(data,request);
+      if (target && complete) { target.setAttribute("data-success","true") }
       if (that) { that.update(); }
     };
     request.send(form_data);
   }
 
-  function debounce(func,wait,immediate) {
+  function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
     return function() {
       var context = this, args = arguments;
@@ -158,7 +160,8 @@ var uR = (function() {
     forEach: forEach,
     dedribble: dedribble,
     cookie: cookie,
-    getQueryParameter: getQueryParameter
+    getQueryParameter: getQueryParameter,
+    onBlur: function() {}
   }
 })()
   
