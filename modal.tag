@@ -2,7 +2,7 @@
   <div class="mask" onclick={ cancel }></div>
   <div class="inner">
     <a onclick={ cancel } class="cancel">X</a>
-    <div class="title">{ opts.title }</div>
+    <div class="title" if={ opts.title }>{ opts.title }</div>
     <yield/>
   </div>
 
@@ -64,6 +64,8 @@
   </style>
 
   var self = this;
+  if (HOMER) { self.mixin(HOMER.StaticMixin); }
+  
   cancel(e) {
     (self.opts.cancel || function(){})(e);
     self.unmount();
