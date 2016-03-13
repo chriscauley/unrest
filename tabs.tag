@@ -1,6 +1,6 @@
 <ur-tabs>
   <div class="tab-anchors">
-    <a onclick={ showTab } each={ tabs } class={ active: id == parent.active_id }> { id }</a>
+    <a onclick={ showTab } each={ tabs } class={ active: title == parent.active_title }> { title }</a>
   </div>
   <yield />
 
@@ -12,19 +12,18 @@
       border: 1px solid;
     }
     :scope .tab-anchors a.active {
-      box-shadow: inset 0 0 10px;
       text-decoration: underline;
     }
   </style>
   showTab(e) {
-    this.active_id = e.item.id;
+    this.active_title = e.item.title;
   }
 
   this.on("mount",function() {
     // this['ur-tabs'].tab will be a single riot tag or an array. we want an array
     this.tabs = this.tags['ur-tab'];
     if (this.tabs && !this.tabs[0]) { this.tabs = [this.tabs] }
-    this.active_id = this.tabs[0].id;
+    this.active_title = this.tabs[0].title;
     this.update();
   });
 </ur-tabs>
@@ -35,19 +34,19 @@
   <style scoped>
     :scope {
       border: 1px solid;
-      box-shadow: inset 0 0 20px;
       box-sizing: border-box;
       display: block;
       height: 400px;
       max-width: 100%;
       overflow-y: auto;
+      padding: 5px;
       width: 650px;
     }
     :scope.hidden { display: none; }
   </style>
 
-  this.id = opts.id;
+  this.title = opts.title;
   this.on("update",function() {
-    this.root.className = (this.opts.id == this.parent.active_id)?"":"hidden";
+    this.root.className = (this.opts.title == this.parent.active_title)?"":"hidden";
   });
 </ur-tab>

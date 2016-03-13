@@ -64,7 +64,7 @@
   </style>
 
   var self = this;
-  if (HOMER) { self.mixin(HOMER.StaticMixin); }
+  if (window.HOMER) { self.mixin(HOMER.StaticMixin); }
   
   cancel(e) {
     (self.opts.cancel || function(){})(e);

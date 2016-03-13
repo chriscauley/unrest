@@ -138,7 +138,7 @@
   this.on("update",function() {
     this.valid = true;
     this.hide_errors = false;
-    uR.forEach(this.fields,function(field,i) {
+    uR.forEach(this.fields || [],function(field,i) {
       that.valid = that.valid && !field.errors.length;
       // hide errors unless a field with errors is marked as show_errors
       that.hide_errors = that.hide_errors && !field.errors.length && !field.show_errors;
