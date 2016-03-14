@@ -49,12 +49,12 @@
     else if (this.opts.occurrences && this.opts.occurrences.length) {
       first_date = this.opts.occurrences[0].start;
     }
-    this.moment = moment(first_date);
+    this.moment = moment(new Date(first_date));
     this.day_occurrences = {};
     for (var i=0;i<this.opts.occurrences.length;i++) {
       var o = this.opts.occurrences[i];
-      o.moment = moment(o.start);
-      if (o.end) { o.end_moment = moment(o.end); }
+      o.moment = moment(new Date(o.start));
+      if (o.end) { o.end_moment = moment(new Date(o.end)); }
       var d = o.moment.dayOfYear();
       this.day_occurrences[d] = this.day_occurrences[d] || [];
       this.day_occurrences[d].push(o);
