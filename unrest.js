@@ -59,24 +59,39 @@ var uR = (function() {
     var target = opts.target || opts.form;
     var url = opts.url || opts.form.action;
     var loading_attribute = opts.loading_attribute || "";
-    var success = opts.success || function(data,request) {};
-    var error = opts.error || function(data,request) {};
+    var success_attribute = opts.success_attribute || "";
+    var success_reset = opts.success_reset || false;
     var that = opts.that;
+    var success = (opts.success || function(data,request) {}).bind(that);
+    var error = (opts.error || function(data,request) {}).bind(that);
+    var filenames = opts.filenames || {};
+    if (that) { that.messages = opts.messages || []; }
 
     // mark as loading
-    if (target) { target.setAttribute("data-loading",loading_attribute); }
+    if (target) {
+      target.removeAttribute("data-success");
+      target.setAttribute("data-loading",loading_attribute);
+    }
 
     // create form_data from data or form
     if (!data && opts.form) {
       data = {};
-      var elements = opts.form.elements;
-      for (var i=0;i<elements.length;i++) {
-        data[elements[i].name] = elements[i].value;
-      }
+      uR.forEach(opts.form.elements,function(element) {
+        if (element.type == "file") {
+          data[element.name] = element.files[0];
+          filenames[element.name] = element.files[0].name;
+        } else {
+          data[element.name] = element.value;
+        }
+      });
     }
     // POST uses FormData, GET uses query string
     var form_data = new FormData();
-    if (type=="POST") { for (var key in data) { form_data.append(key,data[key]); }; }
+    if (type=="POST") {
+      for (var key in data) {
+        filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
+      };
+    }
     else {
       url += "?"
       for (key in data) { url += key + "=" + data[key] + "&" }
@@ -106,12 +121,16 @@ var uR = (function() {
         forEach(that.fields,function(field,i) {
           if (errors[field.name]) { field.errors.push(errors[field.name]); }
         });
-        if (errors.non_field_errors) { that.non_field_errors.push(errors.non_field_errors); }
       }
+      if (that && errors.non_field_errors) { that.non_field_errors = [errors.non_field_errors]; }
+
       var complete = (request.status == 200 && isEmpty(errors));
       (complete?success:error)(data,request);
-      if (target && complete) { target.setAttribute("data-success","true") }
-      if (that) { that.update(); }
+      if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
+      if (that) {
+        that.messages = data.messages || [];
+        that.update();
+      }
     };
     request.send(form_data);
   }
@@ -161,7 +180,7 @@ var uR = (function() {
     dedribble: dedribble,
     cookie: cookie,
     getQueryParameter: getQueryParameter,
-    onBlur: function() {}
+    onBlur: function() {},
+    config: {},
   }
-})()
-  
+})();
