@@ -27,7 +27,7 @@
   <label for={ id } if={ label } class={ required: required }>{ label }</label>
   <div class="help_text" if={ help_text } onclick={ help_text }>?</div>
   <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
-         onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
+         onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
          class={ empty:empty } value={ initial_value } autocomplete="off" checked={ checked }>
   <textarea if={ tagname == "textarea" } type={ type } name={ _name } id={ id }
@@ -51,18 +51,19 @@
 
   onBlur(e) {
     var i = this.parent.fields.indexOf(this);
-    if (i !=0) { this.show_errors = true; }
+    if (i !=0 && this.parent.active) { this.show_errors = true; }
     uR.onBlur(this);
     this.last_value = undefined; // force re-validation
     this.onChange(e);
   }
 
-  onKeyUp(e) {
-    if (this.show_errors && this.errors.length) { this.onChange(e); }
+  onChange(e) {
+    if (this.parent.active) { this.show_errors = true; }
+    this.onKeyUp(e);
   }
 
-  onChange(e) {
-    this.show_errors = true;
+  onKeyUp(e) {
+    if (e.type == "keyup") { this.parent.active = true; }
     var value = e.target.value;
     if (this.last_value == value) { return; }
     this.last_value = value;
@@ -107,13 +108,17 @@
       this.verbose_name = this._name.replace(/[-_]/g," ").replace(/\w\S*/g, f);
     }
     if (!this.label) { this.placeholder = this.placeholder || this.verbose_name; }
+    if (this.parent.opts.labeled) {
+      this.label = this.label || this.placeholder;
+      if (this.placeholder == this.label) { this.placeholder = undefined; }
+    }
     this.id = this.id || "id_" + this._name + this.parent.suffix;
     this.validate = this.validate || function() {};
     this.type = this.type || "text";
     if (this.required == undefined) { this.required = true; }
     this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
     this.initial_value = this.initial_value || "";
-    this.onChange({target:{value:this.initial_value}});
+    this.onKeyUp({target:{value:this.initial_value}});
     this.show_errors = false;
     this.tagname = "textinput";
     if (this.type == "select") {
@@ -141,7 +146,7 @@
       i_tries += 1;
       if (e && (i_tries++ > 5 || e.value)) {
         clearInterval(interval);
-        self.onChange({target: e});
+        self.onKeyUp({target: e});
       }
     },1000);
     this.update();
@@ -175,9 +180,10 @@
   var self = this;
   this.button_class = this.opts.button_class || uR.config.button_class || "";
 
-  submit(e) {
+  submit(e,_super) {
+    // _super is a temporary hack to allow us to call the original submit function.
     this.non_field_errors = [];
-    if (this.parent.submit) {
+    if (!_super && this.parent.submit) {
       this.parent.submit(this);
     } else {
       uR.ajax({
@@ -193,12 +199,19 @@
   }
   clear() {
     uR.forEach(this.fields, function(field) { field.reset(); })
+    self.active = false;
+    setTimeout(function() {self.root.querySelector("input:not([type=hidden])").focus() },0)
   }
 
   this.addField = function(field) {
     var f = {};
-    for (k in field) { f[k] = field[k] }
-    f.initial_value = f.value || self.initial[f.name];
+    for (k in field) { f[k] = field[k]; }
+    if (f.type == "checkbox") {
+      f.initial_value = f.value;
+      f.checked = self.initial[f.name];
+    } else {
+      f.initial_value = f.value || self.initial[f.name];
+    }
     self.schema.push(f);
   }
   this.on("mount",function() {
@@ -212,16 +225,13 @@
     this.button_text = this.opts.button_text || "Submit";
     this.fields = [];
     this.update();
-    if (this.fields) { setTimeout(function() {self.root.querySelector("input").focus() },0) }
+    if (this.fields) { setTimeout(function() {self.root.querySelector("input:not([type=hidden])").focus() },0) }
   });
   this.on("update",function() {
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
-    this.hide_errors = false;
     uR.forEach(this.fields || [],function(field,i) {
       self.valid = self.valid && !field.errors.length;
-      // hide errors unless a field with errors is marked as show_errors
-      self.hide_errors = self.hide_errors && !field.errors.length && !field.show_errors;
     })
     this.parent.update();
   });
