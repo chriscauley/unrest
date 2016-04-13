@@ -58,7 +58,7 @@ var uR = (function() {
     var data = opts.data;
     var target = opts.target || opts.form;
     var url = opts.url || opts.form.action;
-    var loading_attribute = opts.loading_attribute || "";
+    var loading_attribute = opts.loading_attribute || uR.config.loading_attribute;
     var success_attribute = opts.success_attribute || "";
     var success_reset = opts.success_reset || false;
     var that = opts.that;
@@ -181,6 +181,8 @@ var uR = (function() {
     cookie: cookie,
     getQueryParameter: getQueryParameter,
     onBlur: function() {},
-    config: {},
+    config: {
+      loading_attribute: 'spinner',
+    },
   }
 })();
