@@ -41,18 +41,19 @@
     text-decoration: none;
     top: -13px;
     width: 26px;
+    z-index: 1;
   }
   .mask {
     background: rgba(0,0,0,0.3);
     position: absolute;
     z-index: 1;
   }
-  .inner {
+  > .inner {
     align-self: center;
     display: inline-block;
     background: white;
     max-width: 100%;
-    padding: 15px;
+    padding: 25px 25px 30px;
     position: relative;
     z-index: 2;
   }
@@ -65,7 +66,6 @@
 
   var self = this;
   if (window.HOMER) { self.mixin(HOMER.StaticMixin); }
-  
   cancel(e) {
     (self.opts.cancel || function(){})(e);
     self.unmount();
@@ -76,6 +76,9 @@
   }
   if (this.parent) { this.parent.on("update",function() { self.update() }); }
   this.on("update",function() {
+    if (this.parent && this.parent.opts) {
+      this.opts.modal_class += " "+ this.parent.opts.modal_class || "";
+    }
     this.root.className = this.opts.modal_class;
   });
 </modal>
