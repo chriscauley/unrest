@@ -29,14 +29,14 @@
   <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
-         class={ empty:empty } value={ initial_value } autocomplete="off" checked={ checked }>
+         class={ empty:empty } value={ value } autocomplete="off" checked={ checked }>
   <textarea if={ tagname == "textarea" } type={ type } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
-            class={ empty:empty } autocomplete="off" checked={ checked }>{ initial_value }</textarea>
+            class={ empty:empty } autocomplete="off" checked={ checked }>{ value }</textarea>
   <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name }>
     <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.initial_value)?'selected':'' } each={ choice in choice_tuples } value={ choice[0] }>{ choice[1] }</option>
+    <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples } value={ choice[0] }>{ choice[1] }</option>
   </select>
   <ul class="errorlist" if={ errors.length && show_errors}>
     <li class="error fa-exclamation-circle fa" each={ error in errors }> { error }</li>
@@ -64,24 +64,24 @@
 
   onKeyUp(e) {
     if (e.type == "keyup") { this.parent.active = true; }
-    var value = e.target.value;
-    if (this.last_value == value) { return; }
-    this.last_value = value;
+    this.value = e.target.value;
+    if (this.last_value == this.value) { return; }
+    this.last_value = this.value;
     this.errors = [];
-    this.empty = !value;
-    var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(value);
-    if (!this.required && !value) { invalid_email = false; }
-    if (this.required && !value.length) {
+    this.empty = !this.value;
+    var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
+    if (!this.required && !this.value) { invalid_email = false; }
+    if (this.required && !this.value.length) {
       this.errors.push(this.verbose_name + " is required.");
     }
-    else if (value.length < this.minlength) {
+    else if (this.value.length < this.minlength) {
       var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
       this.errors.push(this.verbose_name + " must be at least " + this.minlength + type);
     }
     else if (this.type == "email" && invalid_email) {
       this.errors.push("Please enter a valid email address.")
     }
-    if (!this.errors.length && e.type == "blur") { this._validate(value,this); }
+    if (!this.errors.length && e.type == "blur") { this._validate(this.value,this); }
     this.update();
   }
 
@@ -92,7 +92,7 @@
     }
     i.blur();
     self.show_errors = false;
-    i.value = self.initial_value || "";
+    self.value = self.initial_value || "";
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent("keyup", false, true);
     i.dispatchEvent(evt);
@@ -164,9 +164,9 @@
     <div class="button_div">
       <ul class="errorlist" if={ non_field_errors.length }>
         <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
-        <li>
+        <li if={ uR.config.support_email }>
           If you need assistance contact
-          <a href="mailto:support@homerapp.com">support@homerapp.com</a>
+          <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
         </li>
       </ul>
       <yield/>
