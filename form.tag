@@ -171,6 +171,7 @@
       </ul>
       <yield/>
       <button disabled={ !valid } class="btn { button_class }" id="submit_button">{ button_text }</button>
+      <button class="btn { cancel_class }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
       <li class="{ level }" each={ messages }>{ body }</li>
@@ -179,6 +180,8 @@
 
   var self = this;
   this.button_class = this.opts.button_class || uR.config.button_class || "";
+  this.cancel_class = this.opts.cancel_class || uR.config.cancel_class || "";
+  this.cancel_text = this.opts.cancel_text || uR.config.cancel_text || "";
 
   submit(e,_super) {
     // _super is a temporary hack to allow us to call the original submit function.
@@ -247,9 +250,8 @@
   <button class="btn btn-blue" disabled={ !valid }>Next</button>
   var self = this;
   this.forms = [];
-  this.schema = HOMER.schema.child;
   this.on("mount",function() {
-    this.forms.push({schema:HOMER.schema.child});
+    this.forms.push({schema:this.opts.schema});
     this.update();
   });
   submit (element) {
