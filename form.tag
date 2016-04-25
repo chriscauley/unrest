@@ -93,6 +93,7 @@
     i.blur();
     self.show_errors = false;
     self.value = self.initial_value || "";
+    self.root.querySelector("input,select").value = self.value;
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent("keyup", false, true);
     i.dispatchEvent(evt);
