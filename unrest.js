@@ -1,5 +1,7 @@
 var uR = (function() {
-  function serialize(form) {
+  var uR = window.uR || {};
+
+  uR.serialize = function serialize(form) {
     var field, s = [];
     if (typeof form != 'object' && form.nodeName != "FORM") { return }
     var len = form.elements.length;
@@ -18,13 +20,13 @@ var uR = (function() {
     }
     return s.join('&').replace(/%20/g, '+');
   }
-  function getQueryParameter(name) {
+  uR.getQueryParameter = function getQueryParameter(name) {
     var regexp = new RegExp("[\?&](?:"   +name+")=([^&]+)");
     var _sd = window.location.search.match(regexp);
     if (_sd) { return _sd[1]; }
   }
 
-  cookie = {
+  uR.cookie = {
     set: function (name,value,days) {
       var expires = "";
       if (days) {
@@ -44,7 +46,7 @@ var uR = (function() {
       }
       return null;
     },
-    delete: function (name) { createCookie(name,"",-1); }
+    delete: function (name) { this.set(name,"",-1); }
   }
 
   function isEmpty(obj) {
@@ -52,7 +54,7 @@ var uR = (function() {
     return true;
   }
 
-  function ajax(opts) {
+  uR.ajax = function ajax(opts) {
     // create default options
     var type = opts.type || "GET";
     var data = opts.data;
@@ -118,7 +120,7 @@ var uR = (function() {
       }
       if (that && that.fields) {
         that.non_field_errors = [];
-        forEach(that.fields,function(field,i) {
+        uR.forEach(that.fields,function(field,i) {
           if (errors[field.name]) { field.errors.push(errors[field.name]); }
         });
       }
@@ -135,7 +137,7 @@ var uR = (function() {
     request.send(form_data);
   }
 
-  function debounce(func, wait, immediate) {
+  uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
     return function() {
       var context = this, args = arguments;
@@ -151,7 +153,7 @@ var uR = (function() {
     };
   }
 
-  function dedribble(func, wait, end_bounce) {
+  uR.dedribble = function dedribble(func, wait, end_bounce) {
     var timeout, wait = wait || 200, end_bounce = end_bounce && true ;
     var last = new Date();
     return function() {
@@ -168,21 +170,12 @@ var uR = (function() {
     };
   };
 
-  function forEach(array,func) {
+  uR.forEach = function forEach(array,func) {
     for (var i=0;i<array.length;i++) { func(array[i],i,array); }
   }
 
-  return {
-    serialize: serialize,
-    ajax: ajax,
-    debounce: debounce,
-    forEach: forEach,
-    dedribble: dedribble,
-    cookie: cookie,
-    getQueryParameter: getQueryParameter,
-    onBlur: function() {},
-    config: {
-      loading_attribute: 'spinner',
-    },
-  }
+  uR.onBlur = uR.onBlur || function() {};
+  uR.config = uR.config || {};
+  uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
+  return uR
 })();
