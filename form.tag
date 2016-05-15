@@ -25,7 +25,7 @@
 
 <ur-input>
   <label for={ id } if={ label } class={ required: required }>{ label }</label>
-  <div class="help_text" if={ help_text } onclick={ help_text }>?</div>
+  <div class="help_text" if={ help_text } onclick={ help_text } title={ help_text.title }>?</div>
   <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
@@ -93,6 +93,7 @@
     i.blur();
     self.show_errors = false;
     self.value = self.initial_value || "";
+    self.root.querySelector("input,select").value = self.value;
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent("keyup", false, true);
     i.dispatchEvent(evt);
@@ -203,7 +204,7 @@
   clear() {
     uR.forEach(this.fields, function(field) { field.reset(); })
     self.active = false;
-    setTimeout(function() {self.root.querySelector("input:not([type=hidden])").focus() },0)
+    setTimeout(function() { self.root.querySelector("input:not([type=hidden]),select,textarea").focus(); },0)
   }
 
   this.addField = function(field) {
@@ -219,6 +220,9 @@
   }
   this.on("mount",function() {
     this.ajax_success = this.opts.ajax_success || this.parent.opts.ajax_success || this.parent.ajax_success || function() {};
+    if (this.opts.success_redirect) {
+      this.ajax_success = function() { window.location = this.opts.success_redirect; }
+    }
     this.messages = [];
     var _schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
     this.schema = [];
@@ -228,7 +232,9 @@
     this.button_text = this.opts.button_text || "Submit";
     this.fields = [];
     this.update();
-    if (this.fields) { setTimeout(function() {self.root.querySelector("input:not([type=hidden])").focus() },0) }
+    if (this.fields) {
+      setTimeout(function() { self.root.querySelector("input:not([type=hidden]),select,textarea").focus(); },0)
+    }
   });
   this.on("update",function() {
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
