@@ -24,7 +24,7 @@
 </checkbox-input>
 
 <ur-input>
-  <label for={ id } if={ label } class={ required: required }>{ label }</label>
+  <label for={ id } if={ label } class={ required: required, active: activated }>{ label }</label>
   <div class="help_text" if={ help_text } onclick={ help_text } title={ help_text.title }>?</div>
   <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
@@ -36,16 +36,19 @@
             class={ empty:empty } autocomplete="off" checked={ checked }>{ value }</textarea>
   <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name }>
     <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples } value={ choice[0] }>{ choice[1] }</option>
+    <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples } value={ choice[0] }>
+      { choice[1] }</option>
   </select>
   <ul class="errorlist" if={ errors.length && show_errors}>
     <li class="error fa-exclamation-circle fa" each={ error in errors }> { error }</li>
   </ul>
 
+  <style scoped> :scope { display: block; }</style>
   var self = this;
 
   onFocus(e) {
     var i = this.parent.fields.indexOf(this);
+    this.activated = true;
     if (i != 0) { this.parent.fields[i-1].show_errors = true; }
   }
 
@@ -54,6 +57,7 @@
     if (i !=0 && this.parent.active) { this.show_errors = true; }
     uR.onBlur(this);
     this.last_value = undefined; // force re-validation
+    this.activated = !!this.value;
     this.onChange(e);
   }
 
@@ -161,7 +165,7 @@
 
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
-    <ur-input each={ schema } class="{ name } { type }"/>
+    <ur-input each={ schema } class={ className }/>
     <div class="button_div">
       <ul class="errorlist" if={ non_field_errors.length }>
         <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
@@ -216,6 +220,7 @@
     } else {
       f.initial_value = f.value || self.initial[f.name];
     }
+    f.className = f.name + " " + f.type + " " + uR.config.form.field_class;
     self.schema.push(f);
   }
   this.on("mount",function() {
