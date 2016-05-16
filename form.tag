@@ -187,7 +187,7 @@
   submit(e,_super) {
     // _super is a temporary hack to allow us to call the original submit function.
     this.non_field_errors = [];
-    if (!_super && this.parent.submit) {
+    if (!_super && this.parent && this.parent.submit) {
       this.parent.submit(this);
     } else {
       uR.ajax({
@@ -219,12 +219,14 @@
     self.schema.push(f);
   }
   this.on("mount",function() {
-    this.ajax_success = this.opts.ajax_success || this.parent.opts.ajax_success || this.parent.ajax_success || function() {};
+    var parent_opts = (this.parent || {}).opts || {};
+    var parent = this.parent || {};
+    this.ajax_success = this.opts.ajax_success || parent_opts.ajax_success || parent.ajax_success || function() {};
     if (this.opts.success_redirect) {
       this.ajax_success = function() { window.location = this.opts.success_redirect; }
     }
     this.messages = [];
-    var _schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
+    var _schema = this.opts.schema || parent_opts.schema || parent.schema;
     this.schema = [];
     this.initial = this.opts.initial || {};
     uR.forEach(_schema,this.addField);
@@ -242,7 +244,7 @@
     uR.forEach(this.fields || [],function(field,i) {
       self.valid = self.valid && !field.errors.length;
     })
-    this.parent.update();
+    this.parent && this.parent.update();
   });
 
 </ur-form>
