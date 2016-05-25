@@ -1,4 +1,9 @@
 (function() {
+  uR.mountElement = function mountElement(name,options) {
+    var options = options || {};
+    !document.querySelector(name) && document.body.appendChild(document.createElement(name));
+    riot.mount(name,options);
+  }
   function pushState(path) {
     if (window.location.pathname == path) { return; }
     history.pushState({path:path},titles[path] || document.title,path);
