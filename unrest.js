@@ -67,7 +67,7 @@ var uR = (function() {
     var success = (opts.success || function(data,request) {}).bind(that);
     var error = (opts.error || function(data,request) {}).bind(that);
     var filenames = opts.filenames || {};
-    if (that) { that.messages = opts.messages || []; }
+    if (that) { that.messages = opts.messages || []; that._ajax_busy = true; }
 
     // mark as loading
     if (target) {
@@ -130,6 +130,7 @@ var uR = (function() {
       (complete?success:error)(data,request);
       if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
       if (that) {
+        that._ajax_busy = false;
         that.messages = data.messages || [];
         that.update();
       }
@@ -179,5 +180,8 @@ var uR = (function() {
   uR.config.form = {};
   uR.config.form.field_class = "input-field";
   uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
-  return uR
+  uR.config.loading_attribute = 'spinner';
+  uR.config.success_attribute = 'spinner';
+  uR.tag_templates = [];
+  return uR;
 })();
