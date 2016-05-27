@@ -26,6 +26,10 @@
     left: 0;
     right: 0;
     top: 0;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-align-items: center;
+    align-items: center;
   }
   .cancel {
     background: black;
@@ -75,7 +79,7 @@
     self.unmount();
   }
   if (this.parent) { this.parent.on("update",function() { self.update() }); }
-  this.on("mount",function() {
+  this.on("update",function() {
     this.modal_class = this.opts.modal_class || "";
     if (this.parent && this.parent.opts && this.parent.opts.modal_class) {
       this.modal_class += " "+ this.parent.opts.modal_class;
