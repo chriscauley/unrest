@@ -28,4 +28,5 @@
     if (uR.STALE_STATE) { window.location = path; }
   }
   uR._routes = uR._routes || {};
+  uR.ready(function() { uR.route(window.location.pathname) });
 })()
