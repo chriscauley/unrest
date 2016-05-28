@@ -1,7 +1,10 @@
 (function() {
   uR.mountElement = function mountElement(name,options) {
     var options = options || {};
-    !document.querySelector(name) && document.body.appendChild(document.createElement(name));
+    var target = document.querySelector(options.mount_to || uR.config.mount_to);
+    var children = target.childNodes;
+    for (var i=0;i<target.childNodes.length;i++) { target.removeChild(children[i]); }
+    target.appendChild(document.createElement(name));
     riot.mount(name,options);
   }
   function pushState(path) {

@@ -182,6 +182,8 @@ var uR = (function() {
   uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
   uR.config.loading_attribute = 'spinner';
   uR.config.success_attribute = 'spinner';
-  uR.tag_templates = [];
+  uR.config.tag_templates = [];
+  uR.config.mount_to = "#main";
+  uR.config.mount_alerts_to = "#alert-div";
   return uR;
 })();
