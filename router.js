@@ -18,14 +18,18 @@
     for (key in uR._routes) {
       data.matches = path.match(new RegExp(key));
       if (data.matches) {
+        console.log(path);
         uR.STALE_STATE = true;
         uR.pushState(path);
         uR._routes[key](path,data);
         return;
       }
     }
+    uR.mountElement("four-oh-four");
+
+    // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
-    if (uR.STALE_STATE) { window.location = path; }
+    // if (uR.STALE_STATE) { window.location = path; }
   }
   uR._routes = uR._routes || {};
   uR.ready(function() { uR.route(window.location.pathname) });

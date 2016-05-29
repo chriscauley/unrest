@@ -186,6 +186,7 @@ var uR = (function() {
   uR.onBlur = uR.onBlur || function() {};
   uR.config = uR.config || {};
   uR.config.form = {};
+  uR.config[404] = 'four-oh-four';
   uR.config.form.field_class = "input-field";
   uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
   uR.config.loading_attribute = 'spinner';
