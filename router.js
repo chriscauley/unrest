@@ -9,18 +9,18 @@
   }
   function pushState(path) {
     if (window.location.pathname == path) { return; }
-    history.pushState({path:path},titles[path] || document.title,path);
+    // #! TODO the empty string here is the page title. Need some sort of lookup table
+    history.pushState({path:path},"" || document.title,path);
   } 
   uR.pushState = uR.debounce(pushState,100)
   window.onpopstate = function(e) { uR.route(window.location.pathname); }
   uR.route = function route(path,data) {
     data = data || {};
+    uR.pushState(path);
     for (key in uR._routes) {
       data.matches = path.match(new RegExp(key));
       if (data.matches) {
-        console.log(path);
         uR.STALE_STATE = true;
-        uR.pushState(path);
         uR._routes[key](path,data);
         return;
       }

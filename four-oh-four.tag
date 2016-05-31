@@ -1,6 +1,6 @@
 <four-oh-four>
   <h1>Error 404: Page Not Found</h1>
-  <markdown>{ current }</markdown>
+  <markdown>{ parent.current }</markdown>
 
   <style scoped>
     :scope {
