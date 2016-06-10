@@ -47,6 +47,7 @@
   </ul>
 
   <style scoped> :scope { display: block; }</style>
+
   var self = this;
 
   onFocus(e) {
@@ -144,7 +145,7 @@
       this.tagname = this.type;
       var _e = document.createElement(this.type);
       this.root.insertBefore(_e,this.root.firstChild);
-      riot.mount(_e,{parent:this,form: this.parent});
+      setTimeout(function() { riot.mount(_e,{parent:self,form: self.parent}); },0);
     }
     if (this.parent && this.parent.fields) { this.parent.fields.push(this); }
 
@@ -204,6 +205,7 @@
         form: this.form_element,
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
+        error: this.ajax_error,
         target: this.submit_button,
         that: self
       });
@@ -235,16 +237,17 @@
       this._ajax_success = this.ajax_success;
       this.ajax_success = function() { self._ajax_success();window.location = this.opts.success_redirect; }
     }
+    this.ajax_error = this.opts.ajax_error || this.parent.opts.ajax_error || this.parent.ajax_error || function() {};
     this.messages = [];
     var _schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
     this.schema = [];
-    this.initial = this.opts.initial || {};
+    this.initial = this.opts.initial || this.parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.button_text = this.opts.button_text || "Submit";
     this.fields = [];
     this.update();
-    if (this.fields && !opts.no_focus) {
+    if (this.fields.length && !opts.no_focus) {
       setTimeout(function() {
         var f = self.root.querySelector("input:not([type=hidden]),select,textarea");
         f && f.focus();
@@ -261,7 +264,6 @@
     })
     this.parent && this.parent.update();
   });
-
 </ur-form>
 
 <ur-formset>
