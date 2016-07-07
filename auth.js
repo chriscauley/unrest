@@ -13,7 +13,7 @@
         data.success = data.success || success;
         data.canccel_next = data.cancel_next || "/";
         data.modal_class = data.modal_class || "signin";
-        uR.auth.showSignin(data);
+        uR.auth.startLogin(data);
       }
       else { success(); }
     }
@@ -23,7 +23,7 @@
     data.modal_class = data.modal_class || "signin";
     var parent = document.getElementById("alert-div");
     var t = uR.auth.login_template || "auth-login";
-    if (!document.querySelector(t)) { document.body.appendChild(document.createElement()); }
+    if (!document.querySelector(t)) { document.body.appendChild(document.createElement(t)); }
     riot.mount(t, data);
   }
 })()
