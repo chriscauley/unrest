@@ -169,7 +169,7 @@
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
     <yield from="pre-form"/>
-    <ur-input each={ schema } class="{ name } { type }"/>
+    <ur-input each={ schema } class="{ name } { type } { uR.config.form.field_class }"/>
     <div class="button_div">
       <ul class="errorlist" if={ non_field_errors.length }>
         <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
@@ -228,20 +228,21 @@
     } else {
       f.initial_value = f.value || self.initial[f.name];
     }
-    f.className = f.name + " " + f.type + " " + uR.config.form.field_class;
     self.schema.push(f);
   }
   this.on("mount",function() {
-    this.ajax_success = this.opts.ajax_success || this.parent.opts.ajax_success || this.parent.ajax_success || function() {};
+    var _parent = this.parent || {};
+    _parent.opts = _parent.opts || {};
+    this.ajax_success = this.opts.ajax_success || _parent.opts.ajax_success || _parent.ajax_success || function() {};
     if (this.opts.success_redirect) {
       this._ajax_success = this.ajax_success;
       this.ajax_success = function() { self._ajax_success();window.location = this.opts.success_redirect; }
     }
-    this.ajax_error = this.opts.ajax_error || this.parent.opts.ajax_error || this.parent.ajax_error || function() {};
+    this.ajax_error = this.opts.ajax_error || _parent.opts.ajax_error || _parent.ajax_error || function() {};
     this.messages = [];
-    var _schema = this.opts.schema || this.parent.opts.schema || this.parent.schema;
+    var _schema = this.opts.schema || _parent.opts.schema || _parent.schema;
     this.schema = [];
-    this.initial = this.opts.initial || this.parent.opts.initial || {};
+    this.initial = this.opts.initial || _parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.button_text = this.opts.button_text || "Submit";
