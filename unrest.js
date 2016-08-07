@@ -56,7 +56,7 @@ var uR = (function() {
 
   uR.ajax = function ajax(opts) {
     // create default options
-    var type = opts.type || "GET";
+    var method = opts.method || (opts.form || {}).method || "GET";
     var data = opts.data;
     var target = opts.target || opts.form;
     var url = opts.url || opts.form.action;
@@ -89,7 +89,7 @@ var uR = (function() {
     }
     // POST uses FormData, GET uses query string
     var form_data = new FormData();
-    if (type=="POST") {
+    if (method=="POST") {
       for (var key in data) {
         filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
       };
@@ -101,10 +101,10 @@ var uR = (function() {
 
     // create and send XHR
     var request = new XMLHttpRequest();
-    request.open(type, url , true);
+    request.open(method, url , true);
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-    if (type == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
+    if (method == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
       request.setRequestHeader("X-CSRFToken",document.querySelector("[name=csrfmiddlewaretoken]").value);
     }
     request.onload = function(){
@@ -192,7 +192,7 @@ var uR = (function() {
   uR.config.loading_attribute = 'spinner';
   uR.config.success_attribute = 'spinner';
   uR.config.tag_templates = [];
-  uR.config.mount_to = "#main";
+  uR.config.mount_to = "body";
   uR.config.mount_alerts_to = "#alert-div";
   return uR;
 })();

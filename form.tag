@@ -201,7 +201,7 @@
     } else {
       uR.ajax({
         url: this.opts.action,
-        type: this.opts.method,
+        method: this.opts.method,
         form: this.form_element,
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
@@ -284,7 +284,7 @@
     var form_data = {}
     for (var key in element.inputs) { form_data[key] = element.inputs[key].value }
     uR.ajax({
-      type: "POST",
+      method: "POST",
       url: this.opts.action,
       data: form_data,
       target: element.root,
