@@ -56,10 +56,13 @@ var uR = (function() {
 
   uR.ajax = function ajax(opts) {
     // create default options
-    var method = opts.method || (opts.form || {}).method || "GET";
+    // note: !!form is always true, opts.form can be undefined (falsey)
+    // but form.some_property will always be false if there is no form!
+    var form = opts.form || {};
+    var method = (opts.method || form.method || "GET").toUpperCase();
     var data = opts.data;
-    var target = opts.target || opts.form;
-    var url = opts.url || opts.form.action;
+    var target = opts.target || opts.form;  // default to body?
+    var url = opts.url || form.action || '.';
     var loading_attribute = opts.loading_attribute || uR.config.loading_attribute;
     var success_attribute = opts.success_attribute || "";
     var success_reset = opts.success_reset || false;
