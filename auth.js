@@ -8,7 +8,11 @@
     data = data || {};
     return function() {
       var args = arguments;
-      function success() { func.apply(this,args); }
+      function success() {
+        func.apply(this,args);
+        var tag = document.querySelector("auth-login");
+        tag && tag.parentNode.removeChild(tag);
+      }
       if (!uR.auth.user || data.force) {
         data.success = data.success || success;
         data.canccel_next = data.cancel_next || "/";

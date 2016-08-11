@@ -1,7 +1,9 @@
 <auth-login>
   <modal title="Please login to continue.">
-    <ur-form schema="{ uR.schema.login }" action={ uR.urls.auth.login } method="POST"></ur-form>
+    <ur-form schema="{ uR.schema.login }" action={ uR.urls.auth.login } method="POST"
+             ajax_success={ parent.opts.success }></ur-form>
   </modal>
+
 </auth-login>
 
 <auth-menu>
