@@ -8,7 +8,8 @@
     data = data || {};
     return function() {
       var args = arguments;
-      function success() {
+      function success(data) {
+        if (data) { uR.auth.user = data.user; }
         func.apply(this,args);
         var tag = document.querySelector("auth-login");
         tag && tag.parentNode.removeChild(tag);

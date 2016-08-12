@@ -30,7 +30,7 @@
   <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
-         class={ empty:empty } autocomplete="off" checked={ checked } value={ set_value }>
+         class={ empty:empty } autocomplete="off" checked={ checked } initial_value={ set_value }>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
   <textarea if={ tagname == "textarea" } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
@@ -213,6 +213,7 @@
   }
   clear() {
     uR.forEach(this.fields, function(field) { field.reset(); })
+    this.messages = [];
     self.active = false;
     setTimeout(function() {
       var f = self.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
@@ -232,6 +233,7 @@
   }
   this.on("mount",function() {
     var _parent = this.parent || {};
+    _parent.ur_form = this;
     _parent.opts = _parent.opts || {};
     this.ajax_success = this.opts.ajax_success || _parent.opts.ajax_success || _parent.ajax_success || function() {};
     if (this.opts.success_redirect) {
