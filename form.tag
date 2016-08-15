@@ -49,6 +49,7 @@
   <style scoped> :scope { display: block; }</style>
 
   var self = this;
+  this.updoot = 0;
 
   onFocus(e) {
     var i = this.parent.fields.indexOf(this);
@@ -134,10 +135,12 @@
     this.tagname = "textinput";
     if (this.type == "select") {
       this.tagname = "select";
-      this.verbose_choices = this.verbose_choices || this.choices;
-      this.choice_tuples = [];
-      for (var i=0;i<this.choices.length;i++) {
-        this.choice_tuples.push([this.choices[i],this.verbose_choices[i]]);
+      if (!this.choice_tuples) {
+        this.verbose_choices = this.verbose_choices || this.choices;
+        this.choice_tuples = [];
+        for (var i=0;i<this.choices.length;i++) {
+          this.choice_tuples.push([this.choices[i],this.verbose_choices[i]]);
+        }
       }
     }
     if (this.type == "textarea") { this.tagname = "textarea"; }
@@ -163,6 +166,7 @@
   });
   this.on("update", function() {
     this.parent.update();
+    console.log('updoot'+this.updoot++);
   });
 </ur-input>
 
@@ -191,6 +195,7 @@
   this.button_class = this.opts.button_class || uR.config.button_class || "";
   this.cancel_class = this.opts.cancel_class || uR.config.cancel_class || "";
   this.cancel_text = this.opts.cancel_text || uR.config.cancel_text || "";
+this.updoot = 0;
 
   submit(e,_super) {
     if (this._ajax_busy) { return; }
@@ -276,6 +281,7 @@
     }
   });
   this.on("update",function() {
+    console.log('form update'+this.updoot++)
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
     uR.forEach(this.fields || [],function(field,i) {
