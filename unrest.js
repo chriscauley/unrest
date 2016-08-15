@@ -194,8 +194,10 @@ var uR = (function() {
   uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
   uR.config.loading_attribute = 'spinner';
   uR.config.success_attribute = 'spinner';
+  uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
   uR.config.mount_to = "body";
   uR.config.mount_alerts_to = "#alert-div";
+  uR.schema = {};
   return uR;
 })();

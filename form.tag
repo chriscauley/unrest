@@ -37,7 +37,7 @@
             placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
             class={ empty:empty } autocomplete="off">{ value }</textarea>
   -->
-  <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name }>
+  <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
@@ -243,6 +243,23 @@
     this.ajax_error = this.opts.ajax_error || _parent.opts.ajax_error || _parent.ajax_error || function() {};
     this.messages = [];
     var _schema = this.opts.schema || _parent.opts.schema || _parent.schema;
+    if (typeof _schema == "string") {
+      if (uR.schema[_schema]) {
+        _schema = uR.schema[_schema];
+      } else {
+        if (window.FAIL) { console.log('fail'); return; }
+        var url = _schema;
+        uR.ajax({
+          url: url,
+          success: function(data) {
+            uR.schema[url] = data;
+            self.mount()
+            window.FAIL = 1;
+          }
+        });
+        _schema = [];
+      }
+    }
     this.schema = [];
     this.initial = this.opts.initial || _parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
