@@ -49,7 +49,6 @@
   <style scoped> :scope { display: block; }</style>
 
   var self = this;
-  this.updoot = 0;
 
   onFocus(e) {
     var i = this.parent.fields.indexOf(this);
@@ -92,7 +91,7 @@
       this.errors.push("Please enter a valid email address.")
     }
     if (!this.errors.length && e.type == "blur") { this._validate(this.value,this); }
-    this.update();
+    //this.update();
   }
 
   this.reset = function() {
@@ -165,8 +164,7 @@
     this.update();
   });
   this.on("update", function() {
-    this.parent.update();
-    console.log('updoot'+this.updoot++);
+    //this.parent.update();
   });
 </ur-input>
 
@@ -183,7 +181,7 @@
         </li>
       </ul>
       <yield from="button_div"/>
-      <button disabled={ !valid } class="btn { button_class }" id="submit_button">{ button_text }</button>
+      <button class="btn { button_class } { disabled: !valid }" id="submit_button">{ button_text }</button>
       <button class="btn { cancel_class }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
@@ -195,10 +193,9 @@
   this.button_class = this.opts.button_class || uR.config.button_class || "";
   this.cancel_class = this.opts.cancel_class || uR.config.cancel_class || "";
   this.cancel_text = this.opts.cancel_text || uR.config.cancel_text || "";
-this.updoot = 0;
 
   submit(e,_super) {
-    if (this._ajax_busy) { return; }
+    if (this._ajax_busy || !this.valid) { return; }
     // _super is a temporary hack to allow us to call the original submit function.
     this.non_field_errors = [];
     if (!_super && this.parent && this.parent.submit) {
@@ -252,7 +249,6 @@ this.updoot = 0;
       if (uR.schema[_schema]) {
         _schema = uR.schema[_schema];
       } else {
-        if (window.FAIL) { console.log('fail'); return; }
         var url = _schema;
         uR.ajax({
           url: url,
@@ -281,14 +277,13 @@ this.updoot = 0;
     }
   });
   this.on("update",function() {
-    console.log('form update'+this.updoot++)
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
     uR.forEach(this.fields || [],function(field,i) {
       if (field.no_validation) { return }
       self.valid = self.valid && !field.errors.length;
     })
-    this.parent && this.parent.update();
+    //this.parent && this.parent.update();
   });
 </ur-form>
 
