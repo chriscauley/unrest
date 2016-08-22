@@ -1,5 +1,6 @@
 <markdown><yield/>
   this.on("mount",function() {
-    this.root.innerHTML = markdown.toHTML(this.root.innerHTML.replace("&amp;","&"));
+    var content = this.opts.content || this.root.innerHTML;
+    this.root.innerHTML = markdown.toHTML(content.replace("&amp;","&"));
   });
 </markdown>
