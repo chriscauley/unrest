@@ -196,6 +196,7 @@ var uR = (function() {
   uR.config.success_attribute = 'spinner';
   uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
+  uR.config.text_validators = {};
   uR.config.mount_to = "body";
   uR.config.mount_alerts_to = "#alert-div";
   uR.schema = {};

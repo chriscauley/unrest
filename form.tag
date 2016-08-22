@@ -27,7 +27,7 @@
   <label for={ id } if={ label } class={ required: required, active: activated }>{ label }</label>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
   <div class="help_text" if={ help_text }>{ help_text }</div>
-  <input if={ tagname == "textinput" } type={ type } name={ _name } id={ id }
+  <input if={ tagname == "textinput" } type={ input_type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
          class={ empty:empty } autocomplete="off" checked={ checked } initial_value={ set_value }>
@@ -124,15 +124,19 @@
       if (this.placeholder == this.label) { this.placeholder = undefined; }
     }
     this.id = this.id || "id_" + this._name + this.parent.suffix;
+    this.input_type = this.type || "text";
     this.validate = this.validate || function() {};
-    this.type = this.type || "text";
+    if (uR.config.text_validators[this.input_type]) {
+      this.validate = uR.config.text_validators[this.input_type];
+      this.input_type = "text";
+    }
     if (this.required == undefined) { this.required = true; }
     this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
     this.set_value = this.value = this.initial_value = this.initial_value || "";
     this.onKeyUp({target:{value:this.initial_value}});
     this.show_errors = false;
     this.tagname = "textinput";
-    if (this.type == "select") {
+    if (this.input_type == "select") {
       this.tagname = "select";
       if (!this.choice_tuples) {
         this.verbose_choices = this.verbose_choices || this.choices;
@@ -142,10 +146,10 @@
         }
       }
     }
-    if (this.type == "textarea") { this.tagname = "textarea"; }
-    if (uR.config.tag_templates.indexOf(this.type) != -1) {
-      this.tagname = this.type;
-      var _e = document.createElement(this.type);
+    if (this.input_type == "textarea") { this.tagname = "textarea"; }
+    if (uR.config.tag_templates.indexOf(this.input_type) != -1) {
+      this.tagname = this.input_type;
+      var _e = document.createElement(this.input_type);
       this.root.insertBefore(_e,this.root.firstChild);
       setTimeout(function() { riot.mount(_e,{parent:self,form: self.parent}); },0);
     }

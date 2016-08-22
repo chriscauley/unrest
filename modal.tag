@@ -78,13 +78,11 @@
     (self.opts.success || function(){})();
     self.unmount();
   }
-  if (this.parent) { this.parent.on("update",function() { self.update() }); }
   this.on("update",function() {
     this.modal_class = this.opts.modal_class || "";
     if (this.parent && this.parent.opts && this.parent.opts.modal_class) {
       this.modal_class += " "+ this.parent.opts.modal_class;
     }
     this.root.className = this.modal_class;
-    this.update();
   });
 </modal>
