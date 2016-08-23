@@ -25,11 +25,11 @@
 
 <ur-input>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
-  <div class="help_text" if={ help_text }>{ help_text }</div>
   <input if={ tagname == "textinput" } type={ input_type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked } initial_value={ set_value }>
+         class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
+         initial_value={ set_value }>
   <label for={ id } if={ label } class={ required: required, active: activated }
          data-error={ data_error } data-success={ data_success }>{ label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
@@ -43,7 +43,7 @@
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
-
+  <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
   <style scoped> :scope { display: block; }</style>
 
   var self = this;
