@@ -14,7 +14,7 @@
     display: -webkit-flex;
     display: flex;
     justify-content: center;
-    overflow: auto;
+    overflow: hidden;
     z-index: 10000;
   }
   :scope.absolute { position: absolute; }
@@ -33,17 +33,16 @@
   }
   .cancel {
     background: black;
-    border-radius: 50%;
     color: white;
     cursor: pointer;
     display: block;
     height: 26px;
     line-height: 26px;
     position: absolute;
-    right: -13px;
+    right: 0;
     text-align: center;
     text-decoration: none;
-    top: -13px;
+    top: 0;
     width: 26px;
     z-index: 1;
   }
@@ -56,7 +55,9 @@
     align-self: center;
     display: inline-block;
     background: white;
+    max-height: 100%;
     max-width: 100%;
+    overflow: scroll;
     padding: 25px 25px 30px;
     position: relative;
     z-index: 2;
