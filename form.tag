@@ -24,17 +24,18 @@
 </checkbox-input>
 
 <ur-input>
-  <label for={ id } if={ label } class={ required: required, active: activated }>{ label }</label>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
   <div class="help_text" if={ help_text }>{ help_text }</div>
   <input if={ tagname == "textinput" } type={ input_type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
-         placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
-         class={ empty:empty } autocomplete="off" checked={ checked } initial_value={ set_value }>
+         placeholder={ placeholder } required={ required } minlength={ minlength }
+         class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked } initial_value={ set_value }>
+  <label for={ id } if={ label } class={ required: required, active: activated }
+         data-error={ data_error } data-success={ data_success }>{ label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
   <textarea if={ tagname == "textarea" } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
-            placeholder={ placeholder } required={ required } minlength={ minlength } valid={ !errors.length }
+            placeholder={ placeholder } required={ required } minlength={ minlength }
             class={ empty:empty } autocomplete="off">{ value }</textarea>
   -->
   <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
@@ -42,9 +43,6 @@
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
-  <ul class="errorlist" if={ errors.length && show_errors}>
-    <li class="error fa-exclamation-circle fa" each={ error in errors }> { error }</li>
-  </ul>
 
   <style scoped> :scope { display: block; }</style>
 
@@ -76,21 +74,21 @@
     this.value = e.value || e.target.value; // e.value is a way to fake events
     if (this.last_value == this.value) { return; }
     this.last_value = this.value;
-    this.errors = e.errors || []; // e.errors allows errors from external sources
+    this.data_error = undefined;
     this.empty = !this.value;
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
     if (this.required && !this.value.length) {
-      this.errors.push(this.verbose_name + " is required.");
+      this.data_error = this.verbose_name + " is required.";
     }
     else if (this.value.length < this.minlength) {
       var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
-      this.errors.push(this.verbose_name + " must be at least " + this.minlength + type);
+      this.data_error = this.verbose_name + " must be at least " + this.minlength + type;
     }
     else if (this.type == "email" && invalid_email) {
-      this.errors.push("Please enter a valid email address.")
+      this.data_error = "Please enter a valid email address.";
     }
-    if (!this.errors.length && e.type == "blur") { this._validate(this.value,this); }
+    if (!this.data_error && e.type == "blur") { console.log(1); this._validate(this.value,this); }
     //this.update();
   }
 
@@ -118,11 +116,7 @@
       var f = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
       this.verbose_name = this._name.replace(/[-_]/g," ").replace(/\w\S*/g, f);
     }
-    if (!this.label) { this.placeholder = this.placeholder || this.verbose_name; }
-    if (this.parent.opts.labeled) {
-      this.label = this.label || this.placeholder;
-      if (this.placeholder == this.label) { this.placeholder = undefined; }
-    }
+    this.label = this.label || this.verbose_name;
     this.id = this.id || "id_" + this._name + this.parent.suffix;
     this.input_type = this.type || "text";
     this.validate = this.validate || function() {};
@@ -168,7 +162,7 @@
     this.update();
   });
   this.on("update", function() {
-    //this.parent.update();
+    this.invalid = this.data_error && this.show_errors;
   });
 </ur-input>
 
@@ -285,7 +279,7 @@
     this.valid = true;
     uR.forEach(this.fields || [],function(field,i) {
       if (field.no_validation) { return }
-      self.valid = self.valid && !field.errors.length;
+      self.valid = self.valid && !field.data_error;
     })
     //this.parent && this.parent.update();
   });
