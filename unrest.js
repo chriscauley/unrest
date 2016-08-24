@@ -70,7 +70,11 @@ var uR = (function() {
     var success = (opts.success || function(data,request) {}).bind(that);
     var error = (opts.error || function(data,request) {}).bind(that);
     var filenames = opts.filenames || {};
-    if (that) { that.messages = opts.messages || []; that._ajax_busy = true; }
+    if (that) {
+      that.messages = opts.messages || [];
+      that._ajax_busy = true;
+      that.form_error = undefined;
+    }
 
     // mark as loading
     if (target) {
@@ -117,17 +121,19 @@ var uR = (function() {
       }
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
+      console.log(errors)
+      var non_field_error = errors.non_field_error;
       if (isEmpty(errors) && request.status != 200) {
-        var e = opts.default_error || "An unknown error has occurred";
-        errors = { non_field_errors: e };
+        non_field_error = opts.default_error || "An unknown error has occurred";
       }
       if (that && that.fields) {
-        that.non_field_errors = [];
         uR.forEach(that.fields,function(field,i) {
-          if (errors[field.name]) { field.errors.push(errors[field.name]); }
+          field.error = errors[field.name];
         });
       }
-      if (that && errors.non_field_errors) { that.non_field_errors = [errors.non_field_errors]; }
+      if (non_field_error) {
+        if (that) {that.non_field_error = non_field_error; } else { alert(non_field_error); }
+      }
 
       var complete = (request.status == 200 && isEmpty(errors));
       (complete?success:error)(data,request);

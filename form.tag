@@ -88,7 +88,7 @@
     else if (this.type == "email" && invalid_email) {
       this.data_error = "Please enter a valid email address.";
     }
-    if (!this.data_error && e.type == "blur") { console.log(1); this._validate(this.value,this); }
+    if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
     //this.update();
   }
 
@@ -171,13 +171,13 @@
     <yield from="pre-form"/>
     <ur-input each={ schema } class="{ name } { type } { uR.config.form.field_class }"/>
     <div class="button_div">
-      <ul class="errorlist" if={ non_field_errors.length }>
-        <li class="error fa-exclamation-circle fa" each={ error in non_field_errors }> { error }</li>
-        <li if={ uR.config.support_email }>
+      <div if={ non_field_error }>
+        <div class="card red white-text"><div class="card-content">{ non_field_error }</div></div>
+        <p if={ uR.config.support_email }>
           If you need assistance contact
           <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
-        </li>
-      </ul>
+        </p>
+      </div>
       <yield from="button_div"/>
       <button class="btn { button_class } { disabled: !valid }" id="submit_button">{ button_text }</button>
       <button class="btn { cancel_class }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
@@ -195,7 +195,7 @@
   submit(e,_super) {
     if (this._ajax_busy || !this.valid) { return; }
     // _super is a temporary hack to allow us to call the original submit function.
-    this.non_field_errors = [];
+    this.non_field_error = undefined;
     if (!_super && this.parent && this.parent.submit) {
       this.parent.submit(this);
     } else {
