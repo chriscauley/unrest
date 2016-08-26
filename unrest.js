@@ -102,7 +102,7 @@ var uR = (function() {
       };
     }
     else {
-      url += "?"
+      url += (url.indexOf("?") == -1)?"?":"&";
       for (key in data) { url += key + "=" + data[key] + "&" }
     }
 
@@ -121,7 +121,6 @@ var uR = (function() {
       }
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
-      console.log(errors)
       var non_field_error = errors.non_field_error;
       if (isEmpty(errors) && request.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";

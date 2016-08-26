@@ -57,7 +57,7 @@
     background: white;
     max-height: 100%;
     max-width: 100%;
-    overflow: scroll;
+    overflow: auto;
     padding: 25px 25px 30px;
     position: relative;
     z-index: 2;
