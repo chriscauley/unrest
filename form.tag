@@ -253,7 +253,6 @@
           success: function(data) {
             uR.schema[url] = data;
             self.mount()
-            window.FAIL = 1;
           }
         });
         _schema = [];

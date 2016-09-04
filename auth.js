@@ -10,6 +10,7 @@
       var args = arguments;
       function success(data) {
         if (data) { uR.auth.user = data.user; }
+        uR.config.doPostAuth();
         func.apply(this,args);
         var tag = document.querySelector("auth-login");
         tag && tag.parentNode.removeChild(tag);
