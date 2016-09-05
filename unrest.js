@@ -179,7 +179,8 @@ var uR = (function() {
     };
   };
 
-  uR.forEach = function forEach(array,func) {
+  uR.forEach = function forEach(array,func,context) {
+    if (context) { func = func.bind(context) }
     for (var i=0;i<array.length;i++) { func(array[i],i,array); }
   }
 
