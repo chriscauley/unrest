@@ -43,6 +43,7 @@
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
+  <h5 if={ tagname == "header" }>{ content }</h5>
   <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
   <style scoped> :scope { display: block; }</style>
 
@@ -141,6 +142,11 @@
       }
     }
     if (this.input_type == "textarea") { this.tagname = "textarea"; }
+    if (this.input_type == "header") {
+      this.tagname = "header";
+      this.content = this.label;
+      this.label = undefined;
+    }
     if (uR.config.tag_templates.indexOf(this.input_type) != -1) {
       this.tagname = this.input_type;
       var _e = document.createElement(this.input_type);
