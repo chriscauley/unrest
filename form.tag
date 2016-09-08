@@ -30,8 +30,8 @@
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
          initial_value={ set_value }>
-  <label for={ id } if={ label } class={ required: required, active: activated }
-         data-error={ data_error } data-success={ data_success }>{ label }</label>
+  <label for={ id } if={ _label } class={ required: required, active: activated }
+         data-error={ data_error } data-success={ data_success }>{ _label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
   <textarea if={ tagname == "textarea" } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
@@ -117,7 +117,7 @@
       var f = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
       this.verbose_name = this._name.replace(/[-_]/g," ").replace(/\w\S*/g, f);
     }
-    this.label = this.label || this.verbose_name;
+    this._label = this.label || this.verbose_name;
     this.id = this.id || "id_" + this._name + this.parent.suffix;
     this.input_type = this.type || "text";
     this.validate = this.validate || function() {};
@@ -144,8 +144,9 @@
     if (this.input_type == "textarea") { this.tagname = "textarea"; }
     if (this.input_type == "header") {
       this.tagname = "header";
-      this.content = this.label;
-      this.label = undefined;
+      this.content = this._label;
+      this._label = undefined;
+      this.no_validation = true;
     }
     if (uR.config.tag_templates.indexOf(this.input_type) != -1) {
       this.tagname = this.input_type;
