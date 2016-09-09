@@ -15,6 +15,7 @@
   uR.pushState = uR.debounce(pushState,100)
   window.onpopstate = function(e) { uR.route(window.location.pathname); }
   uR.route = function route(path,data) {
+    uR.forEach(uR._on_routes,function(f) {f(path,data)})
     data = data || {};
     uR.pushState(path);
     for (key in uR._routes) {
@@ -32,5 +33,7 @@
     // if (uR.STALE_STATE) { window.location = path; }
   }
   uR._routes = uR._routes || {};
+  uR._on_routes = [];
+  uR.onRoute = function(f) { uR._on_routes.push(f) }
   uR.ready(function() { uR.route(window.location.pathname) });
 })()

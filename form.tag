@@ -132,6 +132,7 @@
     this.show_errors = false;
     this.tagname = "textinput";
     if (this.input_type == "select") {
+      this.activated = true;
       this.tagname = "select";
       if (!this.choice_tuples) {
         this.verbose_choices = this.verbose_choices || this.choices;
