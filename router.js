@@ -26,12 +26,14 @@
         return;
       }
     }
-    uR.mountElement("four-oh-four");
+
+    uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
     // if (uR.STALE_STATE) { window.location = path; }
   }
+  uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
