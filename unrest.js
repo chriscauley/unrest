@@ -206,6 +206,10 @@ var uR = (function() {
   uR.config.text_validators = {};
   uR.config.mount_to = "body";
   uR.config.mount_alerts_to = "#alert-div";
+  uR.config.btn_success = "btn green";
+  uR.config.btn_cancel = "btn red";
+  uR.config.cancel_text = "Cancel";
+  uR.config.success_text = "Submit";
   uR.schema = {};
   return uR;
 })();

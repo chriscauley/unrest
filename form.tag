@@ -187,8 +187,8 @@
         </p>
       </div>
       <yield from="button_div"/>
-      <button class="btn { button_class } { disabled: !valid }" id="submit_button">{ button_text }</button>
-      <button class="btn { cancel_class }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
+      <button class="btn { btn_success } { disabled: !valid }" id="submit_button">{ success_text }</button>
+      <button class="btn { btn_cancel }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
       <li class="{ level }" each={ messages }>{ body }</li>
@@ -196,9 +196,9 @@
   </form>
 
   var self = this;
-  this.button_class = this.opts.button_class || uR.config.button_class || "";
-  this.cancel_class = this.opts.cancel_class || uR.config.cancel_class || "";
-  this.cancel_text = this.opts.cancel_text || uR.config.cancel_text || "";
+  this.btn_success = this.opts.btn_success || uR.config.btn_success;
+  this.btn_cancel = this.opts.btn_cancel || uR.config.btn_cancel;
+  this.cancel_text = this.opts.cancel_text || uR.config.cancel_text;
 
   submit(e,_super) {
     if (this._ajax_busy || !this.valid) { return; }
@@ -270,7 +270,7 @@
     this.initial = this.opts.initial || _parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
-    this.button_text = this.opts.button_text || "Submit";
+    this.success_text = this.opts.success_text || "Submit";
     this.fields = [];
     this.update();
     if (this.fields.length && !opts.no_focus) {
@@ -293,7 +293,7 @@
 </ur-form>
 
 <ur-formset>
-  <ur-form each={ form,i in forms } suffix={ "_"+i } button_text="Add">
+  <ur-form each={ form,i in forms } suffix={ "_"+i } success_text="Add">
     <div class="message font-20" if={ next }>
       <b>{ name }</b> has been successfully added!<br /> Add more children or click <b>Next</b> to continue.
     </div>
