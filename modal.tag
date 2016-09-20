@@ -4,6 +4,10 @@
     <a onclick={ cancel } class="cancel">X</a>
     <div class="title" if={ opts.title }>{ opts.title }</div>
     <yield/>
+    <center>
+      <button class="{ uR.config.btn_cancel }" onclick={ cancel } if={ cancel_text }>{ cancel_text }</button>
+      <button class="{ uR.config.btn_success }" onclick={ success } if={ success_text }>{ success_text }</button>
+    </center>
   </div>
 
   <style scoped>
@@ -81,6 +85,8 @@
   }
   this.on("update",function() {
     this.modal_class = this.opts.modal_class || "";
+    this.cancel_text = this.opts.cancel_text;
+    this.success_text = this.opts.success_text;
     if (this.parent && this.parent.opts && this.parent.opts.modal_class) {
       this.modal_class += " "+ this.parent.opts.modal_class;
     }
