@@ -40,6 +40,7 @@
     uR.mountElement("modal",{
       cancel_text: "Close",
       innerHTML: "<center style='margin-bottom: 1em;'>"+text+"</center>",
+      mount_to: uR.config.mount_alerts_to,
     });
   }
 
@@ -50,6 +51,7 @@
     options.success_text = options.success_text || "Continue";
     options.success = options.success || function() {};
     options.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
+    options.mount_to = options.mount_alerts_to || uR.config.mount_alerts_to;
     uR.mountElement("modal",options);
   }
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
