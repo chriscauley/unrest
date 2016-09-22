@@ -187,8 +187,8 @@
         </p>
       </div>
       <yield from="button_div"/>
-      <button class="btn { btn_success } { disabled: !valid }" id="submit_button">{ success_text }</button>
-      <button class="btn { btn_cancel }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
+      <button class="{ btn_success } { disabled: !valid }" id="submit_button">{ success_text }</button>
+      <button class="{ btn_cancel }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
       <li class="{ level }" each={ messages }>{ body }</li>
@@ -298,7 +298,7 @@
       <b>{ name }</b> has been successfully added!<br /> Add more children or click <b>Next</b> to continue.
     </div>
   </ur-form>
-  <button class="btn btn-blue" disabled={ !valid }>Next</button>
+  <button class={ uR.config.btn_primary } disabled={ !valid }>Next</button>
   var self = this;
   this.forms = [];
   this.on("mount",function() {
