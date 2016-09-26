@@ -77,11 +77,12 @@
   if (window.HOMER) { self.mixin(HOMER.StaticMixin); }
   cancel(e) {
     (self.opts.cancel || function(){})(e);
-    self.unmount();
+    // #!TODO This is necessary because unmounting a modal with a parent makes the modal no longer update if it is remounted. One possible solution would be `!self.parent && self.unmount()` instead (?)
+    !self.opts.stay_mounted && self.unmount();
   }
   success(e) {
     (self.opts.success || function(){})();
-    self.unmount();
+    !self.opts.stay_mounted && self.unmount();
   }
   this.on("update",function() {
     this.modal_class = this.opts.modal_class || "";
