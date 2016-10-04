@@ -131,6 +131,10 @@
     this.onKeyUp({target:{value:this.initial_value}});
     this.show_errors = false;
     this.tagname = "textinput";
+    if (this.input_type == "hidden") {
+      this.root.style.display = "none";
+      this._label = "";
+    }
     if (this.input_type == "select") {
       this.activated = true;
       this.tagname = "select";
