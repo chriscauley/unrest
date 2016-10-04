@@ -2,7 +2,6 @@
   <div class="mask" onclick={ cancel }></div>
   <div class="inner">
     <a onclick={ cancel } class="cancel">X</a>
-    <div class="title" if={ opts.title }>{ opts.title }</div>
     <yield/>
     <center>
       <button class="{ uR.config.btn_cancel }" onclick={ cancel } if={ cancel_text }>{ cancel_text }</button>
@@ -65,11 +64,6 @@
     padding: 25px 25px 30px;
     position: relative;
     z-index: 2;
-  }
-  .title {
-    font-size: 2em;
-    font-weight: bold;
-    margin-bottom: 10px;
   }
   </style>
 
