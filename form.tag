@@ -29,7 +29,7 @@
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
-         initial_value={ set_value }>
+         initial_value={ initial_value }>
   <label for={ id } if={ _label } class={ required: required, active: activated }
          data-error={ data_error } data-success={ data_success }>{ _label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
@@ -80,7 +80,7 @@
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
     if (this.required && !this.value.length) {
-      this.data_error = this.verbose_name + " is required.";
+      this.data_error = "This field is required.";
     }
     else if (this.value.length < this.minlength) {
       var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
@@ -100,7 +100,7 @@
     }
     i.blur();
     self.show_errors = false;
-    self.value = self.set_value = self.initial_value || "";
+    self.value = self.initial_value || "";
     self.root.querySelector("input,select").value = self.value;
     var evt = document.createEvent("HTMLEvents");
     evt.initEvent("keyup", false, true);
@@ -127,8 +127,6 @@
     }
     if (this.required == undefined) { this.required = true; }
     this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
-    this.set_value = this.value = this.initial_value = this.initial_value || "";
-    this.onKeyUp({target:{value:this.initial_value}});
     this.show_errors = false;
     this.tagname = "textinput";
     if (this.input_type == "hidden") {
@@ -172,6 +170,7 @@
       }
     },1000);
     this.update();
+    this.reset();
   });
   this.on("update", function() {
     this.invalid = this.data_error && this.show_errors;
