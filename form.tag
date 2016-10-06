@@ -25,7 +25,7 @@
 
 <ur-input>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
-  <input if={ tagname == "textinput" } type={ input_type } name={ _name } id={ id }
+  <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
@@ -33,17 +33,17 @@
   <label for={ id } if={ _label } class={ required: required, active: activated }
          data-error={ data_error } data-success={ data_success }>{ _label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
-  <textarea if={ tagname == "textarea" } name={ _name } id={ id }
+  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
             class={ empty:empty } autocomplete="off">{ value }</textarea>
   -->
-  <select if={ tagname == "select" } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
+  <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
-  <h5 if={ tagname == "header" }>{ content }</h5>
+  <h5 if={ tagname == 'header' }>{ content }</h5>
   <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
   <style scoped> :scope { display: block; }</style>
 
@@ -80,7 +80,6 @@
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
     if (this.required && !this.value.length) {
-      console.log(this.name);
       this.data_error = "This field is required.";
     }
     else if (this.value.length < this.minlength) {
@@ -96,7 +95,7 @@
 
   this.reset = function() {
     var i = self.root.querySelector("input,select,textarea");
-    if (['checkbox','radio','submit'].indexOf(i.type) != -1) {
+    if (!i || ['checkbox','radio','submit'].indexOf(i.type) != -1) {
       return; //#! TODO this should reset based off of initial values
     }
     i.blur();
