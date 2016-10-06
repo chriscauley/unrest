@@ -80,6 +80,7 @@
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
     if (this.required && !this.value.length) {
+      console.log(this.name);
       this.data_error = "This field is required.";
     }
     else if (this.value.length < this.minlength) {
@@ -101,10 +102,9 @@
     i.blur();
     self.show_errors = false;
     self.value = self.initial_value || "";
-    self.root.querySelector("input,select").value = self.value;
-    var evt = document.createEvent("HTMLEvents");
-    evt.initEvent("keyup", false, true);
-    i.dispatchEvent(evt);
+    var target = self.root.querySelector("input,select");
+    target.value = self.value;
+    self.onKeyUp({target:target});
   }
 
   this.on("mount", function() {
