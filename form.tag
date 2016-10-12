@@ -193,7 +193,7 @@
         </p>
       </div>
       <yield from="button_div"/>
-      <button class="{ btn_success } { disabled: !valid }" id="submit_button">{ success_text }</button>
+      <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>{ success_text }</button>
       <button class="{ btn_cancel }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
@@ -207,7 +207,14 @@
   this.cancel_text = this.opts.cancel_text || uR.config.cancel_text;
 
   submit(e,_super) {
-    if (this._ajax_busy || !this.valid) { return; }
+    if (this._ajax_busy) { return; }
+    if (!this.valid) {
+      uR.forEach(this.fields,function (field) {
+        field.show_errors = true;
+        field.update();
+      })
+      return;
+    }
     // _super is a temporary hack to allow us to call the original submit function.
     this.non_field_error = undefined;
     if (!_super && this.parent && this.parent.submit) {
