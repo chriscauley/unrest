@@ -79,7 +79,8 @@
     this.empty = !this.value;
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
-    if (this.required && !this.value.length) {
+    var has_value = (this.type == "checkbox")?this.root.querySelector(":checked"):this.value.length;
+    if (this.required && !has_value) {
       this.data_error = "This field is required.";
     }
     else if (this.value.length < this.minlength) {
@@ -129,6 +130,8 @@
     this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
     this.show_errors = false;
     this.tagname = "textinput";
+    // #! TODO this next ugliness needs to be fixed at the materialize level
+    this.form_class = (this.input_type == "checkbox")?"":uR.config.form.field_class;
     if (this.input_type == "hidden") {
       this.root.style.display = "none";
       this._label = "";
@@ -180,7 +183,7 @@
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
     <yield from="pre-form"/>
-    <ur-input each={ schema } class="{ name } { type } { uR.config.form.field_class }"/>
+    <ur-input each={ schema } class="{ name } { type } { form_class }"/>
     <div class="button_div">
       <div if={ non_field_error }>
         <div class="card red white-text"><div class="card-content">{ non_field_error }</div></div>
