@@ -26,7 +26,7 @@
 <ur-input>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
-         onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur= { onBlur }
+         onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
          initial_value={ initial_value }>
@@ -34,7 +34,7 @@
          data-error={ data_error } data-success={ data_success }>{ _label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
   <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
-            onChange={ onChange } onKeyUp={ onKeyUp } onfocus= { onFocus } onblur= { onBlur }
+            onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
             class={ empty:empty } autocomplete="off">{ value }</textarea>
   -->
@@ -104,6 +104,7 @@
     var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
+    this.parent.update();
   }
 
   this.on("mount", function() {
