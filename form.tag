@@ -64,10 +64,11 @@
     this.onChange(e);
   }
 
-  onChange(e) {
+  // This needs debounce since we need checkboxes to be checked before validation runs.
+  this.onChange = uR.debounce(function onChange(e) {
     if (this.parent.active) { this.show_errors = true; }
     this.onKeyUp(e);
-  }
+  },0);
 
   onKeyUp(e) {
     if (this.no_validation) { return; }
