@@ -100,13 +100,15 @@
     if (!i || ['checkbox','radio','submit'].indexOf(i.type) != -1) {
       return; //#! TODO this should reset based off of initial values
     }
-    i.blur();
+    // i.blur(); // Can't figure out why this was here.
     self.show_errors = false;
     self.value = self.initial_value || "";
+    self.activated = (self.value !== undefined) || self.input_type == "select";
     var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
-    this.parent.update();
+    self.update()
+    self.parent.update();
   }
 
   this.on("mount", function() {
@@ -138,7 +140,6 @@
       this._label = "";
     }
     if (this.input_type == "select") {
-      this.activated = true;
       this.tagname = "select";
       if (!this.choice_tuples) {
         this.verbose_choices = this.verbose_choices || this.choices;
@@ -252,6 +253,11 @@
       f.initial_value = f.value || self.initial[f.name];
     }
     self.schema.push(f);
+  }
+  getData() {
+    var data = {};
+    uR.forEach(this.fields,function(f) { data[f._name] = f.value });
+    return data;
   }
   this.on("mount",function() {
     var _parent = this.parent || {};
