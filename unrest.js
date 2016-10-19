@@ -63,7 +63,7 @@ var uR = (function() {
     var data = opts.data;
     var target = opts.target || opts.form;  // default to body?
     var url = opts.url || form.action || '.';
-    var loading_attribute = opts.loading_attribute || uR.config.loading_attribute;
+    var loading_attribute = opts.loading_attribute || (that && that.loading_attribute) || uR.config.loading_attribute;
     var success_attribute = opts.success_attribute || "";
     var success_reset = opts.success_reset || false;
     var that = opts.that;
@@ -74,6 +74,7 @@ var uR = (function() {
       that.messages = opts.messages || [];
       that._ajax_busy = true;
       that.form_error = undefined;
+      target = target || that.target;
     }
 
     // mark as loading
