@@ -186,7 +186,7 @@ var uR = (function() {
   }
 
   // uR.ready is a function for handling window.onload
-  uR._ready = [];
+  uR._ready = uR._ready || [];
   uR.ready = function(func) { uR._ready.push(func); };
   window.onload = function() {
     for (var i=0;i<uR._ready.length;i++) { uR._ready[i]() }
