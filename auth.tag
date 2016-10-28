@@ -1,9 +1,18 @@
 <auth-login>
-  <modal title="Please login to continue.">
-    <ur-form schema="{ uR.schema.login }" action={ uR.urls.auth.login } method="POST"
+  <div ur-mask onclick={ close }></div>
+  <dialog open>
+    <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
              ajax_success={ parent.opts.success }></ur-form>
-  </modal>
+  </dialog>
 
+  this.schema = uR.schema.login || [
+    { name: 'username', label: 'Username or Email' },
+    { name: 'password', type: 'password' },
+  ];
+  close(e) {
+    this.unmount();
+    riot.update("*");
+  }
 </auth-login>
 
 <auth-menu>
