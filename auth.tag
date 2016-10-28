@@ -1,8 +1,10 @@
 <auth-login>
   <div ur-mask onclick={ close }></div>
-  <dialog open>
-    <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
-             ajax_success={ parent.opts.success }></ur-form>
+  <dialog class="card" open>
+    <div class="card-content">
+      <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
+               ajax_success={ parent.opts.success }></ur-form>
+    </div>
   </dialog>
 
   this.schema = uR.schema.login || [
