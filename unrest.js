@@ -213,5 +213,11 @@ var uR = (function() {
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
   uR.schema = {};
+  uR.theme = {
+    modal_outer: "card",
+    modal_header: "card-title",
+    modal_content: "card-content",
+    modal_footer: "card-actions",
+  }
   return uR;
 })();
