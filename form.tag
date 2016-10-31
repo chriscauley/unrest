@@ -28,7 +28,7 @@
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
          onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid }" autocomplete="off" checked={ checked }
+         class="validate { empty:empty, invalid: invalid } { uR.theme.input }" autocomplete="off" checked={ checked }
          initial_value={ initial_value }>
   <label for={ id } if={ _label } class={ required: required, active: activated }
          data-error={ data_error } data-success={ data_success }>{ _label }</label>
