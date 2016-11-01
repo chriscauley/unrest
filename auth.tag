@@ -1,9 +1,16 @@
 <auth-login>
   <div ur-mask onclick={ close }></div>
-  <dialog class="card" open>
-    <div class="card-content">
+  <dialog class={ uR.theme.modal_outer } open>
+    <div class={ uR.theme.modal_header }>
+      <h3>Please Login to Continue</h3>
+    </div>
+    <div class={ uR.theme.modal_content }>
       <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
                ajax_success={ parent.opts.success }></ur-form>
+      <p>
+        <a href="/register/">Create an Account</a>
+        <a href="/forgot-password/">Forgot Password?</a>
+      </p>
     </div>
   </dialog>
 

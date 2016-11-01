@@ -10,32 +10,40 @@
     target.appendChild(element);
     riot.mount(name,options);
   }
+
   function pushState(path) {
     if (window.location.pathname == path) { return; }
     // #! TODO the empty string here is the page title. Need some sort of lookup table
     history.pushState({path:path},"" || document.title,path);
   } 
+
   uR.pushState = uR.debounce(pushState,100)
   window.onpopstate = function(e) { uR.route(window.location.pathname); }
-  uR.route = function route(path,data) {
+
+  uR.route = function route(href,data) {
+    // we don't want the domain, just the pathname,search,and hash
+    var matches = href.match(/\/\/[^\/]+(\/.*)/);
+    var path = matches?matches[1]:href;
+
     uR.forEach(uR._on_routes,function(f) {f(path,data)})
     data = data || {};
-    uR.pushState(path);
     for (key in uR._routes) {
       data.matches = path.match(new RegExp(key));
       if (data.matches) {
         uR.STALE_STATE = true;
         uR._routes[key](path,data);
+        uR.pushState(path);
         return;
       }
     }
 
-    uR.config.do404();
+    // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
-    // if (uR.STALE_STATE) { window.location = path; }
+    if (window.location.href.match(/\/\/[^\/]+(\/.*)/)[1] != path) { window.location = path; }
   }
+
   uR.alert = function(text) {
     uR.mountElement("modal",{
       cancel_text: "Close",
@@ -43,6 +51,39 @@
       mount_to: uR.config.mount_alerts_to,
     });
   }
+
+  function onClick(e) {
+    // Borrowed heavily from riot
+    // this will stop links from changing the page so I can use href instead of onclick
+    if (
+      e.which != 1 // not left click
+        || e.metaKey || e.ctrlKey || e.shiftKey // or meta keys
+        || e.defaultPrevented // or default prevented
+    ) return
+
+    var el = e.target, loc = (window.history.location || window.location);
+    while (el && el.nodeName != 'A') el = el.parentNode
+
+    if (
+      !el || el.nodeName != 'A' // not A tag
+        || el.hasAttribute('download') // has download attr
+        || !el.hasAttribute('href') // has no href attr
+        || el.target && el.target != '_self' // another window or frame
+        || el.href.indexOf(loc.href.match(/^.+?\/\/+[^\/]+/)[0]) == -1 // cross origin
+    ) return
+
+    /*if (el.href != loc.href && (
+      el.href.split('#')[0] == loc.href.split('#')[0] // internal jump
+        || base[0] != '#' && getPathFromRoot(el.href).indexOf(base) !== 0 // outside of base
+        || base[0] == '#' && el.href.split(base)[0] != loc.href.split(base)[0] // outside of #base
+        || !go(getPathFromBase(el.href), el.title || document.title) // route not found
+    )) return*/
+
+    e.preventDefault();
+    uR.route(el.href);
+  }
+
+  document.addEventListener('click', onClick);
 
   uR.confirm = function(text,options) {
     options = options || {};
@@ -58,5 +99,5 @@
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
-  uR.ready(function() { uR.route(window.location.pathname) });
+  uR.ready(function() { uR.route(window.location.href) });
 })()
