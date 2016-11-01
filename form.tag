@@ -176,6 +176,7 @@
     },1000);
     this.update();
     this.reset();
+    this.onMount && setTimeout(this.onMount,0);
   });
   this.on("update", function() {
     this.invalid = this.data_error && this.show_errors;
