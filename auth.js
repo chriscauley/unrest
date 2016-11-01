@@ -12,14 +12,13 @@
         if (data) { uR.auth.user = data.user; }
         uR.config.doPostAuth();
         func.apply(this,args);
-        var tag = document.querySelector("auth-login");
-        tag && tag.parentNode.removeChild(tag);
       }
       if (!uR.auth.user || data.force) {
         data.success = data.success || success;
         data.canccel_next = data.cancel_next || "/";
         data.modal_class = data.modal_class || "signin";
         uR.auth.startLogin(data);
+        uR.route("/auth/login/");
       }
       else { success(); }
     }

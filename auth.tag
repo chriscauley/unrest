@@ -1,53 +1,29 @@
-<auth-login>
+<auth-modal>
   <div ur-mask onclick={ close }></div>
   <dialog class={ uR.theme.modal_outer } open>
     <div class={ uR.theme.modal_header }>
-      <h3>Please Login to Continue</h3>
+      <h3>{ title }</h3>
     </div>
     <div class={ uR.theme.modal_content }>
-      <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
+      <ur-form schema={ opts.schema } action={ uR.urls.auth.login } method="POST"
                ajax_success={ opts.success }></ur-form>
-      <center>
+      <center if={ is_login }>
         <a href="/auth/register/">Create an Account</a><br/>
         <a href="/auth/forgot-password/">Forgot Password?</a>
       </center>
+      <center if={ is_register }>
+        Already have an account? <a href="/auth/login/">Login</a> to coninue
+      </center>
+      <center if={ is_password_reset }>
+        Did you suddenly remember it? <a href="/auth/login/">Login</a>
+      </center>
     </div>
   </dialog>
-
-  this.schema = uR.schema.login || [
-    { name: 'username', label: 'Username or Email' },
-    { name: 'password', type: 'password' },
-  ];
   close(e) {
     this.unmount();
     riot.update("*");
   }
-</auth-login>
-
-<auth-register>
-  <div ur-mask onclick={ close }></div>
-  <dialog class={ uR.theme.modal_outer } open>
-    <div class={ uR.theme.modal_header }>
-      <h3>Create an Account</h3>
-    </div>
-    <div class={ uR.theme.modal_content }>
-      <ur-form schema={ schema } action={ uR.urls.auth.login } method="POST"
-               ajax_success={ opts.success }></ur-form>
-    </div>
-    <center>
-      Already have an account? <a href="/auth/login/">Login</a> to coninue
-    </center>
-  </dialog>
-
-  this.schema = uR.schema.register || [
-    { name: 'username', label: 'Username or Email' },
-    { name: 'password', type: 'password' },
-  ];
-  close(e) {
-    this.unmount();
-    riot.update("*");
-  }
-</auth-register>
+</auth-modal>
 
 <auth-menu>
   <!-- currently unused -->

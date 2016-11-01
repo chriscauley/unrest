@@ -12,7 +12,7 @@
   }
 
   uR.alertElement = function alertElement(name,options) {
-    options.target = uR.config.mount_alerts_to;
+    options.mount_to = uR.config.mount_alerts_to;
     uR.mountElement(name,options);
   }
 
@@ -34,6 +34,7 @@
     data = data || {};
     for (key in uR._routes) {
       data.matches = path.match(new RegExp(key));
+
       if (data.matches) {
         uR.STALE_STATE = true;
         uR._routes[key](path,data);
