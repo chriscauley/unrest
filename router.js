@@ -11,6 +11,11 @@
     riot.mount(name,options);
   }
 
+  uR.alertElement = function alertElement(name,options) {
+    options.target = uR.config.mount_alerts_to;
+    uR.mountElement(name,options);
+  }
+
   function pushState(path) {
     if (window.location.pathname == path) { return; }
     // #! TODO the empty string here is the page title. Need some sort of lookup table
