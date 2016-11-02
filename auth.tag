@@ -7,18 +7,22 @@
     <div class={ uR.theme.modal_content }>
       <ur-form schema={ opts.schema } action={ uR.urls.auth.login } method="POST"
                ajax_success={ opts.success }></ur-form>
-      <center if={ is_login }>
+      <center if={ opts.matches[1] == 'login' }>
         <a href="/auth/register/">Create an Account</a><br/>
         <a href="/auth/forgot-password/">Forgot Password?</a>
       </center>
-      <center if={ is_register }>
+      <center if={ opts.matches[1] == 'register' }>
         Already have an account? <a href="/auth/login/">Login</a> to coninue
       </center>
-      <center if={ is_password_reset }>
+      <center if={ opts.matches[1] == 'password_reset' }>
         Did you suddenly remember it? <a href="/auth/login/">Login</a>
       </center>
     </div>
   </dialog>
+  ajax_success(data) {
+    uR.auth.setUser(data.user);
+    (uR.AUTH_SUCCESS || function() { riot.route(uR.getQueryParameter("next") || "/"); })();
+  }
   close(e) {
     this.unmount();
     riot.update("*");

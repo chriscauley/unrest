@@ -9,8 +9,7 @@
     return function() {
       var args = arguments;
       function success(data) {
-        if (data) { uR.auth.user = data.user; }
-        uR.config.doPostAuth();
+        if (data) { uR.auth.setUser(data.user); }
         func.apply(this,args);
       }
       if (!uR.auth.user || data.force) {
@@ -23,6 +22,11 @@
       else { success(); }
     }
   }
+  uR.auth.setUser = function setUser(user) {
+    uR.storage.set('auth.user',user);
+    uR.auth.user = user;
+    riot.update(uR.auth.tag_names);
+  }
   uR.auth.startLogin = function startLogin(data) {
     data = data || {};
     data.modal_class = data.modal_class || "signin";
@@ -31,4 +35,9 @@
     if (!document.querySelector(t)) { document.body.appendChild(document.createElement(t)); }
     riot.mount(t, data);
   }
+  uR.auth.tag_names = 'auth-dropdown';
+  uR.ready(function() {
+    uR.auth.user = uR.storage.get("auth.user");
+    riot.mount(uR.auth.tag_names);
+  });
 })()
