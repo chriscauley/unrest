@@ -1,24 +1,17 @@
 (function() {
   uR.auth = uR.auth || {};
   uR.auth.loginRequired = function loginRequired(func,data) {
-    if (typeof func == "string") {
-      var tag_name = func+"";
-      func = function(path,options) { uR.mountElement(tag_name,options) }
-    }
     data = data || {};
-    function wrapped(path) {
-      if (path && path.startsWith("/auth/")) { path = "/"; }
+    function wrapped() {
       var args = arguments;
       function success(data) {
         if (data) { uR.auth.setUser(data.user); }
         func.apply(this,args);
       }
       if (!uR.auth.user || data.force) {
-        data.success = data.success || success;
-        data.canccel_next = data.cancel_next || "/";
-        data.modal_class = data.modal_class || "signin";
         uR.AUTH_SUCCESS = success;
-        uR.route("/auth/login/?next="+escape(path));
+        data.slug = "register";
+        uR.alertElement("auth-modal",data);
       }
       else { success(); }
     }
@@ -50,14 +43,6 @@
   uR.urls.api['password-reset'] = "/api/password-reset/";
   uR.auth.tag_names = 'auth-dropdown';
   uR._routes["/auth/(login|register|forgot-password)/"] = function(path,data) {
-    var slug = data.matches[1];
-    data.url = uR.urls.api[slug];
-    data.schema = uR.schema.auth[slug];
-    data.title = {
-      login: "Please Login to Continue",
-      register: "Create an Account",
-      'forgot-password': "Request Password Reset"
-    }[slug]
     uR.alertElement("auth-modal",data);
   }
 

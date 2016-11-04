@@ -2,19 +2,18 @@
   <div ur-mask onclick={ close }></div>
   <dialog class={ uR.theme.modal_outer } open>
     <div class={ uR.theme.modal_header }>
-      <h3>{ opts.title }</h3>
+      <h3>{ title }</h3>
     </div>
     <div class={ uR.theme.modal_content }>
-      <ur-form schema={ opts.schema } action={ opts.url } method="POST"
-               ajax_success={ opts.success }></ur-form>
-      <center if={ opts.matches[1] == 'login' }>
+      <ur-form schema={ schema } action={ url } method="POST" ajax_success={ opts.success }></ur-form>
+      <center if={ slug == 'login' }>
         <a href="/auth/register/">Create an Account</a><br/>
         <a href="/auth/forgot-password/">Forgot Password?</a>
       </center>
-      <center if={ opts.matches[1] == 'register' }>
+      <center if={ slug == 'register' }>
         Already have an account? <a href="/auth/login/">Login</a> to coninue
       </center>
-      <center if={ opts.matches[1] == 'password_reset' }>
+      <center if={ slug == 'password_reset' }>
         Did you suddenly remember it? <a href="/auth/login/">Login</a>
       </center>
     </div>
@@ -28,13 +27,20 @@
     })();
   }
   this.on("mount",function() {
-    if (uR.auth.user) {
-      this.ajax_success({ user: uR.auth.user });
-    }
+    if (uR.auth.user) { this.ajax_success({ user: uR.auth.user }); }
+    this.slug = this.opts.slug || this.opts.matches[1];
+    this.url = uR.urls.api[this.slug];
+    this.schema = uR.schema.auth[this.slug];
+    this.title = {
+      login: "Please Login to Continue",
+      register: "Create an Account",
+      'forgot-password': "Request Password Reset"
+    }[this.slug];
+    this.update();
   });
   close(e) {
+    if (window.location.pathname.startsWith("/auth/")) { window.location = "/" }
     this.unmount();
-    riot.update("*");
   }
 </auth-modal>
 
