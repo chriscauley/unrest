@@ -122,6 +122,7 @@ var uR = (function() {
       }
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
+      if (data.error) { errors = { non_field_error: data.error }; console.log(1); }
       var non_field_error = errors.non_field_error;
       if (isEmpty(errors) && request.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";
