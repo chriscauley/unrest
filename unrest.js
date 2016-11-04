@@ -213,6 +213,7 @@ var uR = (function() {
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
   uR.schema = {};
+  uR.urls = {};
   uR.theme = {
     modal_outer: "card",
     modal_header: "card-title",
