@@ -89,7 +89,7 @@
     uR.route(el.href);
   }
 
-  document.addEventListener('click', onClick);
+  uR.startRouter = function() { document.addEventListener('click', onClick); };
 
   uR.confirm = function(text,options) {
     options = options || {};

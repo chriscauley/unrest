@@ -7,7 +7,7 @@
     }
     data = data || {};
     function wrapped(path) {
-      if (path && path.startsWith("/auth/") { path = "/"; }
+      if (path && path.startsWith("/auth/")) { path = "/"; }
       var args = arguments;
       function success(data) {
         if (data) { uR.auth.setUser(data.user); }
