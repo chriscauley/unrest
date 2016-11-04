@@ -26,11 +26,11 @@
 <ur-input>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
-         onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
+         onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid } { uR.theme.input }" autocomplete="off" checked={ checked }
+         class="validate { empty:empty, invalid: invalid } { uR.theme.input }" autocomplete="off"
          initial_value={ initial_value }>
-  <label for={ id } if={ _label } class={ required: required, active: activated }
+  <label for={ id } if={ _label } class={ required: required, active: activated } onclick={ labelClick }
          data-error={ data_error } data-success={ data_success }>{ _label }</label>
   <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
   <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
@@ -48,7 +48,6 @@
   <style scoped> :scope { display: block; }</style>
 
   var self = this;
-
   onFocus(e) {
     var i = this.parent.fields.indexOf(this);
     this.activated = true;
@@ -64,23 +63,31 @@
     this.onChange(e);
   }
 
-  // This needs debounce since we need checkboxes to be checked before validation runs.
-  this.onChange = uR.debounce(function onChange(e) {
-    if (this.parent.active) { this.show_errors = true; }
-    this.onKeyUp(e);
-  },0);
+  labelClick(e) {
+    if (self.input_type == "checkbox") {
+      self.IS_CHECKED = !self.IS_CHECKED;
+      self.root.querySelector("[type=checkbox]").checked = self.IS_CHECKED;
+      e.value = this.value;
+      this.onChange(e);
+    }
+  }
+
+  onChange(e) {
+    if (self.parent.active) { self.show_errors = true; }
+    self.onKeyUp(e);
+  }
 
   onKeyUp(e) {
     if (this.no_validation) { return; }
     if (e.type == "keyup") { this.parent.active = true; }
     this.value = e.value || e.target.value; // e.value is a way to fake events
-    if (this.last_value == this.value) { return; }
+    if (this.last_value == this.value && this.input_type != "checkbox") { return; }
     this.last_value = this.value;
     this.data_error = undefined;
     this.empty = !this.value;
     var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
     if (!this.required && !this.value) { invalid_email = false; }
-    var has_value = (this.type == "checkbox")?this.root.querySelector(":checked"):this.value.length;
+    var has_value = (this.type == "checkbox")?this.IS_CHECKED:this.value.length;
     if (this.required && !has_value) {
       this.data_error = "This field is required.";
     }
