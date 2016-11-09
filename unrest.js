@@ -63,10 +63,10 @@ var uR = (function() {
     var data = opts.data;
     var target = opts.target || opts.form;  // default to body?
     var url = opts.url || form.action || '.';
+    var that = opts.that;
     var loading_attribute = opts.loading_attribute || (that && that.loading_attribute) || uR.config.loading_attribute;
     var success_attribute = opts.success_attribute || "";
     var success_reset = opts.success_reset || false;
-    var that = opts.that;
     var success = (opts.success || function(data,request) {}).bind(that);
     var error = (opts.error || function(data,request) {}).bind(that);
     var filenames = opts.filenames || {};
@@ -122,7 +122,7 @@ var uR = (function() {
       }
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
-      if (data.error) { errors = { non_field_error: data.error }; console.log(1); }
+      if (data.error) { errors = { non_field_error: data.error }; }
       var non_field_error = errors.non_field_error;
       if (isEmpty(errors) && request.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";
@@ -133,7 +133,8 @@ var uR = (function() {
         });
       }
       if (non_field_error) {
-        if (that) {that.non_field_error = non_field_error; } else { alert(non_field_error); }
+        // if there's no form and no error function in opts, alert as a fallback
+        if (that) {that.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
       }
 
       var complete = (request.status == 200 && isEmpty(errors));
@@ -213,6 +214,7 @@ var uR = (function() {
   uR.config.btn_cancel = "btn red";
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
+  uR.alert = function(s) { alert(s); }; // placeholder for future alert function
   uR.schema = {};
   uR.urls = {};
   uR.theme = {
@@ -220,6 +222,7 @@ var uR = (function() {
     modal_header: "card-title",
     modal_content: "card-content",
     modal_footer: "card-action",
+    error_class: "card red white-text",
   }
   return uR;
 })();

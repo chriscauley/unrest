@@ -196,8 +196,8 @@
     <ur-input each={ schema } class="{ name } { type } { form_class }"/>
     <div class="button_div">
       <div if={ non_field_error }>
-        <div class="card red white-text"><div class="card-content">{ non_field_error }</div></div>
-        <p if={ uR.config.support_email }>
+        <div class={ uR.theme.error_class }>{ non_field_error }</div>
+        <p if={ uR.config.support_email } style="text-align: center;">
           If you need assistance contact
           <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
         </p>
