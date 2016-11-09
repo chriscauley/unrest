@@ -219,7 +219,7 @@ var uR = (function() {
     modal_outer: "card",
     modal_header: "card-title",
     modal_content: "card-content",
-    modal_footer: "card-actions",
+    modal_footer: "card-action",
   }
   return uR;
 })();

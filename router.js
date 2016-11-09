@@ -1,6 +1,6 @@
 (function() {
   uR.mountElement = function mountElement(name,options) {
-    var options = options || {};
+    options = options || {};
     var target = document.querySelector(options.mount_to || uR.config.mount_to);
     var children = target.childNodes;
     var i = target.childNodes.length;
@@ -12,6 +12,7 @@
   }
 
   uR.alertElement = function alertElement(name,options) {
+    options = options || {};
     options.mount_to = uR.config.mount_alerts_to;
     uR.mountElement(name,options);
   }
