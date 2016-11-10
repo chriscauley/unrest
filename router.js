@@ -90,6 +90,7 @@
     uR.route(el.href);
   }
 
+  uR.addRoutes = function(routes) { uR.extend(uR._routes,routes); }
   uR.startRouter = function() { document.addEventListener('click', onClick); };
 
   uR.confirm = function(text,options) {

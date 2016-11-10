@@ -182,9 +182,17 @@ var uR = (function() {
     };
   };
 
+  // this function may someday be replaced with rambdas map
   uR.forEach = function forEach(array,func,context) {
     if (context) { func = func.bind(context) }
     for (var i=0;i<array.length;i++) { func(array[i],i,array); }
+  }
+
+  // this function may someday be replaced with rambdas merge
+  uR.extend = function(a,b) {
+    for (var i in b) {
+      if (b.hasOwnProperty(i)) { a[i] = b[i]; }
+    }
   }
 
   // uR.ready is a function for handling window.onload
