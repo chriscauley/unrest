@@ -1,6 +1,12 @@
 (function() {
   uR.auth = uR.auth || {};
   uR.auth.loginRequired = function loginRequired(func,data) {
+    if (typeof func == "string") {
+      var tagname = func;
+      func = function(path,data) {
+        uR.mountElement(tagname,data)
+      }
+    }
     data = data || {};
     function wrapped() {
       var args = arguments;
