@@ -223,7 +223,7 @@ var uR = (function() {
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
   uR.alert = function(s) { alert(s); }; // placeholder for future alert function
-  uR.schema = {};
+  uR.schema = {fields: {}};
   uR.urls = {};
   uR.theme = {
     modal_outer: "card",

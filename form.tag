@@ -110,7 +110,7 @@
     // i.blur(); // Can't figure out why this was here.
     self.show_errors = false;
     self.value = self.initial_value || "";
-    self.activated = (self.value !== undefined) || self.input_type == "select";
+    self.activated = (self.value === undefined) || self.input_type == "select";
     var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
@@ -253,6 +253,9 @@
 
   this.addField = function(field) {
     var f = {};
+    if (typeof field == "string") {
+      field = uR.schema.fields[field] || { name: field, type: 'text' }
+    }
     for (k in field) { f[k] = field[k]; }
     if (f.type == "checkbox") {
       f.initial_value = f.value;
