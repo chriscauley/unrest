@@ -191,7 +191,7 @@
 </ur-input>
 
 <ur-form>
-  <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class }>
+  <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
     <ur-input each={ schema } class="{ name } { type } { form_class }"/>
     <div class="button_div">
@@ -227,8 +227,18 @@
     }
     // _super is a temporary hack to allow us to call the original submit function.
     this.non_field_error = undefined;
-    if (!_super && this.parent && this.parent.submit) {
-      this.parent.submit(this);
+    var alt_submit = this.opts.submit || (this.parent && this.parent.submit);
+    if (!_super && alt_submit) {
+      if (alt_submit == "noop") {
+        var form = this.root.querySelector("form");
+        var e = document.createElement('input');
+        e.type = "hidden";
+        e.name = "csrfmiddlewaretoken";
+        e.value = document.querySelector("[name=csrfmiddlewaretoken]").value;
+        form.appendChild(e);
+        form.submit()
+      }
+      else { alt_submit(this); }
     } else {
       uR.ajax({
         url: this.opts.action,
