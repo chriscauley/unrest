@@ -52,13 +52,13 @@
     uR.alertElement("auth-modal",data);
   }
 
+  uR.auth.user = uR.storage.get("auth.user");
   uR.ready(function() {
-    uR.auth.user = uR.storage.get("auth.user");
     riot.mount(uR.auth.tag_names);
     uR.ajax({
       url: "/user.json",
       success: function(data) {
-        if (data.user != uR.auth.user) { uR.auth.setUser(data.user) }
+        if (data.user != uR.auth.user) { uR.auth.setUser(data.user); }
       },
     });
   });

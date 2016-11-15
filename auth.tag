@@ -18,6 +18,7 @@
       </center>
     </div>
   </dialog>
+  var self = this;
   ajax_success(data) {
     uR.auth.setUser(data.user);
     (uR.AUTH_SUCCESS || function() {
@@ -25,6 +26,8 @@
       if (window.location.pathname.startsWith("/auth/")) { path == "/"; } // avoid circular redirect!
       uR.route(path);
     })();
+    self.unmount();
+    uR.AUTH_SUCCESS = undefined;
   }
   this.on("mount",function() {
     if (uR.auth.user) { this.ajax_success({ user: uR.auth.user }); }
