@@ -203,6 +203,13 @@ var uR = (function() {
     uR.ready = function(func) { func(); }
   }
 
+  uR.getSchema = function getSchema(url) {
+    uR.ajax({
+      url: url,
+      success: function(data) { uR.extend(uR.schema,data.schema); }
+    });
+  };
+
   uR.onBlur = uR.onBlur || function() {};
   uR.config = uR.config || {};
   uR.config.doPostAuth = function() {}
@@ -215,7 +222,7 @@ var uR = (function() {
   uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
   uR.config.text_validators = {};
-  uR.config.mount_to = "body";
+  uR.config.mount_to = "#content";
   uR.config.mount_alerts_to = "#alert-div";
   uR.config.btn_primary = "btn blue";
   uR.config.btn_success = "btn green";
