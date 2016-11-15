@@ -66,9 +66,8 @@
   labelClick(e) {
     if (self.input_type == "checkbox") {
       self.IS_CHECKED = !self.IS_CHECKED;
-      self.root.querySelector("[type=checkbox]").checked = self.IS_CHECKED;
-      e.value = this.value;
-      this.onChange(e);
+      e.value = self.value;
+      self.onChange(e);
     }
   }
 
@@ -82,6 +81,9 @@
     if (e.type == "keyup") { this.parent.active = true; }
     this.value = e.value || e.target.value; // e.value is a way to fake events
     if (this.last_value == this.value && this.input_type != "checkbox") { return; }
+    if (self.input_type == "checkbox") {
+      self.root.querySelector("[type=checkbox]").checked = self.IS_CHECKED;
+    }
     this.last_value = this.value;
     this.data_error = undefined;
     this.empty = !this.value;
@@ -110,7 +112,7 @@
     // i.blur(); // Can't figure out why this was here.
     self.show_errors = false;
     self.value = self.initial_value || "";
-    self.activated = (self.value === undefined) || self.input_type == "select";
+    self.activated = (self.value != "") || self.input_type == "select";
     var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
@@ -140,6 +142,7 @@
     this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
     this.show_errors = false;
     this.tagname = "textinput";
+    this.IS_CHECKED = self.initial_checked;
     // #! TODO this next ugliness needs to be fixed at the materialize level
     this.form_class = (this.input_type == "checkbox")?"":uR.config.form.field_class;
     if (this.input_type == "hidden") {
@@ -181,6 +184,7 @@
         self.onKeyUp({target: e});
       }
     },1000);
+    self.monkey = 1;
     this.update();
     this.reset();
     this.onMount && setTimeout(this.onMount,0);
@@ -264,12 +268,19 @@
   this.addField = function(field) {
     var f = {};
     if (typeof field == "string") {
-      field = uR.schema.fields[field] || { name: field, type: 'text' }
+      var name = field;
+      if (uR.schema.fields[field]) {
+        field = uR.schema.fields[field];
+        field.name = name;
+      } else {
+        field = { name: field, type: 'text' }
+      }
     }
     for (k in field) { f[k] = field[k]; }
     if (f.type == "checkbox") {
+      f.value = true;
       f.initial_value = f.value;
-      f.checked = self.initial[f.name];
+      f.initial_checked = self.initial[f.name];
     } else {
       f.initial_value = f.value || self.initial[f.name];
     }
