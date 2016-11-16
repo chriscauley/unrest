@@ -18,4 +18,4 @@ uR.storage = (function() {
     lookups: {}, // functions to look up missing/expired values
     defaults: {}, // table with default values
   }
-})()
+})();
