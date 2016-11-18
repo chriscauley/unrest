@@ -204,10 +204,13 @@ var uR = (function() {
     uR.ready = function(func) { func(); }
   }
 
-  uR.getSchema = function getSchema(url) {
+  uR.getSchema = function getSchema(url,callback) {
     uR.ajax({
       url: url,
-      success: function(data) { uR.extend(uR.schema,data.schema); }
+      success: function(data) {
+        uR.extend(uR.schema,data.schema);
+        callback && callback();
+      }
     });
   };
 

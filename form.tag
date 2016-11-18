@@ -309,13 +309,7 @@
         _schema = uR.schema[_schema];
       } else {
         var url = _schema;
-        uR.ajax({
-          url: url,
-          success: function(data) {
-            uR.schema[url] = data;
-            self.mount()
-          }
-        });
+        uR.getSchema(url,this.mount.bind(this));
         _schema = [];
       }
     }
