@@ -29,6 +29,14 @@
     uR.auth.user = user;
     riot.update(uR.auth.tag_names);
   }
+  uR.auth._getLinks = function() {
+    return [
+      {url: "/account/settings/", icon: "gear", text: "Account Settings"},
+      {url: "/auth/logout/", icon: "sign-out", text: "Log Out"},
+    ];
+  }
+  uR.auth.getLinks = uR.auth._getLinks;
+
   uR.schema.auth = {
     login: [
       { name: 'username', label: 'Username or Email' },
@@ -48,9 +56,13 @@
   uR.urls.api.register = "/api/register/";
   uR.urls.api['password-reset'] = "/api/password-reset/";
   uR.auth.tag_names = 'auth-dropdown';
-  uR._routes["/auth/(login|register|forgot-password)/"] = function(path,data) {
-    uR.alertElement("auth-modal",data);
-  }
+  uR.addRoutes({
+    "/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
+    "/auth/logout/": function(path,data) {
+      uR.auth.setUser(null);
+      window.location = "/accounts/logout/";
+    },
+  });
 
   uR.auth.user = uR.storage.get("auth.user");
   uR.ready(function() {

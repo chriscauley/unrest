@@ -54,14 +54,11 @@
   <li if={ uR.auth.user }>
     <a onclick={ toggle }>{ uR.auth.user.username }</a>
     <ul class="dropdown-content">
-      <li><a href="/account/settings/"><i class="fa fa-gear"></i> Account Settings</a></li>
-      <li><a href="/accounts/logout/" onclick={ logout }><i class="fa fa-sign-out"></i> Log Out</a></li>
+      <li each={ links }><a href={ url }><i class="fa fa-{ icon }"></i> { text }</a></li>
     </ul>
   </li>
 
-  logout(e) {
-    uR.auth.setUser(null);
-    console.log(window.localStorage.getItem("auth.user"));
-    uR.route(e.target.href);
-  }
+  this.on("mount",function() {
+    if (uR.auth.user) { this.links = uR.auth.getLinks() }
+  });
 </auth-dropdown>
