@@ -145,6 +145,7 @@ var uR = (function() {
         that.messages = data.messages || [];
         that.update();
       }
+      if (data.ur_route_to) { uR.route(data.ur_route_to); }
     };
     request.send(form_data);
   }
@@ -239,5 +240,7 @@ var uR = (function() {
     modal_footer: "card-action",
     error_class: "card red white-text",
   }
+  // #! dummy route function. This is so everything can use uR.route without router.js
+  uR.route = function route(path,data) { window.location = path }
   return uR;
 })();

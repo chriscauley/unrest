@@ -297,6 +297,7 @@
     _parent.opts = _parent.opts || {};
     this.ajax_success = this.opts.ajax_success || _parent.opts.ajax_success || _parent.ajax_success || function() {};
     if (this.opts.success_redirect) {
+      // #!TODO, maybe remove this in favor of data.next
       this._ajax_success = this.ajax_success;
       this.ajax_success = function() { self._ajax_success();window.location = this.opts.success_redirect; }
     }
