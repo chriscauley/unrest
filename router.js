@@ -48,7 +48,9 @@
 
     // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
-    if (window.location.href.match(/\/\/[^\/]+(\/.*)/)[1] != path) { window.location = path; }
+    if (uR.STALE_STATE && window.location.href.match(/\/\/[^\/]+(\/.*)/)[1] != path) {
+      window.location = path;
+    }
   }
 
   uR.alert = function(text) {
