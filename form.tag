@@ -311,6 +311,7 @@
         var url = _schema;
         uR.getSchema(url,this.mount.bind(this));
         _schema = [];
+        return;
       }
     }
     this.schema = [];

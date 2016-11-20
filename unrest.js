@@ -208,7 +208,7 @@ var uR = (function() {
     uR.ajax({
       url: url,
       success: function(data) {
-        uR.extend(uR.schema,data.schema);
+        uR.schema[url] = data.schema;
         callback && callback();
       }
     });
