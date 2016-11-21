@@ -51,6 +51,7 @@
     if (uR.STALE_STATE && window.location.href.match(/\/\/[^\/]+(\/.*)/)[1] != path) {
       window.location = path;
     }
+    uR.STALE_STATE = true;
   }
 
   uR.alert = function(text) {
