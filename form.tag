@@ -188,6 +188,11 @@
     this.update();
     this.reset();
     this.onMount && setTimeout(this.onMount,0);
+    if (this.label_after) {
+      var s = document.createElement("span");
+      s.innerHTML = this.label_after;
+      this.root.appendChild(s);
+    }
   });
   this.on("update", function() {
     this.invalid = this.data_error && this.show_errors;
@@ -305,8 +310,9 @@
     this.messages = [];
     var _schema = this.opts.schema || _parent.opts.schema || _parent.schema;
     if (typeof _schema == "string") {
-      if (uR.schema[_schema]) {
-        _schema = uR.schema[_schema];
+      this.schema_url = _schema;
+      if (uR.schema[this.schema_url]) {
+        _schema = uR.schema[this.schema_url];
       } else {
         var url = _schema;
         uR.getSchema(url,this.mount.bind(this));
@@ -315,7 +321,7 @@
       }
     }
     this.schema = [];
-    this.initial = this.opts.initial || _parent.opts.initial || {};
+    this.initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.success_text = this.opts.success_text || "Submit";
