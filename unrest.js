@@ -209,6 +209,7 @@ var uR = (function() {
       url: url,
       success: function(data) {
         uR.schema[url] = data.schema;
+        uR.schema.__initial[url] = data.initial;
         callback && callback();
       }
     });
@@ -234,7 +235,7 @@ var uR = (function() {
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
   uR.alert = function(s) { alert(s); }; // placeholder for future alert function
-  uR.schema = {fields: {}};
+  uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
   uR.theme = {
     modal_outer: "card",
