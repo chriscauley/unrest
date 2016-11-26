@@ -1,4 +1,4 @@
-var request = new Http.Get("http://holidayapi.com/v1/holidays?country=US&year=2015",true);
+var request = new Http.Get("http://holidayapi.com/v1/holidays?country=US&year=2015&api_key=444aa655-ae73-44b7-9ecf-3e29a37dfbb6",true);
 request.start().then( function(response) {
   var holidays = JSON.parse(response).holidays;
   var dates = []

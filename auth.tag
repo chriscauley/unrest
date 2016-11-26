@@ -7,14 +7,14 @@
     <div class={ uR.theme.modal_content }>
       <ur-form schema={ schema } action={ url } method="POST" ajax_success={ opts.success }></ur-form>
       <center if={ slug == 'login' }>
-        <a href="/auth/register/">Create an Account</a><br/>
-        <a href="/auth/forgot-password/">Forgot Password?</a>
+        <a href="/auth/register/?next={ next }">Create an Account</a><br/>
+        <a href="/auth/forgot-password/?next={ next }">Forgot Password?</a>
       </center>
       <center if={ slug == 'register' }>
-        Already have an account? <a href="/auth/login/">Login</a> to coninue
+        Already have an account? <a href="/auth/login/?next={ next }">Login</a> to coninue
       </center>
       <center if={ slug == 'password_reset' }>
-        Did you suddenly remember it? <a href="/auth/login/">Login</a>
+        Did you suddenly remember it? <a href="/auth/login/?next={ next }">Login</a>
       </center>
     </div>
   </dialog>
@@ -22,7 +22,7 @@
   ajax_success(data) {
     uR.auth.setUser(data.user);
     (uR.AUTH_SUCCESS || function() {
-      var path = uR.getQueryParameter("next") || "/";
+      var path = self.next || "/";
       if (window.location.pathname.startsWith("/auth/")) { path == "/"; } // avoid circular redirect!
       uR.route(path);
     })();
@@ -31,6 +31,7 @@
   }
   this.on("mount",function() {
     if (uR.auth.user) { this.ajax_success({ user: uR.auth.user }); }
+    this.next = uR.getQueryParameter("next");
     this.slug = this.opts.slug || this.opts.matches[1];
     this.url = uR.urls.api[this.slug];
     this.schema = uR.schema.auth[this.slug];

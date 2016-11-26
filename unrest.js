@@ -234,6 +234,7 @@ var uR = (function() {
   uR.config.btn_cancel = "btn red";
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
+  uR._var = {};
   uR.alert = function(s) { alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};

@@ -6,6 +6,7 @@
 
   <style scoped>
     :scope .tab-anchors a {
+      color: inherit;
       cursor: pointer;
       display: inline-block;
       padding: 5px;
