@@ -27,8 +27,10 @@
   uR.auth.setUser = function setUser(user) {
     uR.storage.set('auth.user',user || null); // JSON.stringify hates undefined
     uR.auth.user = user;
+    uR.auth.postAuth();
     riot.update(uR.auth.tag_names);
   }
+  uR.auth.postAuth = function() {}
   uR.auth._getLinks = function() {
     return [
       {url: "/account/settings/", icon: "gear", text: "Account Settings"},
@@ -67,11 +69,16 @@
   uR.auth.user = uR.storage.get("auth.user");
   uR.ready(function() {
     riot.mount(uR.auth.tag_names);
+    uR.auth.reset();
+  });
+  uR.auth.reset = function(callback) {
+    callback = callback || function() {}
     uR.ajax({
       url: "/user.json",
       success: function(data) {
         if (data.user != uR.auth.user) { uR.auth.setUser(data.user); }
+        callback()
       },
     });
-  });
+  }
 })()
