@@ -112,7 +112,7 @@
     // i.blur(); // Can't figure out why this was here.
     self.show_errors = false;
     self.value = self.initial_value || "";
-    self.activated = (self.value != "") || self.input_type == "select";
+    self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file";
     var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
