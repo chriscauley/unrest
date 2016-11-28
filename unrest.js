@@ -239,10 +239,12 @@ var uR = (function() {
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
   uR.theme = {
-    modal_outer: "card",
-    modal_header: "card-title",
-    modal_content: "card-content",
-    modal_footer: "card-action",
+    modal: {
+      outer: "card",
+      header: "card-title",
+      content: "card-content",
+      footer: "card-action",
+    },
     error_class: "card red white-text",
   }
   // #! dummy route function. This is so everything can use uR.route without router.js

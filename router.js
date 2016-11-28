@@ -12,6 +12,7 @@
   }
 
   uR.alertElement = function alertElement(name,options) {
+    if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = uR.drop.modal_cart; }
     options = options || {};
     options.mount_to = uR.config.mount_alerts_to;
     uR.mountElement(name,options);
