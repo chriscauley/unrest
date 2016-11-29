@@ -15,3 +15,18 @@ var DialogMixin = {
 }
 
 riot.mixin(DialogMixin)
+
+<ur-modal>
+  <div class={ theme.outer }>
+    <div class={ theme.content }>
+      <yield />
+      <button onclick={ close } class={ uR.config.default }>{ close_text }</button>
+    </div>
+  </div>
+
+  this.close_text = this.opts.close_text || "Close";
+
+  close(e) {
+    this.unmount();
+  }
+</ur-modal>
