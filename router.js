@@ -55,14 +55,6 @@
     uR.STALE_STATE = true;
   }
 
-  uR.alert = function(text) {
-    uR.mountElement("modal",{
-      cancel_text: "Close",
-      innerHTML: "<center style='margin-bottom: 1em;'>"+text+"</center>",
-      mount_to: uR.config.mount_alerts_to,
-    });
-  }
-
   function onClick(e) {
     // Borrowed heavily from riot
     // this will stop links from changing the page so I can use href instead of onclick

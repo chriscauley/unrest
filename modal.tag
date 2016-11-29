@@ -1,3 +1,5 @@
+// depracated, don't use!
+
 <modal>
   <div class="mask" onclick={ cancel }></div>
   <div class="inner">

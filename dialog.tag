@@ -1,20 +1,29 @@
-var DialogMixin = {
-  init: function() {
-    if (this.opts.ur_modal){
-      this.theme = this.opts.theme || uR.theme.modal;
-      var e = document.createElement('div');
-      e.addEventListener("click",(function() { this.unmount() }).bind(this));
-      e.setAttribute("ur-mask",true);
-      if (this.root.childNodes.length) {
-        this.root.insertBefore(e,this.root.childNodes[0])
-      } else {
-        this.root.appendChild(e);
+(function() { 
+  var DialogMixin = {
+    init: function() {
+      if (this.opts.ur_modal){
+        this.theme = this.opts.theme || uR.theme.modal;
+        var e = document.createElement('div');
+        e.addEventListener("click",(function() { this.unmount() }).bind(this));
+        e.setAttribute("ur-mask",true);
+        if (this.root.childNodes.length) {
+          this.root.insertBefore(e,this.root.childNodes[0])
+        } else {
+          this.root.appendChild(e);
+        }
       }
     }
   }
-}
 
-riot.mixin(DialogMixin)
+  riot.mixin(DialogMixin);
+
+  uR.alert = function(text,data) {
+    data = data || {};
+    data.close_text = data.close_text || "Close";
+    data.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
+    uR.alertElement("ur-modal",data);
+  } 
+})();
 
 <ur-modal>
   <div class={ theme.outer }>
