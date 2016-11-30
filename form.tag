@@ -203,14 +203,14 @@
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
     <ur-input each={ schema } class="{ name } { type } { form_class }"/>
+    <div if={ non_field_error }>
+      <div class={ uR.theme.error_class }>{ non_field_error }</div>
+      <p if={ uR.config.support_email } style="text-align: center;">
+        If you need assistance contact
+        <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
+      </p>
+    </div>
     <div class="button_div">
-      <div if={ non_field_error }>
-        <div class={ uR.theme.error_class }>{ non_field_error }</div>
-        <p if={ uR.config.support_email } style="text-align: center;">
-          If you need assistance contact
-          <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
-        </p>
-      </div>
       <yield from="button_div"/>
       <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>{ success_text }</button>
       <button class="{ btn_cancel }" if={ opts.cancel_function } tab-index="0">{ cancel_text }</button>

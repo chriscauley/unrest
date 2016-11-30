@@ -74,7 +74,8 @@ var uR = (function() {
       that.messages = opts.messages || [];
       that._ajax_busy = true;
       that.form_error = undefined;
-      target = target || that.target;
+      if (!target && that.target) { console.warn("Use of that.target is depracated in favor of that.ajax_target") }
+      target = target || that.target || that.ajax_target;
     }
 
     // mark as loading
