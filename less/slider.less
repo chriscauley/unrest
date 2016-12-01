@@ -23,9 +23,33 @@
       border: 5px var(--body-bg-color) solid;
       flex-shrink: 0;
       height: 90px;
-      margin: 0 5px;
+      margin: 0 10px 0 0;
       width: 90px;
       &.active { border-color: var(--green); }
     }
+  }
+  .next, .prev {
+    background: var(--body-text-color);
+    bottom: 0;
+    color: var(--body-bg-color);
+    cursor: pointer;
+    display: block;
+    font-size: 30px;
+    height: 100px;
+    line-height: 100px;
+    opacity: 0.75;
+    position: absolute;
+    text-align: center;
+    width: 20px;
+    z-index: 1000;
+    &:hover { opacity: 1; }
+  }
+  .next {
+    right: 0;
+    &:before { content: ">"; }
+  }
+  .prev {
+    left: 0;
+    &:before { content: "<"; }
   }
 }

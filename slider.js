@@ -5,6 +5,13 @@
       this.root = document.querySelector(selector);
       if (this.root.dataset.indicators == "thumbs") {
         this.root.classList.add("thumbs");
+        for (var i=0;i<2;i++) {
+          var name = i?"next":"prev";
+          var e = document.createElement("a");
+          e.classList.add(name);
+          e.addEventListener("click",this[name].bind(this))
+          this.root.appendChild(e);
+        }
       }
       if (!this.root) { return }
       this.slides = this.root.querySelectorAll(".slides > li");
@@ -38,11 +45,13 @@
       this.slides[this.i].classList.add("active");
       this.indicators[this.i].classList.add("active");
     }
-    next() {
+    next(e) {
+      if (e) { clearInterval(this.interval); }
       this.i++;
       this.tick();
     }
-    prev() {
+    prev(e) {
+      if (e) { clearInterval(this.interval); }
       this.i--;
       this.tick();
     }
