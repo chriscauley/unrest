@@ -29,7 +29,9 @@
   <div class={ theme.outer }>
     <div class={ theme.content }>
       <yield />
-      <button onclick={ close } class={ uR.config.default }>{ close_text }</button>
+      <center>
+        <button onclick={ close } class={ uR.config.btn_primary }>{ close_text }</button>
+      </center>
     </div>
   </div>
 
