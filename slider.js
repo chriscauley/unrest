@@ -3,7 +3,10 @@
     constructor(selector,options) {
       options = options || {};
       this.root = document.querySelector(selector);
-      if (!this.root || !this.root.querySelector(".slides > li")) { return }
+      if (!this.root || !this.root.querySelector(".slides > li")) {
+        this.root.parentElement.removeChild(this.root);
+        return
+      }
 
       this.slides = this.root.querySelectorAll(".slides > li");
       if (this.slides.length == 1) {
