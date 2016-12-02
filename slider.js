@@ -3,6 +3,15 @@
     constructor(selector,options) {
       options = options || {};
       this.root = document.querySelector(selector);
+      if (!this.root || !this.root.querySelector(".slides > li")) { return }
+
+      this.slides = this.root.querySelectorAll(".slides > li");
+      if (this.slides.length == 1) {
+        this.slides[0].classList.add("active");
+        return;
+      }
+
+      this.indicators = [];
       if (this.root.dataset.indicators == "thumbs") {
         this.root.classList.add("thumbs");
         for (var i=0;i<2;i++) {
@@ -13,9 +22,7 @@
           this.root.appendChild(e);
         }
       }
-      if (!this.root) { return }
-      this.slides = this.root.querySelectorAll(".slides > li");
-      this.indicators = [];
+
       var ul = document.createElement("ul");
       ul.addEventListener("click",this.click.bind(this));
       ul.className = "indicators";
