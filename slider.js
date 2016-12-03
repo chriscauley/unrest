@@ -3,7 +3,8 @@
     constructor(selector,options) {
       options = options || {};
       this.root = document.querySelector(selector);
-      if (!this.root || !this.root.querySelector(".slides > li")) {
+      if (!this.root) { return; }
+      if (!this.root.querySelector(".slides > li")) {
         this.root.parentElement.removeChild(this.root);
         return
       }
@@ -42,6 +43,21 @@
       this.i = 0;
       this.tick();
       this.interval = setInterval(this.next.bind(this), 4000);
+      if (this.root.dataset.indicators == "thumbs") {
+        this.resize();
+      }
+    }
+    resize(e) {
+      // currently only used for "thumbs" mode, hides and shows the next/prev icons
+      this.width = this.root.clientWidth
+      this.thumb_width = this.indicators[0].clientWidth;
+      if (this.indicators.length*this.thumb_width <= this.width) {
+        this.root.querySelector(".next").style.display = 'none';
+        this.root.querySelector(".prev").style.display = 'none';
+      } else {
+        this.root.querySelector(".next").style.display = 'block';
+        this.root.querySelector(".next").style.display = 'block';
+      }
     }
     click(e) {
       clearInterval(this.interval);
