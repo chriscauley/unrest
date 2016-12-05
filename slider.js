@@ -36,7 +36,8 @@
         ul.appendChild(li);
         this.indicators.push(li);
         if (this.root.dataset.indicators == "thumbs") {
-          li.style.backgroundImage = "url("+this.slides[i].querySelector("img").src+")";
+          var img = this.slides[i].querySelector("img")
+          li.style.backgroundImage = img?"url("+img.src+")":this.slides[i].style.backgroundImage;
         }
       }
       this.root.appendChild(ul);
