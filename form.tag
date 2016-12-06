@@ -188,6 +188,11 @@
     this.update();
     this.reset();
     this.onMount && setTimeout(this.onMount,0);
+    if (this.extra_attrs) {
+      for (k in this.extra_attrs) {
+        this.root.querySelector("input").setAttribute(k,this.extra_attrs[k])
+      }
+    }
     if (this.label_after) {
       var s = document.createElement("span");
       s.innerHTML = this.label_after;
