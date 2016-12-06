@@ -71,13 +71,17 @@
     riot.mount(uR.auth.tag_names);
     uR.auth.reset();
   });
+  var _ready = [];
+  uR.auth.ready = function(f) { _ready.push(f) };
   uR.auth.reset = function(callback) {
     callback = callback || function() {}
     uR.ajax({
       url: "/user.json",
       success: function(data) {
         if (data.user != uR.auth.user) { uR.auth.setUser(data.user); }
-        callback()
+        callback();
+        uR.auth.ready = function(f) { f(); }
+        uR.forEach(_ready,uR.auth.ready);
       },
     });
   }
