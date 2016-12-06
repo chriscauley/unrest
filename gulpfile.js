@@ -8,8 +8,17 @@ var through = require('through2');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 
+var js_files = [
+  "unrest.js",
+  "static.js",
+  "storage.js",
+  "router.js",
+  "slider.js",
+  ".dist/_tags.js"
+]
+
 gulp.task('build-js', function () {
-  return gulp.src(["*.js",".dist/_tags.js"])
+  return gulp.src(js_files)
     .pipe(sourcemaps.init())
     .pipe(concat('unrest.js'))
     //.pipe(uglify({mangle: false, compress: false}))

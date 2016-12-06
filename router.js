@@ -108,4 +108,4 @@
     uR.route(window.location.href);
     window.onpopstate = function(e) { uR.route(window.location.pathname); }
  });
-})()
+})();
