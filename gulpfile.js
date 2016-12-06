@@ -8,6 +8,8 @@ var through = require('through2');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 
+var PROJECT_NAME = "unrest";
+
 var js_files = [
   "unrest.js",
   "static.js",
@@ -20,7 +22,7 @@ var js_files = [
 gulp.task('build-js', function () {
   return gulp.src(js_files)
     .pipe(sourcemaps.init())
-    .pipe(concat('unrest.js'))
+    .pipe(concat(PROJECT_NAME + '-built.js'))
     //.pipe(uglify({mangle: false, compress: false}))
     .pipe(sourcemaps.write("."))
     .pipe(gulp.dest(".dist/"));
@@ -35,7 +37,7 @@ gulp.task('build-tag', function() {
 gulp.task('build-css', function () {
   return gulp.src(["less/base.less", ])//"static/bfish/**/*.less"])
     .pipe(less({}))
-    .pipe(concat('unrest.css'))
+    .pipe(concat(PROJECT_NAME+'-built.css'))
     .pipe(gulp.dest(".dist/"));
 });
 
