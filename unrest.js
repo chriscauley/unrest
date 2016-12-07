@@ -203,6 +203,9 @@ var uR = (function() {
   window.onload = function() {
     for (var i=0;i<uR._ready.length;i++) { uR._ready[i]() }
     uR.ready = function(func) { func(); }
+    uR.route && uR.route(window.location.href);
+    // #! dummy route function. This is so everything can use uR.route without router.js
+    uR.route = uR.route || function route(path,data) { window.location = path }
   }
 
   uR.getSchema = function getSchema(url,callback) {
@@ -248,7 +251,5 @@ var uR = (function() {
     },
     error_class: "card red white-text",
   }
-  // #! dummy route function. This is so everything can use uR.route without router.js
-  uR.route = function route(path,data) { window.location = path }
   return uR;
 })();

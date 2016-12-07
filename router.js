@@ -104,8 +104,4 @@
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
-  uR.ready(function() {
-    uR.route(window.location.href);
-    window.onpopstate = function(e) { uR.route(window.location.pathname); }
- });
 })();
