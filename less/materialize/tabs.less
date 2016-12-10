@@ -1,0 +1,46 @@
+.flex-tabs, .scroll-tabs, .truncate-tabs {
+  --tab-height: 53px;
+  display: flex;
+  min-width: 100%;
+  .tab {
+    cursor: pointer;
+    height: var(--tab-height);
+    line-height: var(--tab-height);
+    padding: 0 16px;
+  }
+  &.blue-tabs {
+    color: white;
+    height: 63px;
+    text-align: center;
+    width: calc(~"100% +" 5px);
+    .tab {
+      background: var(--blue);
+      border-right: 5px white solid;
+      flex-grow: 1;
+      margin-bottom: 10px;
+      &.selected { background: var(--green); }
+    }
+  }
+}
+
+.flex-tabs {
+  flex-flow: row wrap;
+}
+.scroll-tabs {
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+.truncate-tabs {
+  flex-flow: row wrap;
+  justify-content: space-around;
+  overflow: hidden;
+  height: var(--tab-height);
+  &.portraits {
+    height: 140px;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    .character { height: 130px; margin-bottom: 20px; width: 110px; }
+  }
+  &.open { height: auto; }
+}

@@ -1,0 +1,40 @@
+input[type=date] + label {
+  font-size: 0.8rem;
+  transform: translateY(-140%);
+}
+
+.input-field {
+  input:not([type]),
+  input[type=text],
+  input[type=password],
+  input[type=email],
+  input[type=url],
+  input[type=time],
+  input[type=date],
+  input[type=datetime],
+  input[type=datetime-local],
+  input[type=tel],
+  input[type=number],
+  input[type=search],
+  textarea.materialize-textarea,
+  textarea,
+  select {
+    margin-bottom: 0;
+  }
+}
+
+.input-field {
+  margin-bottom: 20px;
+  .help_text {
+    font-size: 0.8em;
+    margin-top: -1em;
+  }
+  [type=file] {
+    margin-top: 15px;
+    ~ .help_text { margin-top: 5px; }
+  }
+  &.select, &.file {
+    margin-top: 1.3rem;
+    label { top: 0.3em; }
+  }
+}

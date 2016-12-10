@@ -1,0 +1,20 @@
+.horizontal .card-image {
+  img { min-width: 130px; }
+  + .card-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+}
+
+.card > .card-title { 
+  padding: 20px 20px 10px;
+  h3 { padding: 0; }
+}
+
+.card-content > .card-action {
+  padding: 20px 0 0;
+}
+
+shopping-cart .card { max-width: 600px; }
