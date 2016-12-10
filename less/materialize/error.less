@@ -1,6 +1,11 @@
 .input-field .error {
   color: var(--red);
-  display: none;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
 }
 
-.input-field .invalid ~ .error { display: block; } 
+.input-field .invalid ~ .error {
+  display: block;
+  max-height: 3rem;
+}

@@ -1,9 +1,14 @@
-input[type=date] + label {
-  font-size: 0.8rem;
-  transform: translateY(-140%);
+/* materialize does input + label.active... I hate that so I'm doing input.active + label */
+.input-field {
+  .active + label {
+    font-size: 0.8rem;
+    top: -0.3rem;
+  }
 }
 
-.input-field {
+/* not a fan of materialize bottom margins, makes help_text and errors complicated */
+input-field {
+  margin-bottom: 20px;
   input:not([type]),
   input[type=text],
   input[type=password],
@@ -21,10 +26,24 @@ input[type=date] + label {
   select {
     margin-bottom: 0;
   }
+  input:not([type]),
+  input[type=text],
+  input[type=password],
+  input[type=email],
+  input[type=url],
+  input[type=time],
+  input[type=date],
+  input[type=datetime],
+  input[type=datetime-local],
+  input[type=tel],
+  input[type=number],
+  input[type=search] {
+    height: 2.5rem;
+    margin-top: 0.5rem;
+  }
 }
 
 .input-field {
-  margin-bottom: 20px;
   .help_text {
     font-size: 0.8em;
     margin-top: -1em;
