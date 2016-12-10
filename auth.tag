@@ -138,7 +138,7 @@
 
 <auth-dropdown>
   <li if={ !uR.auth.user }>
-    <a href="/auth/register/?next={ window.location.pathname }">Login or Register</a>
+    <a href="{ url }?next={ window.location.pathname }"><i class="{ icon }"></i> { text }</a>
   </li>
   <li if={ uR.auth.user }>
     <a onclick={ toggle }>{ uR.auth.user.username }</a>
@@ -149,5 +149,11 @@
 
   this.on("mount",function() {
     if (uR.auth.user) { this.links = uR.auth.getLinks() }
+    else {
+      this.url = uR.auth.login_url || "/auth/login/";
+      this.icon = uR.auth.login_icon || "fa fa-user";
+      this.text = uR.auth.login_text || "Login or Register";
+    }
+    this.update();
   });
 </auth-dropdown>
