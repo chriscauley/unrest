@@ -28,23 +28,24 @@
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid } { uR.theme.input }" autocomplete="off"
+         class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }" autocomplete="off"
          initial_value={ initial_value }>
-  <label for={ id } if={ _label } class={ required: required, active: activated } onclick={ labelClick }
-         data-error={ data_error } data-success={ data_success }>{ _label }</label>
-  <!-- I'm unsure why but this breaks internet explorer, disabling for now because it's not used
-  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
+  <textarea if={ tagname == 'textarea' } name={ _name } id={ id } autocomplete="off"
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
-            class={ empty:empty } autocomplete="off">{ value }</textarea>
-  -->
+            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }">
+    { value }</textarea>
   <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
+  <label for={ id } if={ _label } class={ required: required } onclick={ labelClick }
+         data-success={ data_success }>{ _label }</label>
+
   <h5 if={ tagname == 'header' }>{ content }</h5>
   <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
+  <div class="error">{ data_error }</div>
   <style scoped> :scope { display: block; }</style>
 
   var self = this;
@@ -105,15 +106,13 @@
   }
 
   this.reset = function() {
-    var i = self.root.querySelector("input,select,textarea");
-    if (!i || ['checkbox','radio','submit'].indexOf(i.type) != -1) {
+    var target = self.root.querySelector("input,select,textarea");
+    if (!target || ['checkbox','radio','submit'].indexOf(target) != -1) {
       return; //#! TODO this should reset based off of initial values
     }
-    // i.blur(); // Can't figure out why this was here.
     self.show_errors = false;
     self.value = self.initial_value || "";
     self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file";
-    var target = self.root.querySelector("input,select");
     target.value = self.value;
     self.onKeyUp({target:target});
     self.update()
