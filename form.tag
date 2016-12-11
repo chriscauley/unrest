@@ -150,12 +150,26 @@
     }
     if (this.input_type == "select") {
       this.tagname = "select";
-      if (!this.choice_tuples) {
-        this.verbose_choices = this.verbose_choices || this.choices;
-        this.choice_tuples = [];
-        for (var i=0;i<this.choices.length;i++) {
-          this.choice_tuples.push([this.choices[i],this.verbose_choices[i]]);
+      if (this.placeholder) { this._label = undefined };
+      function setChoices() {
+        if (!self.choice_tuples) {
+          self.verbose_choices = self.verbose_choices || self.choices;
+          self.choice_tuples = [];
+          for (var i=0;i<self.choices.length;i++) {
+            self.choice_tuples.push([self.choices[i],self.verbose_choices[i]]);
+          }
         }
+      }
+      if (!this.choices_url) { setChoices(); }
+      else {
+        uR.storage.remote(this.choices_url,function(choices) {
+          self.choice_tuples = [];
+          uR.forEach(choices,function (choice) {
+            self.choice_tuples.push([choice[self.value_key || 0],choice[self.verbose_key] || 1]);
+          });
+          setChoices();
+          self.update();
+        });
       }
     }
     if (this.input_type == "textarea") { this.tagname = "textarea"; }

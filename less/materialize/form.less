@@ -1,8 +1,11 @@
 /* materialize does input + label.active... I hate that so I'm doing input.active + label */
 .input-field {
-  .active + label {
+  .active + label, .select + label {
     font-size: 0.8rem;
     top: -0.3rem;
+  }
+  .select + label {
+    top: -1.3rem;
   }
 }
 
