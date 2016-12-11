@@ -28,12 +28,15 @@ gulp.task('build-js', ['build-tag'], function () {
     .pipe(sourcemaps.write("."))
     .pipe(gulp.dest(".dist/"));
 });
+
+var tagfiles = ["*.tag","token-input/token-input.tag"]
 gulp.task('build-tag', function() {
-  return gulp.src(["*.tag","token-input/token-input.tag"])
+  return gulp.src(tagfiles)
     .pipe(riot())
     .pipe(concat("_tags.js"))
     .pipe(gulp.dest(".dist"));
 });
+
 
 gulp.task('build-css', function () {
   return gulp.src(["less/base.less", "token-input/token-input.less" ])//"static/bfish/**/*.less"])
@@ -46,9 +49,12 @@ var build_tasks = ['build-js', 'build-css'];
 
 gulp.task('watch', build_tasks, function () {
   gulp.watch("*.js", ['build-js']);
-  gulp.watch("*.tag", ['build-js']);
+  gulp.watch('*.tag', ['build-js']);
   gulp.watch("less/**/*.less", ['build-css']);
+
   gulp.watch("token-input/token-input.less", ['build-css']);
+  gulp.watch("token-input/jquery.tokeninput.js", ['build-js']);
+  gulp.watch("token-input/token-input.tag", ['build-js']);
 });
 
 gulp.task('default', build_tasks);

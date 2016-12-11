@@ -13,8 +13,7 @@
 
   uR.alertElement = function alertElement(name,options) {
     options = options || {};
-    if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = uR.drop.modal_cart; }
-    options = options || {};
+    if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = true; }
     options.mount_to = uR.config.mount_alerts_to;
     uR.mountElement(name,options);
   }

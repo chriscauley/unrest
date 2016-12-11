@@ -7,6 +7,7 @@ ur-input.token-input {
   .token-input-list {
     border: 0;
     border-bottom: 1px solid var(--teal);
+    align-items: center;
     display: flex;
     flex-wrap: wrap;
     margin: 0 0 20px;
@@ -21,7 +22,9 @@ ur-input.token-input {
     .token-input-token {
       align-items: center;
       display: flex;
+      order: 1;
     }
+    .token-input-input-token { flex-grow: 1; order: 2; }
   } 
   .token-input-dropdown { width: 100% !important; }
 }
@@ -30,10 +33,6 @@ ur-input.token-input {
 /* Example tokeninput style #1: Token vertical list*/
 ul.token-input-list {
     overflow: hidden; 
-    height: auto !important; 
-    height: 1%;
-    width: 400px;
-    border: 1px solid #999;
     cursor: text;
     font-size: 12px;
     font-family: Verdana;

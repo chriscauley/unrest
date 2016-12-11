@@ -30,6 +30,8 @@ var DEFAULT_SETTINGS = {
     tokenLimit: null,
     tokenDelimiter: ",",
     preventDuplicates: false,
+    createNewItem: null,
+    itemNoun: "item",
 
 	// Output settings
     tokenValue: "id",
@@ -138,7 +140,6 @@ $.TokenList = function (input, url_or_data, settings) {
     if($.type(url_or_data) === "string" || $.type(url_or_data) === "function") {
         // Set the url to query against
         settings.url = url_or_data;
-
         // If the URL is a function, evaluate it here to do our initalization work
         var url = computeURL();
 
@@ -198,7 +199,6 @@ $.TokenList = function (input, url_or_data, settings) {
             hide_dropdown();
             $(this).val("");
         })
-        .bind("keyup keydown blur update", resize_input)
         .keydown(function (event) {
             var previous_token;
             var next_token;
@@ -290,12 +290,8 @@ $.TokenList = function (input, url_or_data, settings) {
     var hidden_input = $(input)
                            .hide()
                            .val("")
-                           .focus(function () {
-                               input_box.focus();
-                           })
-                           .blur(function () {
-                               input_box.blur();
-                           });
+                           .focus(function () { input_box.focus(); })
+                           .blur(function () { input_box.blur(); });
 
     // Keep a reference to the selected token and dropdown item
     var selected_token = null;
@@ -344,21 +340,6 @@ $.TokenList = function (input, url_or_data, settings) {
         .addClass(settings.classes.dropdown)
         .appendTo("body")
         .hide();
-
-    // Magic element to help us resize the text input
-    var input_resizer = $("<tester/>")
-        .insertAfter(input_box)
-        .css({
-            position: "absolute",
-            top: -9999,
-            left: -9999,
-            width: "auto",
-            fontSize: input_box.css("fontSize"),
-            fontFamily: input_box.css("fontFamily"),
-            fontWeight: input_box.css("fontWeight"),
-            letterSpacing: input_box.css("letterSpacing"),
-            whiteSpace: "nowrap"
-        });
 
     // Pre-populate list if items exist
     hidden_input.val("");
@@ -428,15 +409,6 @@ $.TokenList = function (input, url_or_data, settings) {
         }
     }
 
-    function resize_input() {
-        if(input_val === (input_val = input_box.val())) {return;}
-
-        // Enter new content into resizer and resize input accordingly
-        var escaped = input_val.replace(/&/g, '&amp;').replace(/\s/g,' ').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        input_resizer.html(escaped);
-        input_box.width(input_resizer.width() + 30);
-    }
-
     function is_printable_character(keycode) {
         return ((keycode >= 48 && keycode <= 90) ||     // 0-1a-z
                 (keycode >= 96 && keycode <= 111) ||    // numpad 0-9 + - / * .
@@ -486,6 +458,10 @@ $.TokenList = function (input, url_or_data, settings) {
 
     // Add a token to the token list based on user input
     function add_token (item) {
+        if (item.id == "new" && settings.createNewItem) {
+            settings.createNewItem(item,function(data) { add_token(data); });
+            return;
+        }
         var callback = settings.onAdd;
 
         // See if the token already exists and select it if we don't want duplicates
@@ -662,24 +638,23 @@ $.TokenList = function (input, url_or_data, settings) {
 
     // Populate the results dropdown with some results
     function populate_dropdown (query, results) {
-        if(results && results.length) {
-            dropdown.empty();
-            var dropdown_ul = $("<ul>")
-                .appendTo(dropdown)
-                .mouseover(function (event) {
-                    select_dropdown_item($(event.target).closest("li"));
-                })
-                .mousedown(function (event) {
-                    add_token($(event.target).closest("li").data("tokeninput"));
-                    hidden_input.change();
-                    return false;
-                })
-                .hide();
+        dropdown.empty();
+        var dropdown_ul = $("<ul>")
+            .appendTo(dropdown)
+            .mouseover(function (event) {
+                select_dropdown_item($(event.target).closest("li"));
+            })
+            .mousedown(function (event) {
+                add_token($(event.target).closest("li").data("tokeninput"));
+                hidden_input.change();
+                return false;
+            }).hide();
 
+        if(results && results.length) {
             $.each(results, function(index, value) {
                 var this_li = settings.resultsFormatter(value);
                 
-                this_li = find_value_and_highlight_term(this_li ,value[settings.propertyToSearch], query);            
+                this_li = find_value_and_highlight_term(this_li ,value[settings.propertyToSearch], query);
                 
                 this_li = $(this_li).appendTo(dropdown_ul);
                 
@@ -699,11 +674,15 @@ $.TokenList = function (input, url_or_data, settings) {
             show_dropdown();
 
             dropdown_ul.show();
-        } else {
-            if(settings.noResultsText) {
-                dropdown.html("<p>"+settings.noResultsText+"</p>");
-                show_dropdown();
-            }
+        } else if (settings.noResultsText) {
+            dropdown.prepend("<p>"+settings.noResultsText+"</p>");
+            show_dropdown();
+        }
+        if (settings.createNewItem) {
+            var new_li = $("<li>Create new "+settings.itemNoun+": "+query);
+            new_li.data('tokeninput',{ id:'new', value: query });
+            dropdown_ul.append(new_li);
+            dropdown_ul.show();
         }
     }
 
