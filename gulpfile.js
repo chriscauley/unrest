@@ -16,6 +16,7 @@ var js_files = [
   "storage.js",
   "router.js",
   "slider.js",
+  "token-input/jquery.tokeninput.js",
   ".dist/_tags.js"
 ]
 
@@ -28,14 +29,14 @@ gulp.task('build-js', ['build-tag'], function () {
     .pipe(gulp.dest(".dist/"));
 });
 gulp.task('build-tag', function() {
-  return gulp.src("*.tag")
+  return gulp.src(["*.tag","token-input/token-input.tag"])
     .pipe(riot())
     .pipe(concat("_tags.js"))
     .pipe(gulp.dest(".dist"));
 });
 
 gulp.task('build-css', function () {
-  return gulp.src(["less/base.less", ])//"static/bfish/**/*.less"])
+  return gulp.src(["less/base.less", "token-input/token-input.less" ])//"static/bfish/**/*.less"])
     .pipe(less({}))
     .pipe(concat(PROJECT_NAME+'-built.css'))
     .pipe(gulp.dest(".dist/"));
@@ -47,6 +48,7 @@ gulp.task('watch', build_tasks, function () {
   gulp.watch("*.js", ['build-js']);
   gulp.watch("*.tag", ['build-js']);
   gulp.watch("less/**/*.less", ['build-css']);
+  gulp.watch("token-input/token-input.less", ['build-css']);
 });
 
 gulp.task('default', build_tasks);
