@@ -229,7 +229,7 @@ var uR = (function() {
   uR.config.loading_attribute = 'spinner';
   uR.config.success_attribute = 'spinner';
   uR.config.select_class = 'browser-default';
-  uR.config.tag_templates = [];
+  uR.config.tag_templates = ["token-input"];
   uR.config.text_validators = {};
   uR.config.mount_to = "#content";
   uR.config.mount_alerts_to = "#alert-div";
@@ -244,6 +244,12 @@ var uR = (function() {
   uR.urls = {};
   uR.theme = {
     modal: {
+      outer: "card",
+      header: "card-title",
+      content: "card-content",
+      footer: "card-action",
+    },
+    default: {
       outer: "card",
       header: "card-title",
       content: "card-content",

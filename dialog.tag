@@ -12,6 +12,8 @@
         } else {
           this.root.appendChild(e);
         }
+      } else {
+        this.theme = this.opts.theme || uR.theme.default;
       }
     }
   }
