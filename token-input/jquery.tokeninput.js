@@ -639,6 +639,8 @@ $.TokenList = function (input, url_or_data, settings) {
     // Populate the results dropdown with some results
     function populate_dropdown (query, results) {
         dropdown.empty();
+        var perfect_match = false;
+        var new_tag = query.toLowerCase().replace(/(^[\s-]+|[\s-]+$)/g,"").replace(/[^\d\w -]+/g,"").replace(/[\s-]+/g,"-");
         var dropdown_ul = $("<ul>")
             .appendTo(dropdown)
             .mouseover(function (event) {
@@ -651,6 +653,7 @@ $.TokenList = function (input, url_or_data, settings) {
             }).hide();
 
         if(results && results.length) {
+            perfect_match = results.indexOf(new_tag) != -1;
             $.each(results, function(index, value) {
                 var this_li = settings.resultsFormatter(value);
                 
@@ -671,19 +674,18 @@ $.TokenList = function (input, url_or_data, settings) {
                 $.data(this_li.get(0), "tokeninput", value);
             });
 
-            show_dropdown();
-
             dropdown_ul.show();
-        } else if (settings.noResultsText) {
+        } else if (settings.noResultsText && !settings.createNewItem) {
             dropdown.prepend("<p>"+settings.noResultsText+"</p>");
-            show_dropdown();
         }
         if (settings.createNewItem) {
-            var new_li = $("<li>Create new "+settings.itemNoun+": "+query);
-            new_li.data('tokeninput',{ id:'new', value: query });
+            var new_li = $("<li>Create new "+settings.itemNoun+": "+new_tag);
+            new_li.data('tokeninput',{ id:'new', value: new_tag });
             dropdown_ul.append(new_li);
             dropdown_ul.show();
+            if (!results || !results.length) { select_dropdown_item(new_li) }
         }
+        show_dropdown();
     }
 
     // Highlight an item in the results dropdown
