@@ -1,3 +1,5 @@
+uR.config.tag_templates.push("token-input");
+
 <token-input>
   <input name={ _name } type="text" onfocus={ parent.onFocus } onblur={ parent.onBlur }>
   this.on("mount",function() {

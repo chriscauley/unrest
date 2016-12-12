@@ -97,11 +97,8 @@ var uR = (function() {
       });
     }
     // POST uses FormData, GET uses query string
-    var form_data = new FormData();
+    var form_data = new FormData(opts.form);
     if (method=="POST") {
-      for (var key in data) {
-        filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
-      };
     }
     else {
       url += (url.indexOf("?") == -1)?"?":"&";
@@ -229,7 +226,7 @@ var uR = (function() {
   uR.config.loading_attribute = 'spinner';
   uR.config.success_attribute = 'spinner';
   uR.config.select_class = 'browser-default';
-  uR.config.tag_templates = ["token-input"];
+  uR.config.tag_templates = [];
   uR.config.text_validators = {};
   uR.config.mount_to = "#content";
   uR.config.mount_alerts_to = "#alert-div";

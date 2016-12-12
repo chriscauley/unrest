@@ -1,17 +1,18 @@
 /* materialize does input + label.active... I hate that so I'm doing input.active + label */
 .input-field {
-  .active + label, .select + label {
-    font-size: 0.8rem;
-    top: -0.3rem;
+  .active, select, checkbox-input {
+    + label {
+      font-size: 0.8rem;
+      top: -0.8rem;
+    }
   }
-  .select + label {
-    top: -1.3rem;
-  }
+  select + label { top: -1.1rem; }
+  checkbox-input + label { top: -1rem; }
 }
 
 /* not a fan of materialize bottom margins, makes help_text and errors complicated */
-input-field {
-  margin-bottom: 20px;
+.input-field {
+  margin: 2rem 0 20px;
   input:not([type]),
   input[type=text],
   input[type=password],
@@ -40,23 +41,18 @@ input-field {
   input[type=datetime-local],
   input[type=tel],
   input[type=number],
-  input[type=search] {
+  input[type=search],
+  select {
     height: 2.5rem;
-    margin-top: 0.5rem;
   }
 }
 
 .input-field {
   .help_text {
     font-size: 0.8em;
-    margin-top: -1em;
   }
   [type=file] {
     margin-top: 15px;
     ~ .help_text { margin-top: 5px; }
-  }
-  &.select, &.file {
-    margin-top: 1.3rem;
-    label { top: 0.3em; }
   }
 }

@@ -12,17 +12,6 @@
 
 </image-input>
 
-<checkbox-input>
-  <input type="checkbox" name="{ name }" value="1" id="{ id }">
-  <label for="{ id }" if="{ label }">{ label }</label>
-  this.on("mount", function() {
-    this.label = this.opts.parent.label;
-    this.name = this.opts.parent._name;
-    this.id = this.opts.parent.id;
-    this.update();
-  });
-</checkbox-input>
-
 <ur-input>
   <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
