@@ -242,6 +242,9 @@ var uR = (function() {
   uR.alert = function(s) { alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
+  uR.slugify = function(s) {
+    return s.toLowerCase().replace(/(^[\s-]+|[\s-]+$)/g,"").replace(/[^\d\w -]+/g,"").replace(/[\s-]+/g,"-");
+  };
   uR.theme = {
     modal: {
       outer: "card",
