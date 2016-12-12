@@ -30,11 +30,11 @@
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }" autocomplete="off"
          initial_value={ initial_value }>
-  <textarea if={ tagname == 'textarea' } name={ _name } id={ id } autocomplete="off"
+  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
-            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }">
-    { value }</textarea>
+            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
+            autocomplete="off">{ value }</textarea>
   <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
     <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
