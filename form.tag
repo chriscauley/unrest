@@ -26,7 +26,7 @@
             autocomplete="off">{ value }</textarea>
   <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.value)?'selected':'' } each={ choice in choice_tuples }
+    <option selected={ (choice[0]==parent.initial_value)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
   <label for={ id } if={ _label } class={ required: required } onclick={ labelClick }
@@ -148,6 +148,7 @@
             self.choice_tuples.push([self.choices[i],self.verbose_choices[i]]);
           }
         }
+        self.root.querySelector("select").value = self.initial_value;
       }
       if (!this.choices_url) { setChoices(); }
       else {
