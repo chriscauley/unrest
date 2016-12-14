@@ -15,6 +15,7 @@ var js_files = [
   "static.js",
   "storage.js",
   "router.js",
+  "url-shim.js",
   "slider.js",
   "token-input/jquery.tokeninput.js",
   ".dist/_tags.js"

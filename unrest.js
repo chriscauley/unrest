@@ -20,9 +20,9 @@ var uR = (function() {
     }
     return s.join('&').replace(/%20/g, '+');
   }
-  uR.getQueryParameter = function getQueryParameter(name) {
+  uR.getQueryParameter = function getQueryParameter(name,search) {
     var regexp = new RegExp("[\?&](?:"   +name+")=([^&]+)");
-    var _sd = window.location.search.match(regexp);
+    var _sd = (search || window.location.search).match(regexp);
     if (_sd) { return _sd[1]; }
   }
 

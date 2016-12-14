@@ -148,6 +148,7 @@
             self.choice_tuples.push([self.choices[i],self.verbose_choices[i]]);
           }
         }
+        self.update();
         self.root.querySelector("select").value = self.initial_value;
       }
       if (!this.choices_url) { setChoices(); }

@@ -27,30 +27,29 @@
   uR.pushState = uR.debounce(pushState,100)
 
   uR.route = function route(href,data) {
-    // we don't want the domain, just the pathname,search,and hash
-    var matches = href.match(/\/\/[^\/]+(\/.*)/);
-    var path = matches?matches[1]:href;
+    var new_url = new URL(href,href.match("://")?undefined:window.location.origin);
+    var old_url = new URL(window.location.href);
+    var pathname = new_url.pathname;
 
-    uR.forEach(uR._on_routes,function(f) {f(path,data)})
+    uR.forEach(uR._on_routes,function(f) {f(pathname,data)})
     data = data || {};
+    data.location = new_url;
     for (key in uR._routes) {
-      data.matches = path.match(new RegExp(key));
+      data.matches = pathname.match(new RegExp(key));
 
       if (data.matches) {
         uR.STALE_STATE = true;
-        uR._routes[key](path,data);
-        uR.pushState(path);
+        uR._routes[key](pathname,data);
+        uR.pushState(href);
         return;
       }
     }
-
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
-    var current_path = window.location.href.match(/\/\/[^\/]+(\/.*)/)[1].split("?")[0]
-    if (uR.STALE_STATE && current_path != path.split("?")[0]) {
-      window.location = path;
+    if (uR.STALE_STATE) {
+      window.location = href;
     }
     uR.STALE_STATE = true;
   }
