@@ -103,7 +103,7 @@ var uR = (function() {
         filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
       };
     }
-    else {
+    if (method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
       for (key in data) { url += key + "=" + data[key] + "&" }
     }
@@ -135,7 +135,7 @@ var uR = (function() {
       }
       if (non_field_error) {
         // if there's no form and no error function in opts, alert as a fallback
-        if (that) {that.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
+        if (that) { that.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
       }
 
       var complete = (request.status == 200 && isEmpty(errors));
@@ -238,6 +238,7 @@ var uR = (function() {
   uR.config.btn_cancel = "btn red";
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
+  uR.config.alert_success = "alert alert-success"; // bootstrap
   uR._var = {};
   uR.alert = function(s) { alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
