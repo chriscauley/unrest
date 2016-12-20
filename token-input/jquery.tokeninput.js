@@ -9,6 +9,7 @@
  */
 
 (function ($) {
+if (!$) { return } // until I can nuke jquery requirement
 // Default settings
 var DEFAULT_SETTINGS = {
 	// Search settings
@@ -816,7 +817,7 @@ $.TokenList.Cache = function (options) {
         data = {};
         size = 0;
     };
-
+v
     this.add = function (query, results) {
         if(size > settings.max_size) {
             flush();
@@ -833,4 +834,4 @@ $.TokenList.Cache = function (options) {
         return data[query];
     };
 };
-}(jQuery));
+}(window.jQuery));
