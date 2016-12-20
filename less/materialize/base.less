@@ -15,3 +15,26 @@ tfoot { /* in materialize thead has border, but tfoot doesn't */
   margin-bottom: 1rem;
   &:last-child { margin-bottom: 0 }
 }
+
+/* header */
+header { position: relative; } /* otherwise breadcrumbs cover box-shadow */
+nav .nav-wrapper {
+  background: var(--header-bg);
+  img { display: block; }
+  i { height: auto; line-height: inherit; }
+  ul.right > li > a { text-transform: uppercase; }
+  li, a { color: inherit; }
+  ul li {
+    position: relative;
+    &:hover .dropdown-content {
+      background: var(--header-bg);
+      display: block;
+      position: absolute;
+      right: 0;
+      opacity: 1;
+      top: 100%;
+      z-index: 10;
+      a { white-space: nowrap; }
+    }
+  }
+}
