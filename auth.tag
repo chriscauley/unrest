@@ -9,17 +9,19 @@
     }
     data = data || {};
     function wrapped() {
-      var args = arguments;
-      function success(data) {
-        if (data) { uR.auth.setUser(data.user); }
-        func.apply(this,args);
-      }
-      if (!uR.auth.user || data.force) {
-        uR.AUTH_SUCCESS = success;
-        data.slug = "register";
-        uR.alertElement("auth-modal",data);
-      }
-      else { success(); }
+      uR.auth.ready(function() {
+        var args = arguments;
+        function success(data) {
+          if (data) { uR.auth.setUser(data.user); }
+          func.apply(this,args);
+        }
+        if (!uR.auth.user || data.force) {
+          uR.AUTH_SUCCESS = success;
+          data.slug = "register";
+          uR.alertElement("auth-modal",data);
+        }
+        else { success(); }
+      });
     }
     wrapped.login_required = true;
     return wrapped;
