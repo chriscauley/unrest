@@ -9,8 +9,8 @@
     }
     data = data || {};
     function wrapped() {
+      var args = arguments;
       uR.auth.ready(function() {
-        var args = arguments;
         function success(data) {
           if (data) { uR.auth.setUser(data.user); }
           func.apply(this,args);
