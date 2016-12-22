@@ -88,16 +88,6 @@
   uR.addRoutes = function(routes) { uR.extend(uR._routes,routes); }
   uR.startRouter = function() { document.addEventListener('click', onClick); };
 
-  uR.confirm = function(text,options) {
-    options = options || {};
-    options.cancel_text = options.cancel_text || "Cancel";
-    options.cancel = options.cancel || function() {};
-    options.success_text = options.success_text || "Continue";
-    options.success = options.success || function() {};
-    options.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
-    options.mount_to = options.mount_alerts_to || uR.config.mount_alerts_to;
-    uR.mountElement("modal",options);
-  }
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
   uR._routes = uR._routes || {};
   uR._on_routes = [];

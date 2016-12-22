@@ -26,21 +26,43 @@
     data.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
     uR.alertElement("ur-modal",data);
   } 
+  uR.confirm = function(text,data) {
+    if (typeof data == 'function') { data = { success: data } }
+    data = data || {};
+    data.buttons = data.buttons || [];
+    data.close_text = data.close_text || "No";
+    data.buttons.push({
+      onclick: data.success,
+      className: uR.config.btn_success,
+      text: data.success_text || "Yes"
+    });
+    data.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
+    uR.alert(text,data);
+  }
 })();
 
 <ur-modal>
   <div class={ theme.outer }>
     <div class={ theme.content }>
+      <div class="inner-content"></div>
       <yield />
       <center>
         <button onclick={ close } class={ uR.config.btn_primary }>{ close_text }</button>
+        <button each={ opts.buttons } class={ className } onclick={ _onclick }>{ text }</button>
       </center>
     </div>
   </div>
 
+  var self = this;
   this.close_text = this.opts.close_text || "Close";
-
+  this.on("mount",function() {
+    uR.forEach(this.opts.buttons || [],function(b) {
+      b._onclick = function(e) { b.onclick(e); self.unmount() }
+    });
+    self.update();
+  });
   close(e) {
+    this.opts.cancel && this.opts.cancel();
     this.unmount();
   }
 </ur-modal>
