@@ -113,7 +113,7 @@ var uR = (function() {
     request.open(method, url , true);
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-    if (method == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
+    if ("POSTDELETE".indexOf(method) != -1 && document.querySelector("[name=csrfmiddlewaretoken]")) {
       request.setRequestHeader("X-CSRFToken",document.querySelector("[name=csrfmiddlewaretoken]").value);
     }
     request.onload = function(){
