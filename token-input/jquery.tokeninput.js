@@ -555,9 +555,6 @@ $.TokenList = function (input, url_or_data, settings) {
     var token_data = $.data(token.get(0), "tokeninput");
     var callback = settings.onDelete;
 
-    var index = token.parent().children().indexOf(token);
-    if(index > selected_token_index) index--;
-
     // Delete the token
     token.remove();
     selected_token = null;
@@ -566,8 +563,7 @@ $.TokenList = function (input, url_or_data, settings) {
     input_box.focus();
 
     // Remove this token from the saved list
-    saved_tokens = saved_tokens.slice(0,index).concat(saved_tokens.slice(index+1));
-    if(index < selected_token_index) selected_token_index--;
+    saved_tokens = saved_tokens.filter(function(i) { return i.id != token_data.id });
 
     // Update the hidden input
     update_hidden_input(saved_tokens, hidden_input);
