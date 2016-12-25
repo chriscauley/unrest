@@ -290,7 +290,6 @@
       var f = self.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
     },0)
   }
-
   this.addField = function(field) {
     var f = {};
     if (typeof field == "string") {
@@ -342,7 +341,7 @@
       }
     }
     this.schema = [];
-    this.initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
+    this.initial = uR.storage.get(this.opts.action) || uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.success_text = this.opts.success_text || "Submit";
@@ -359,12 +358,19 @@
   this.on("update",function() {
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
-    uR.forEach(this.fields || [],function(field,i) {
+    if (!this.fields) { return }
+    uR.forEach(this.fields,function(field,i) {
       if (field.no_validation) { return }
       self.valid = self.valid && !field.data_error;
     })
-    //this.parent && this.parent.update();
+    if (this.opts.autoSave() { this.autoSave(); }
   });
+  this.autoSave = uR.dedribble(function() {
+    // #! TODO Performance test this. Is it a memory leak? Is it using a lot of processor?
+    var new_data = this.getData();
+    if (this.__data == new_data) { return; }
+    uR.storage.set(this.opts.action,new_data);
+  }.bind(this),5000);
 </ur-form>
 
 <ur-formset>

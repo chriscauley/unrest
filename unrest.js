@@ -168,7 +168,7 @@ var uR = (function() {
   }
 
   uR.dedribble = function dedribble(func, wait, end_bounce) {
-    var timeout, wait = wait || 200, end_bounce = end_bounce && true ;
+    var timeout, wait = wait || 200, end_bounce = (end_bounce !== undefined) && true ;
     var last = new Date();
     return function() {
       var context = this, args = arguments;
