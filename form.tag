@@ -8,6 +8,24 @@
       return c;
     });
   }
+
+  // this mixin is what gives custom input tags ur-input like powers
+  riot.mixin({
+    init: function() {
+      if (!this.opts.is_ur_input) { return }
+      this.parent = this.parent || this.opts.parent;
+      this.value = "";
+      this.setValue = function(v) {
+        var old_value = this.value || "";
+        if (old_value == v) { return };
+        this.value = v;
+        // send the value to the ur-input
+        this.parent.onBlur({value: this.value,type: 'blur'});
+        // update the ur-form
+        this.parent.parent && this.parent.parent.update();
+      }.bind(this);
+    },
+  });
 })();
 
 <image-input>
@@ -186,7 +204,7 @@
       this.tagname = this.input_type;
       var _e = document.createElement(this.input_type);
       this.root.insertBefore(_e,this.root.firstChild);
-      setTimeout(function() { riot.mount(_e,{parent:self,form: self.parent}); },0);
+      setTimeout(function() { riot.mount(_e,{parent:self,form: self.parent,is_ur_input: true}); },0);
     }
     if (this.parent && this.parent.fields) { this.parent.fields.push(this); }
 
@@ -313,7 +331,7 @@
   }
   getData() {
     var data = {};
-    uR.forEach(this.fields,function(f) { data[f._name] = f.value });
+    uR.forEach(this.fields,function(f) { data[f._name] = f.value; });
     return data;
   }
   this.on("mount",function() {
@@ -363,14 +381,14 @@
       if (field.no_validation) { return }
       self.valid = self.valid && !field.data_error;
     })
-    if (this.opts.autoSave() { this.autoSave(); }
+    if (this.opts.autosave) { this.autoSave(); }
   });
   this.autoSave = uR.dedribble(function() {
     // #! TODO Performance test this. Is it a memory leak? Is it using a lot of processor?
     var new_data = this.getData();
-    if (this.__data == new_data) { return; }
+    //if (this.__data == new_data) { return; } // can't compare objects like this
     uR.storage.set(this.opts.action,new_data);
-  }.bind(this),5000);
+  }.bind(this),1000);
 </ur-form>
 
 <ur-formset>
