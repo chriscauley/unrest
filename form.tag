@@ -1,3 +1,15 @@
+(function() {
+  uR.form = {}
+  uR.form.parseChoices = function(choices) {
+    // #! TODO This should eventually accomodate groupings as well like:
+    // choices = [["group_name",[choice1,choice2,choice3]...],group2,group3]
+    return choices.map(function(c) {
+      if (typeof(c) == "string") { return [c,c]}
+      return c;
+    });
+  }
+})();
+
 <image-input>
   <img if={ initial_value } src={ initial_value } />
   <input type="file" name="{ name }" onchange={ onChange }/>
