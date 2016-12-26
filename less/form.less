@@ -1,1 +1,8 @@
-ur-input,ur-form { display: block; }
+ur-form {
+  display: flex;
+  flex-wrap: wrap;
+  ur-input { display: block; }
+  ur-input, .button_div, .non_field_error {
+    flex-basis: 100%;
+  }
+}
