@@ -242,7 +242,7 @@
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
     <ur-input each={ schema } class="{ name } { type } { form_class }"/>
-    <div if={ non_field_error }>
+    <div if={ non_field_error } class="non_field_error">
       <div class={ uR.theme.error_class }>{ non_field_error }</div>
       <p if={ uR.config.support_email } style="text-align: center;">
         If you need assistance contact
