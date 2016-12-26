@@ -4,7 +4,8 @@ uR.storage = (function() {
   function get(key) {
     var value;
     if (localStorage.hasOwnProperty(key)) {
-      value = JSON.parse(localStorage.getItem(key));
+      try { value = JSON.parse(localStorage.getItem(key)); }
+      catch(e) { }
     } else if (uR.storage.defaults.hasOwnProperty(key)) {
       value = uR.storage.defaults[key];
     }
