@@ -19,7 +19,9 @@ uR.config.tag_templates.push("checkbox-input");
     });
     this.update();
     if (this.parent.initial_value) {
-      uR.forEach(this.parent.initial_value.split(","),function(slug) {
+      var initial = this.parent.initial_value;
+      if (typeof initial == "string") { initial = initial.split(",") }
+      uR.forEach(initial,function(slug) {
         var cb = self.root.querySelector("[value="+slug+"]");
         if (cb) { cb.checked = true }
       })
