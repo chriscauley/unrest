@@ -35,8 +35,18 @@ body {
   --brand-facebook: #3b5998;
 } 
 
-.btn-google { background-color: var(--brand-google); }
-.btn-twitter { background-color: var(--brand-twitter); }
-.btn-facebook { background-color: var(--brand-facebook); }
-          
+.btn-google,.btn-google-plus {
+  &:hover,& { background-color: var(--brand-google); }
+}
+.btn-twitter {
+  &:hover,& { background-color: var(--brand-twitter); }
+}
+.btn-facebook {
+  &:hover,& { background-color: var(--brand-facebook); }
+}
+
+.btn-google,.btn-google-plus, .btn-twitter, .btn-facebook {
+  &:hover { color: white; filter: contrast(1.2); }
+}
+
 @grey-lighten-4: #f5f5f5;

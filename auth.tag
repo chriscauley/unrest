@@ -95,6 +95,11 @@
       <h3>{ title }</h3>
     </div>
     <div class={ theme.content }>
+      <div class="social" if={ slug != 'fogot_password' && uR.auth.social_logins.length }>
+        <a class="btn btn-block btn-{ icon }" href="/login/{ slug }?next={ next }" each={ uR.auth.social_logins }>
+          <i class="fa fa-{ icon }"></i> Connect with { name }</a>
+        <center>- or { slug } using your email address -</center>
+      </div>
       <ur-form schema={ schema } action={ url } method="POST" ajax_success={ opts.success }></ur-form>
       <center if={ slug == 'login' }>
         <a href="/auth/register/?next={ next }">Create an Account</a><br/>
