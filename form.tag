@@ -99,7 +99,7 @@
   onKeyUp(e) {
     if (this.no_validation) { return; }
     if (e.type == "keyup") { this.parent.active = true; }
-    this.value = e.value || e.target.value; // e.value is a way to fake events
+    this.value = e.value || (e.target && e.target.value); // e.value is a way to fake events
     if (this.last_value == this.value && this.input_type != "checkbox") { return; }
     if (self.input_type == "checkbox") {
       self.root.querySelector("[type=checkbox]").checked = self.IS_CHECKED;
@@ -291,7 +291,7 @@
       uR.ajax({
         url: this.opts.action,
         method: this.opts.method,
-        form: this.form_element,
+        data: this.getData(),
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
         error: this.ajax_error,

@@ -2,7 +2,7 @@ uR.config.tag_templates.push("checkbox-input");
 
 <checkbox-input>
   <div each={ choices } class="choice">
-    <input type="checkbox" id="{ id }" value={ value } name={ name } onchange={ update }/>
+    <input type="checkbox" id="{ id }" value={ value } name={ name } onchange={ update } />
     <label for="{ id }">{ label }</label>
   </div>
 
