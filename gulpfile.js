@@ -11,12 +11,11 @@ var util = require('gulp-util');
 var PROJECT_NAME = "unrest";
 
 var js_files = [
+  "url-shim.js",
   "unrest.js",
   "static.js",
   "storage.js",
   "router.js",
-  "url-shim.js",
-  "slider.js",
   "token-input/jquery.tokeninput.js",
   ".dist/_tags.js"
 ]
