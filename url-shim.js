@@ -1,6 +1,12 @@
 // https://jsfiddle.net/warpech/8dyx615f/
 (function loadURLShim() {
-  if (window.URL && window.URL.prototype && ('href' in window.URL.prototype)) return;
+  try {
+    new URL(window.location.href);
+    return;
+  } catch (e) {
+    airbrake.log("Reason for using url shim:");
+    airbrake.log(e);
+  }
   window.URL = function shimURL(url, base) {
     var iframe = document.createElement('iframe');
     iframe.style.display = 'none';
