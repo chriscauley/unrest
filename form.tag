@@ -362,7 +362,7 @@
     }
     this.schema = [];
     this.empty_initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
-    this.initial = uR.storage.get(this.opts.action) || this.empty_inital;
+    this.initial = uR.storage.get(this.opts.action) || this.empty_initial;
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.success_text = this.opts.success_text || "Submit";
