@@ -1,7 +1,10 @@
 // https://jsfiddle.net/warpech/8dyx615f/
 (function loadURLShim() {
   try {
-    new URL(window.location.href);
+    airbrake.log("trying origin");
+    new URL(window.location.href,window.location.origin);
+    airbrake.log("trying undefined");
+    new URL(window.location.href,undefined);
     return;
   } catch (e) {
     airbrake.log("Reason for using url shim:");
