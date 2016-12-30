@@ -301,7 +301,9 @@
     }
   }
   clear() {
-    uR.forEach(this.fields, function(field) { field.reset(); })
+    this.initial = this.empty_initial;
+    uR.storage.set(this.opts.action,null);
+    uR.forEach(this.fields, function(field) { field.initial_value = self.initial[field.name]; field.reset(); })
     this.messages = [];
     self.active = false;
     setTimeout(function() {
@@ -359,7 +361,8 @@
       }
     }
     this.schema = [];
-    this.initial = uR.storage.get(this.opts.action) || uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
+    this.empty_initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
+    this.initial = uR.storage.get(this.opts.action) || this.empty_inital;
     uR.forEach(_schema,this.addField);
     this.suffix = this.opts.suffix || "";
     this.success_text = this.opts.success_text || "Submit";
