@@ -1,5 +1,6 @@
 // https://jsfiddle.net/warpech/8dyx615f/
 (function loadURLShim() {
+  var airbrake = window.airbrake || {log: function(e) { console.error(e) } };
   try {
     airbrake.log("trying origin");
     new URL(window.location.href,window.location.origin);
