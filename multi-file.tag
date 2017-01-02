@@ -1,10 +1,10 @@
 uR.config.tag_templates.push("multi-file");
 
 <multi-file>
-  <form action={ action } method="POST">
-    <label class="btn btn-primary">
+  <form action={ action } method="POST" if={ can_upload }>
+    <label class={ uR.config.btn_primary }>
       <input type="file" onchange={ validateAndUpload } style="display:none;" name="file" />
-      Upload another file
+      { opts.parent.upload_text || 'Upload another file' }
     </label>
   </form>
   <div each={ files } class="file { uR.config.alert_success }">
@@ -37,11 +37,13 @@ uR.config.tag_templates.push("multi-file");
     uR.storage.set(this.action+"__files",this.files);
   }
   this.on("mount",function() {
+    this.max_files = this.parent.opts.max_files || Infinity;
     this.action = opts.action || uR.config.tmp_file_url;
     this.files = uR.storage.get(this.action+"__files") || [];
     this.update();
   });
   this.on("update",function() {
     this.setValue((this.files || []).map(function(f) { return f.id }).join(","));
+    this.can_upload = !(this.files && this.files.length >= this.max_files);
   });
 </multi-file>
