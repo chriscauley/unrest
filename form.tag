@@ -161,8 +161,7 @@
     this.show_errors = false;
     this.tagname = "textinput";
     this.IS_CHECKED = self.initial_checked;
-    // #! TODO this next ugliness needs to be fixed at the materialize level
-    this.form_class = (this.input_type == "checkbox")?"":uR.config.form.field_class;
+    this.form_class = uR.config.form.field_class;
     if (this.input_type == "hidden") {
       this.root.style.display = "none";
       this._label = "";
@@ -230,7 +229,8 @@
     if (this.label_after) {
       var s = document.createElement("span");
       s.innerHTML = this.label_after;
-      this.root.appendChild(s);
+      var label = this.root.querySelector("label");
+      label.parentNode.insertBefore(s,label.nextSibling);
     }
   });
   this.on("update", function() {
