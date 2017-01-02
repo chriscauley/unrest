@@ -1,4 +1,5 @@
 uR.config.tag_templates.push("multi-file");
+uR.config.tmp_file_url = "/media_files/private/";
 
 <multi-file>
   <form action={ action } method="POST" if={ can_upload }>
@@ -14,21 +15,25 @@ uR.config.tag_templates.push("multi-file");
     </div>
     <div onclick={ parent.deleteFile } class="fa fa-trash"></div>
   </div>
-    
+  <div if={ error_msg } class={ uR.theme.error_class }>{ error_msg }</div>
 
   this.parent = this.opts.parent;
   var self = this;
   validateAndUpload(e) {
     var form = this.root.querySelector("form");
+    this.error_msg = undefined;
     uR.ajax({
       form: form,
       success: function(data) {
         this.files.push(data);
         uR.storage.set(this.action+"__files",this.files);
       },
+      error: function(data) {
+        self.error_msg = "An unknown error has occurred.";
+      },
       that: this,
     });
-    this.root.querySelector("[type=file]").value = undefined;
+    this.root.querySelector("[type=file]").value = "";
   }
   deleteFile(e) {
     uR.forEach(this.files,function(f,i) {
@@ -37,7 +42,7 @@ uR.config.tag_templates.push("multi-file");
     uR.storage.set(this.action+"__files",this.files);
   }
   this.on("mount",function() {
-    this.max_files = this.parent.opts.max_files || Infinity;
+    this.max_files = this.parent.max_files || Infinity;
     this.action = opts.action || uR.config.tmp_file_url;
     this.files = uR.storage.get(this.action+"__files") || [];
     this.update();
