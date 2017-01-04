@@ -16,9 +16,8 @@ var js_files = [
   "static.js",
   "storage.js",
   "router.js",
-  "token-input/jquery.tokeninput.js",
   ".dist/_tags.js"
-]
+];
 
 gulp.task('build-js', ['build-tag'], function () {
   return gulp.src(js_files)
@@ -29,32 +28,59 @@ gulp.task('build-js', ['build-tag'], function () {
     .pipe(gulp.dest(".dist/"));
 });
 
-var tagfiles = ["*.tag","token-input/token-input.tag"]
 gulp.task('build-tag', function() {
-  return gulp.src(tagfiles)
+  return gulp.src("*.tag")
     .pipe(riot())
     .pipe(concat("_tags.js"))
     .pipe(gulp.dest(".dist"));
 });
 
-
 gulp.task('build-css', function () {
-  return gulp.src(["less/base.less", "token-input/token-input.less" ])//"static/bfish/**/*.less"])
+  return gulp.src("less/base.less")
     .pipe(less({}))
     .pipe(concat(PROJECT_NAME+'-built.css'))
     .pipe(gulp.dest(".dist/"));
 });
 
-var build_tasks = ['build-js', 'build-css'];
 
+var token_js = [
+  "token-input/jquery.tokeninput.js",
+  "token-input/zepto.js",
+  "token-input/zepto-extra.js",
+  "token-input/data.js",
+];
+
+gulp.task('build-token-js', ['build-token-tag'], function () {
+  return gulp.src(token_js)
+    .pipe(sourcemaps.init())
+    .pipe(concat('token-built.js'))
+    .pipe(sourcemaps.write("."))
+    .pipe(gulp.dest(".dist/"));
+});
+
+gulp.task('build-token-tag', function() {
+  return gulp.src("token-input/token-input.tag")
+    .pipe(riot())
+    .pipe(concat("_token-tag.js"))
+    .pipe(gulp.dest(".dist"));
+});
+
+gulp.task('build-token-css', function () {
+  return gulp.src("token-input/token-input.less")
+    .pipe(less({}))
+    .pipe(concat('token-built.css'))
+    .pipe(gulp.dest(".dist/"));
+});
+
+var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css'];
 gulp.task('watch', build_tasks, function () {
   gulp.watch("*.js", ['build-js']);
   gulp.watch('*.tag', ['build-js']);
   gulp.watch("less/**/*.less", ['build-css']);
 
-  gulp.watch("token-input/token-input.less", ['build-css']);
-  gulp.watch("token-input/jquery.tokeninput.js", ['build-js']);
-  gulp.watch("token-input/token-input.tag", ['build-js']);
+  gulp.watch("token-input/token-input.less", ['build-token-css']);
+  gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
+  gulp.watch("token-input/token-input.tag", ['build-token-js']);
 });
 
 gulp.task('default', build_tasks);
