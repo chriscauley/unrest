@@ -602,7 +602,7 @@ $.TokenList = function (input, url_or_data, settings) {
     dropdown
       .css({
         position: "absolute",
-        top: $(token_list).offset().top + $(token_list).outerHeight(),
+        top: $(token_list).offset().top + token_list[0].clientHeight,
         left: $(token_list).offset().left,
         zindex: 999
       })
@@ -829,4 +829,4 @@ $.TokenList.Cache = function (options) {
     return data[query];
   };
 };
-}(window.jQuery));
+}(window.$));

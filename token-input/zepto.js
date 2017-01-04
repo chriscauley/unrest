@@ -939,9 +939,9 @@
 })()
 
 window.Zepto = Zepto
-window.$ === undefined && (window.$ = Zepto)
+window.$ === undefined && (window.$ = Zepto);
 
-;(function($){
+(function($){
   var _zid = 1, undefined,
       slice = Array.prototype.slice,
       isFunction = $.isFunction,

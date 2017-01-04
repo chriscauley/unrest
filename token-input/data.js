@@ -86,4 +86,4 @@
       return origFn.call(this)
     }
   })
-})(Zepto)
+})(Zepto);
