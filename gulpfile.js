@@ -44,10 +44,11 @@ gulp.task('build-css', function () {
 
 
 var token_js = [
-  "token-input/jquery.tokeninput.js",
   "token-input/zepto.js",
   "token-input/zepto-extra.js",
   "token-input/data.js",
+  "token-input/jquery.tokeninput.js",
+  ".dist/_token-tag.js",
 ];
 
 gulp.task('build-token-js', ['build-token-tag'], function () {
