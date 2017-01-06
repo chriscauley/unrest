@@ -161,7 +161,6 @@
     this.show_errors = false;
     this.tagname = "textinput";
     this.IS_CHECKED = self.initial_checked;
-    this.form_class = uR.config.form.field_class;
     if (this.input_type == "hidden") {
       this.root.style.display = "none";
       this._label = "";
@@ -241,7 +240,7 @@
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
-    <ur-input each={ schema } class="{ name } { type } { form_class }"/>
+    <ur-input each={ schema } class="{ name } { type } { uR.config.form.field_class }"/>
     <div if={ non_field_error } class="non_field_error">
       <div class={ uR.theme.error_class }>{ non_field_error }</div>
       <p if={ uR.config.support_email } style="text-align: center;">
