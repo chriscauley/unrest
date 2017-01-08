@@ -5,7 +5,7 @@ uR.config.tmp_file_url = "/media_files/private/";
   <form action={ action } method="POST" if={ can_upload }>
     <label class={ uR.config.btn_primary }>
       <input type="file" onchange={ validateAndUpload } style="display:none;" name="file" />
-      { opts.parent.upload_text || 'Upload another file' }
+      { upload_text }
     </label>
   </form>
   <div each={ files } class="file { uR.config.alert_success }">
@@ -48,6 +48,11 @@ uR.config.tmp_file_url = "/media_files/private/";
     this.update();
   });
   this.on("update",function() {
+    if (this.files && this.files.length) {
+      this.upload_text = opts.parent.upload_another_text || opts.parent.upload_text || "Upload another file";
+    } else {
+      this.upload_text = opts.parent.upload_text || 'Upload a file';
+    }
     this.setValue((this.files || []).map(function(f) { return f.id }).join(","));
     this.can_upload = !(this.files && this.files.length >= this.max_files);
   });
