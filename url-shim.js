@@ -2,9 +2,7 @@
 (function loadURLShim() {
   var airbrake = window.airbrake || {log: function(e) { console.error(e) } };
   try {
-    airbrake.log("trying origin");
     new URL(window.location.href,window.location.origin);
-    airbrake.log("trying undefined");
     new URL(window.location.href,undefined);
     return;
   } catch (e) {

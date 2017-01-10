@@ -14,6 +14,7 @@
     init: function() {
       if (!this.opts.is_ur_input) { return }
       this.parent = this.parent || this.opts.parent;
+      if (this.parent) { this.parent.child = this; }
       this.value = "";
       this.setValue = function(v) {
         var old_value = this.value || "";
@@ -47,8 +48,8 @@
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }" autocomplete="off"
-         initial_value={ initial_value }>
+         class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
+         autocomplete="off">
   <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
@@ -56,7 +57,7 @@
             autocomplete="off">{ value }</textarea>
   <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.initial_value)?'selected':'' } each={ choice in choice_tuples }
+    <option selected={ (choice[0]==parent.initial)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
   <label for={ id } if={ _label } class={ required: required } onclick={ labelClick }
@@ -120,6 +121,7 @@
     else if (this.type == "email" && invalid_email) {
       this.data_error = "Please enter a valid email address.";
     }
+    if (!this.data_error) { this._keyUp(this.value) }
     if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
     //this.update();
   }
@@ -129,6 +131,7 @@
     if (!target || ['checkbox','radio','submit'].indexOf(target) != -1) {
       return; //#! TODO this should reset based off of initial values
     }
+    if (self.child) { self.child.setValue("") }
     self.show_errors = false;
     self.value = self.initial_value || "";
     self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file";
@@ -157,7 +160,9 @@
       this.input_type = "text";
     }
     if (this.required == undefined) { this.required = true; }
-    this._validate = (this.bounce)?uR.debounce(this.validate,this.bounce):this.validate;
+    this._validate = (this.bounce)?uR.debounce(this.validate.bind(this),this.bounce):this.validate;
+    this.keyUp = this.keyUp || function() {};
+    this._keyUp = (this.bounce)?uR.debounce(this.keyUp.bind(this),this.bounce):this.keyUp;
     this.show_errors = false;
     this.tagname = "textinput";
     this.IS_CHECKED = self.initial_checked;
@@ -216,7 +221,6 @@
         self.onKeyUp({target: e});
       }
     },1000);
-    self.monkey = 1;
     this.update();
     this.reset();
     this.onMount && setTimeout(this.onMount,0);
@@ -301,8 +305,12 @@
   }
   clear() {
     this.initial = this.empty_initial;
-    uR.storage.set(this.opts.action,null);
-    uR.forEach(this.fields, function(field) { field.initial_value = self.initial[field.name]; field.reset(); })
+    uR.storage.set(this.opts.action,null); // nuke stored half finished form
+    uR.forEach(this.fields, function(field) {
+      field.initial_value = self.initial[field.name];
+      field.child && field.child.clear && field.child.clear();
+      field.reset();
+    })
     this.messages = [];
     self.active = false;
     setTimeout(function() {

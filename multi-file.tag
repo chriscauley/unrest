@@ -35,6 +35,12 @@ uR.config.tmp_file_url = "/media_files/private/";
     });
     this.root.querySelector("[type=file]").value = "";
   }
+  clear() {
+    this.value = "";
+    this.files = [];
+    uR.storage.set(this.action+"__files",undefined);
+    this.update();
+  }
   deleteFile(e) {
     uR.forEach(this.files,function(f,i) {
       if (f.id == e.item.id) { self.files.splice(i,1) }
@@ -53,7 +59,11 @@ uR.config.tmp_file_url = "/media_files/private/";
     } else {
       this.upload_text = opts.parent.upload_text || 'Upload a file';
     }
-    this.setValue((this.files || []).map(function(f) { return f.id }).join(","));
+    if (this.files.length) {
+      this.setValue((this.files).map(function(f) { return f.id }).join(","));
+    } else {
+      this.setValue("");
+    }
     this.can_upload = !(this.files && this.files.length >= this.max_files);
   });
 </multi-file>
