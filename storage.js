@@ -16,6 +16,15 @@ uR.storage = (function() {
     localStorage.setItem(key,JSON.stringify(value))
   }
 
+  try {
+    storage.setItem('test', '1');
+    storage.removeItem('test');
+  } catch(e) {
+    var FAKE_STORAGE = {};
+    function set(key,value) { FAKE_STORAGE[key] = value }
+    function get(key) { return FAKE_STORAGE[key]; }
+  }
+
   // timebomb remote data store
   var __expiry = '__expiry'; // Key used for expiration storage
   function isExpired(key) {
