@@ -340,7 +340,7 @@
   }
   getData() {
     var data = {};
-    uR.forEach(this.fields,function(f) { data[f._name] = f.value; });
+    uR.forEach(this.fields,function(f) { data[f._name] = f.value || ""; });
     return data;
   }
   this.on("mount",function() {
