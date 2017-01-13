@@ -5,7 +5,7 @@
         this.theme = this.opts.theme || uR.theme.modal;
         var e = document.createElement('div');
         this.cancel = this.cancel || function() { this.unmount() };
-        e.addEventListener("click",this.cancel.bind(this));
+        e.addEventListener("click",function() { this.cancel() }.bind(this));
         e.setAttribute("ur-mask",true);
         if (this.root.childNodes.length) {
           this.root.insertBefore(e,this.root.childNodes[0])
