@@ -40,6 +40,7 @@
     ];
   }
   uR.auth.getLinks = uR.auth._getLinks;
+  uR.auth.auth_regexp = /^\/auth\//;
 
   uR.schema.auth = {
     login: [
@@ -90,7 +91,7 @@
 })();
 
 <auth-modal>
-  <dialog class={ theme.outer } open>
+  <div class={ theme.outer }>
     <div class={ theme.header }>
       <h3>{ title }</h3>
     </div>
@@ -112,13 +113,13 @@
         Did you suddenly remember it? <a href="/auth/login/?next={ next }">Login</a>
       </center>
     </div>
-  </dialog>
+  </div>
   var self = this;
   ajax_success(data) {
     uR.auth.setUser(data.user);
     (uR.AUTH_SUCCESS || function() {
-      var path = self.next || "/";
-      if (window.location.pathname.startsWith("/auth/")) { path == "/"; } // avoid circular redirect!
+      var path = self.next || window.location;
+      if (path.match(uR.auth.auth_regexp)) { path == "/"; } // avoid circular redirect!
       uR.route(path);
     })();
     self.unmount();
@@ -141,9 +142,9 @@
     // user logged in sometime after this was mounted!
     if (uR.auth.user) { self.ajax_success({user: uR.auth.user}) }
   });
-  close(e) {
-    if (window.location.pathname.startsWith("/auth/")) { window.location = "/" }
-    this.unmount();
+  cancel(e) {
+    if (window.location.pathname(uR.auth.auth_regexp)) { window.location = "/" }
+    this.unmount()
   }
 </auth-modal>
 
