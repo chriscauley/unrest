@@ -24,14 +24,14 @@
     history.pushState({path:path},"" || document.title,path);
   } 
 
-  uR.pushState = uR.debounce(pushState,100)
+  uR.pushState = uR.debounce(pushState,100);
 
   uR.route = function route(href,data) {
     var new_url = new URL(href,href.match("://")?undefined:window.location.origin);
     var old_url = new URL(window.location.href);
-    var pathname = new_url.pathname;
+    var pathname = new_url.pathname || href;
 
-    uR.forEach(uR._on_routes,function(f) {f(pathname,data)})
+    uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
     data = data || {};
     data.location = new_url;
     for (key in uR._routes) {
