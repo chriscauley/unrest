@@ -19,6 +19,7 @@
     display: -webkit-flex;
     display: flex;
     justify-content: center;
+    min-height: 500px;
     overflow: hidden;
     z-index: 10000;
   }

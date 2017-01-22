@@ -118,7 +118,7 @@
   ajax_success(data) {
     uR.auth.setUser(data.user);
     (uR.AUTH_SUCCESS || function() {
-      var path = self.next || window.location;
+      var path = self.next || window.location.href;
       if (path.match(uR.auth.auth_regexp)) { path == "/"; } // avoid circular redirect!
       uR.route(path);
     })();
