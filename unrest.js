@@ -113,8 +113,8 @@ var uR = (function() {
     request.open(method, url , true);
     request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
-    if ("POSTDELETE".indexOf(method) != -1 && document.querySelector("[name=csrfmiddlewaretoken]")) {
-      request.setRequestHeader("X-CSRFToken",document.querySelector("[name=csrfmiddlewaretoken]").value);
+    if ("POSTDELETE".indexOf(method) != -1 && uR.cookie.get("csrftoken")) {
+      request.setRequestHeader("X-CSRFToken",uR.cookie.get("csrftoken"));
     }
     request.onload = function(){
       try { var data = JSON.parse(request.response); }
