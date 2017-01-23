@@ -1,8 +1,9 @@
 uR.config.tag_templates.push("checkbox-input");
 
 <checkbox-input>
+  <input type="text" name={ parent._name } />
   <div each={ choices } class="choice">
-    <input type="checkbox" id="{ id }" value={ value } name={ name } onchange={ update } />
+    <input type="checkbox" id="{ id }" value={ value } onchange={ update } />
     <label for="{ id }">{ label }</label>
   </div>
 
@@ -11,7 +12,6 @@ uR.config.tag_templates.push("checkbox-input");
     var _choices = uR.form.parseChoices(this.parent.choices);
     this.choices = _choices.map(function(choice_tuple,index) {
       return {
-        name: self.parent._name,
         label: choice_tuple[1],
         id: "checkbox_"+self.parent._name+"_"+index,
         value: uR.slugify(choice_tuple[0]),
