@@ -3,26 +3,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
     <link href="../.dist/token-built.css" rel="stylesheet" />
     <link href="../.dist/unrest-built.css" rel="stylesheet" />
-    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
   </head>
   <body>
     <div class="container" id="content"></div>
-    <div id="mocha"></div>
   </body>
   <script src="riot+compiler.js"></script>
   <script src="../.dist/unrest-built.js"></script>
   <script src="../.dist/token-built.js"></script>
-
-  <script src="../node_modules/mocha/mocha.js"></script>
-  <script src="../node_modules/chai/chai.js"></script>
-  <script>
-    mocha.ui('bdd');
-    mocha.reporter('html');
-    var expect = chai.expect;
-  </script>
-  <script src="ur-input.js"></script>
-  <script>
-    if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
-    else { mocha.run(); }
-  </script>
+  <script src="base.js"></script>
+  <script src="mocha-chai.js"></script>
 </html>
