@@ -5,9 +5,26 @@
     <link href="../.dist/unrest-built.css" rel="stylesheet" />
   </head>
   <body>
-    <div class="container" id="content"></div>
+    <div class="container">
+      <div id="content"></div>
+      <div id="mocha"></div>
+      <link-list></link-list>
+    </div>
   </body>
   <script src="riot+compiler.js"></script>
+  <script type="riot/tag">
+    <link-list>
+      <ul>
+        <li each="{ name in opts.links }"><a href="?ur-test={ name }">{ name }</a></li>
+      </ul>
+    </link-list>
+  </script>
+  <script>
+    riot.mount("link-list",{links: [
+      "_required-inputs.js",
+      "_nonrequired-inputs.js",
+    ]});
+  </script>
   <script src="../.dist/unrest-built.js"></script>
   <script src="../.dist/token-built.js"></script>
   <script src="base.js"></script>
