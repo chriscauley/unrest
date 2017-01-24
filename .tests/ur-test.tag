@@ -70,4 +70,28 @@ function testNonRequiredElement(name,initial) {
   if (uR.getQueryParameter("ur-test")) {
     uR.ready(function() { uR.test(uR.getQueryParameter("ur-test")); });
   }
+
+  uR.setError = function(count) {
+    uR.storage.set(uR.getQueryParameter("ur-test"),count || 0)
+  }
 })();
+
+<link-list>
+  <ul>
+    <li each={ links }>
+      <span class={ s_class }>{ status }</span> <a href="?ur-test={ url }">{ url }</a>
+    </li>
+  </ul>
+  this.on("mount",function() {
+    var self = this;
+    this.links = [];
+    uR.forEach(this.opts.links,function(l) {
+      var link = { url: l, status: "untested" };
+      var errors = uR.storage.get(l);
+      if (errors == 0) { link.status = "pass"; link.s_class = "green"; }
+      if (errors) { link.status = errors; link.s_class = "red"; }
+      self.links.push(link);
+    });
+    this.update();
+  });
+</link-list>

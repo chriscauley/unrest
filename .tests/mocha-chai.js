@@ -17,6 +17,5 @@ uR.test.prep = function() {
 };
 
 uR.test.start = function() {
-  if (window.mochaPhantomJS) { mochaPhantomJS.run(); }
-  else { mocha.run(); }
+  (window.mochaPhantomJS || mocha).run(uR.setError);
 }
