@@ -1,8 +1,8 @@
-uR.test.links = [ "../node_modules/mocha/mocha.css" ];
+uR.test.links = [ "../../unrest/node_modules/mocha/mocha.css" ];
 uR.test.scripts = [
   "dummy_data.js",
-  "../node_modules/mocha/mocha.js",
-  "../node_modules/chai/chai.js"
+  "../../unrest/node_modules/mocha/mocha.js",
+  "../../unrest/node_modules/chai/chai.js"
 ];
 
 uR.test.prep = function() {

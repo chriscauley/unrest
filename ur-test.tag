@@ -1,5 +1,5 @@
 function changeElement(element,value) {
-  element.value = value
+  element.value = value;
   element.dispatchEvent(new Event("change"));
   element.dispatchEvent(new Event("keyup"));
   element.dispatchEvent(new Event("blur"));
@@ -59,8 +59,8 @@ function testNonRequiredElement(name,initial) {
     }
     uR.test.prep();
     var script = document.createElement("script");
-    script.src = path;
     script.onload = uR.test.start;
+    script.src = path;
     document.body.appendChild(script);
   }
   uR.test.scripts = [];
@@ -68,15 +68,28 @@ function testNonRequiredElement(name,initial) {
   uR.test.prep = function() {};
   uR.test.start = function() {};
   if (uR.getQueryParameter("ur-test")) {
-    uR.ready(function() { uR.test(uR.getQueryParameter("ur-test")); });
+    var t = uR.getQueryParameter("ur-test");
+    var t_path = t.match(/.*\//);
+    if (t_path) { t_path = t_path[0]; }
+    else {
+      var script_tags = document.getElementsByTagName('script');
+      t_path = script_tags[script_tags.length-1].src.match(/.*\//)[0]+"../.tests/";
+    }
+    uR.pready(t_path+"dummy_data.js");
+    uR.ready(function() { uR.test(t_path+t); });
   }
 
   uR.setError = function(count) {
-    uR.storage.set(uR.getQueryParameter("ur-test"),count)
+    uR.storage.set(uR.getQueryParameter("ur-test"),count || 0)
   }
 })();
 
-riot.tag('link-list', '<ul> <li each="{ links }"> <span class="{ s_class }">{ status }</span> <a href="?ur-test={ url }">{ url }</a> </li> </ul>', function(opts) {
+<link-list>
+  <ul>
+    <li each={ links }>
+      <span class={ s_class }>{ status }</span> <a href="?ur-test={ url }">{ url }</a>
+    </li>
+  </ul>
   this.on("mount",function() {
     var self = this;
     this.links = [];
@@ -89,5 +102,4 @@ riot.tag('link-list', '<ul> <li each="{ links }"> <span class="{ s_class }">{ st
     });
     this.update();
   });
-
-});
+</link-list>
