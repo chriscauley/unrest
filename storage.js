@@ -21,10 +21,10 @@ uR.storage = (function() {
     localStorage.setItem('test', '1');
     localStorage.removeItem('test');
   } catch(e) {
-    var FAKE_STORAGE = {};
-    function set(key,value) { FAKE_STORAGE[key] = value }
-    function get(key) { return FAKE_STORAGE[key]; }
-    function has(key) { return FAKE_STORAGE.hasOwnProperty(key); }
+    uR.FAKE_STORAGE = {};
+    function set(key,value) { uR.FAKE_STORAGE[key] = value }
+    function get(key) { return uR.FAKE_STORAGE[key]; }
+    function has(key) { return uR.FAKE_STORAGE.hasOwnProperty(key); }
   }
 
   // timebomb remote data store

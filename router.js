@@ -1,5 +1,6 @@
 (function() {
   uR.mountElement = function mountElement(name,options) {
+    name = name.replace(/\//g,''); // Some tags pass in tag name for path like /hello-world/
     options = options || {};
     var target = document.querySelector(options.mount_to || uR.config.mount_to);
     var children = target.childNodes;
