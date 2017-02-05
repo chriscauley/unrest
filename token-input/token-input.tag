@@ -7,7 +7,6 @@ uR.config.tag_templates.push("token-input");
   this.on("mount",function() {
     var initial = [];
     uR.forEach(parent.initial_value || [], function(i) { initial.push({name:i,id:i}); });
-    this._name = opts.parent._name;
     this.update();
     $(this.root).find("input").tokenInput(parent.library,{
       preventDuplicates: true,

@@ -8,12 +8,13 @@
       return c;
     });
   }
-
   // this mixin is what gives custom input tags ur-input like powers
   riot.mixin({
     init: function() {
       if (!this.opts.is_ur_input) { return }
       this.parent = this.parent || this.opts.parent;
+      this._name = this._name || this.parent._name;
+      this.initial_value = this.initial_value || this.parent.initial_value;
       if (this.parent) { this.parent.child = this; }
       this.value = "";
       this.setValue = function(v) {
@@ -134,7 +135,7 @@
     if (self.child) { self.child.setValue("") }
     self.show_errors = false;
     self.value = self.initial_value || "";
-    self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file";
+    self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file" || self.type == "ur-datetime";
     target.value = self.value;
     self.onKeyUp({target:target});
     self.update()
