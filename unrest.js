@@ -26,6 +26,15 @@ var uR = (function() {
     if (_sd) { return _sd[1]; }
   }
 
+  uR.getQueryDict = function(str) {
+    str = str || window.location.search;
+    var obj = {};
+    str.replace(/([^=&?]+)=([^&]*)/g, function(m, key, value) {
+      obj[decodeURIComponent(key)] = decodeURIComponent(value);
+    });
+    return obj
+  }
+
   uR.cookie = {
     set: function (name,value,days) {
       var expires = "";

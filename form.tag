@@ -283,11 +283,13 @@
     if (!_super && alt_submit) {
       if (alt_submit == "noop") {
         var form = this.root.querySelector("form");
-        var e = document.createElement('input');
-        e.type = "hidden";
-        e.name = "csrfmiddlewaretoken";
-        e.value = document.querySelector("[name=csrfmiddlewaretoken]").value;
-        form.appendChild(e);
+        if (form.method == "POST" && document.querySelector("[name=csrfmiddlewaretoken]")) {
+          var e = document.createElement('input');
+          e.type = "hidden";
+          e.name = "csrfmiddlewaretoken";
+          e.value = document.querySelector("[name=csrfmiddlewaretoken]").value;
+          form.appendChild(e);
+        }
         form.submit()
       }
       else { alt_submit(this); }
