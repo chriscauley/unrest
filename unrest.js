@@ -114,7 +114,7 @@ var uR = (function() {
     }
     if (method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
-      for (key in data) { url += key + "=" + data[key] + "&" }
+      for (key in data) { url += key + "=" + encodeURIComponent(data[key]) + "&" }
     }
 
     // create and send XHR
