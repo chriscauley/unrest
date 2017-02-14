@@ -26,6 +26,15 @@ var uR = (function() {
     if (_sd) { return _sd[1]; }
   }
 
+  uR.getQueryDict = function(str) {
+    str = str || window.location.search;
+    var obj = {};
+    str.replace(/([^=&?]+)=([^&]*)/g, function(m, key, value) {
+      obj[decodeURIComponent(key)] = decodeURIComponent(value);
+    });
+    return obj
+  }
+
   uR.cookie = {
     set: function (name,value,days) {
       var expires = "";
@@ -105,7 +114,7 @@ var uR = (function() {
     }
     if (method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
-      for (key in data) { url += key + "=" + data[key] + "&" }
+      for (key in data) { url += key + "=" + encodeURIComponent(data[key]) + "&" }
     }
 
     // create and send XHR

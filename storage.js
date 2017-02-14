@@ -20,11 +20,11 @@ uR.storage = (function() {
   try {
     localStorage.setItem('test', '1');
     localStorage.removeItem('test');
+    if (uR.getQueryParameter("FAKE_STORAGE") != -1) { throw "Faking storage" }
   } catch(e) {
-    var FAKE_STORAGE = {};
-    function set(key,value) { FAKE_STORAGE[key] = value }
-    function get(key) { return FAKE_STORAGE[key]; }
-    function has(key) { return FAKE_STORAGE.hasOwnProperty(key); }
+    function set(key,value) { uR.storage.FAKE_STORAGE[key] = value }
+    function get(key) { return uR.storage.FAKE_STORAGE[key]; }
+    function has(key) { uR.storage.FAKE_STORAGE.hasOwnProperty(key); }
   }
 
   // timebomb remote data store
@@ -55,6 +55,7 @@ uR.storage = (function() {
     get: get,
     set: set,
     has: has,
+    FAKE_STORAGE: {},
     lookups: {}, // functions to look up missing/expired values
     defaults: {}, // table with default values
     remote: remote,
