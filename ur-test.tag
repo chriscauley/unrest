@@ -42,15 +42,16 @@ function testNonRequiredElement(name,initial) {
 (function() {
   uR.auth.reset = function() {};
   uR.test = function(path) {
+    if (uR.test.loading) { return }
     if (!uR.test.loaded) {
       uR.forEach(uR.test.scripts,function(s) {
         var script = document.createElement("script");
-        script.src = s;
+        script.src = uR.static(s);
         document.body.appendChild(script);
       });
       uR.forEach(uR.test.links,function(s) {
         var link = document.createElement("link");
-        link.href = s;
+        link.href = uR.static(s);
         link.rel = "stylesheet";
         document.body.appendChild(link);
       });
@@ -65,6 +66,7 @@ function testNonRequiredElement(name,initial) {
   }
   uR.test.scripts = [];
   uR.test.links = [];
+  uR.test.loading = 0;
   uR.test.prep = function() {};
   uR.test.start = function() {};
   if (uR.getQueryParameter("ur-test")) {
@@ -75,8 +77,9 @@ function testNonRequiredElement(name,initial) {
       var script_tags = document.getElementsByTagName('script');
       t_path = script_tags[script_tags.length-1].src.match(/.*\//)[0]+"../.tests/";
     }
+    uR.pready("unrest/.tests/mocha-chai.js");
     uR.pready(t_path+"dummy_data.js");
-    uR.ready(function() { uR.test(t_path+t); });
+    uR.ready(function() { uR.test(t); });
   }
 
   uR.setError = function(count) {

@@ -216,10 +216,9 @@ var uR = (function() {
   uR.pready = function(f) { uR._pready.push(f) }
   uR._loading = [];
   window.onload = uR.onload = function() {
-    console.log(1);
     // instead of firing _ready functions, load _pready scripts synchronously
     if (uR._pready.length) { return uR.require(uR._pready,uR.onload); }
-    for (var i=0;i<uR._ready.length;i++) { uR._ready[i]() }
+    for (var i=0;i<uR._ready.length;i++) { uR._ready[i](); }
     uR.ready = function(func) { func(); }
     uR.route && uR.route(window.location.href);
     // #! dummy route function. This is so everything can use uR.route without router.js
@@ -228,6 +227,7 @@ var uR = (function() {
 
   uR.require = function(scripts,callback) {
     uR.forEach(scripts,function(s) {
+      s = uR.static(s);
       if (s.match(/.css$/)) {
         var link = document.createElement("link");
         link.href = s;
@@ -235,9 +235,11 @@ var uR = (function() {
         document.body.appendChild(link);
       } else {
         var script = document.createElement("script");
+        uR.test.loading++;
         script.onload = function() {
           uR._pready.splice(uR._pready.indexOf(s),1);
-          callback();
+          uR.test.loading--;
+          if (!uR.test.loading) { callback(); }
         };
         script.src = s;
         document.body.appendChild(script);
