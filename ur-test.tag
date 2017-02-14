@@ -40,7 +40,8 @@ function testNonRequiredElement(name,initial) {
   });
 }  
 (function() {
-  uR.auth.reset = function() {};
+  // uR.auth.reset = function() {};
+  // this causes all sorts of problems :(
   uR.test = function(path) {
     if (uR.test.loading) { return }
     if (!uR.test.loaded) {
