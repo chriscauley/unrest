@@ -40,8 +40,7 @@ function testNonRequiredElement(name,initial) {
   });
 }  
 (function() {
-  // uR.auth.reset = function() {};
-  // this causes all sorts of problems :(
+  uR.ajax._stub['/user.json'] = function(opts) { opts.success({}) };
   uR.test = function(path) {
     if (uR.test.loading) { return }
     if (!uR.test.loaded) {

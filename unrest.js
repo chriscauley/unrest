@@ -87,6 +87,13 @@ var uR = (function() {
       target = target || that.target || that.ajax_target;
     }
 
+    // adding a url to ajax._stub blocks the actual ajax function. used for testing.
+    if (uR.ajax._stub[url]) {
+      url = opts.url.match(/(?:.*\/\/[^\/]+)?(\/[^?]+)/)[1];
+      uR.ajax._stub[url](opts);
+      return
+    }
+
     // mark as loading
     if (target) {
       target.removeAttribute("data-success");
@@ -159,6 +166,8 @@ var uR = (function() {
     };
     request.send(form_data);
   }
+
+  uR.ajax._stub = {};
 
   uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
