@@ -40,7 +40,6 @@ function testNonRequiredElement(name,initial) {
   });
 }  
 (function() {
-  uR.ajax._stub['/user.json'] = function(opts) { opts.success({}) };
   uR.test = function(path) {
     if (uR.test.loading) { return }
     if (!uR.test.loaded) {
@@ -70,6 +69,7 @@ function testNonRequiredElement(name,initial) {
   uR.test.prep = function() {};
   uR.test.start = function() {};
   if (uR.getQueryParameter("ur-test")) {
+    uR.ajax._stub['/user.json'] = function(opts) { opts.success({}) }; // nuke user.json for now
     var t = uR.getQueryParameter("ur-test");
     var t_path = t.match(/.*\//);
     if (t_path) { t_path = t_path[0]; }
