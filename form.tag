@@ -301,7 +301,6 @@
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
         error: this.ajax_error,
-        target: this.submit_button,
         that: self
       });
     }
@@ -357,6 +356,8 @@
       this.ajax_success = function() { self._ajax_success();window.location = this.opts.success_redirect; }
     }
     this.ajax_error = this.opts.ajax_error || _parent.opts.ajax_error || _parent.ajax_error || function() {};
+    this.ajax_target = this.opts.ajax_target || this.submit_button;
+
     this.messages = [];
     var _schema = this.opts.schema || _parent.opts.schema || _parent.schema;
     if (typeof _schema == "string") {

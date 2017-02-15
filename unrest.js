@@ -85,6 +85,7 @@ var uR = (function() {
       that.form_error = undefined;
       if (!target && that.target) { console.warn("Use of that.target is depracated in favor of that.ajax_target") }
       target = target || that.target || that.ajax_target;
+      if (typeof target == "string") { target = that.root.querySelector(target) || document.querySelector(target); }
     }
 
     // mark as loading
