@@ -11,6 +11,13 @@
   // this mixin is what gives custom input tags ur-input like powers
   riot.mixin({
     init: function() {
+      /* comment this line to activate performance recording!
+      window.PERFS = {};
+      this.on("*",function(action) {
+        PERFS[this.root.tagName] = PERFS[this.root.tagName] || {};
+        PERFS[this.root.tagName][action] = (PERFS[this.root.tagName][action] || 0) +1;
+      });
+      setTimeout(function() { console.log(PERFS['UR-INPUT'].update) },3000);/**/
       if (!this.opts.is_ur_input) { return }
       this.parent = this.parent || this.opts.parent;
       this._name = this._name || this.parent._name;
@@ -125,6 +132,7 @@
     if (!this.data_error) { this._keyUp(this.value) }
     if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
     //this.update();
+    this.parent.update();
   }
 
   this.reset = function() {
@@ -258,7 +266,7 @@
       <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>{ success_text }</button>
       <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>{ cancel_text }</button>
     </div>
-    <ul class="messagelist" if={ messages.length }>
+    <ul class="messagelist" if={ messages && messages.length }>
       <li class="{ level }" each={ messages }>{ body }</li>
     </ul>
   </form>

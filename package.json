@@ -38,6 +38,7 @@
     "lodash": "^4.17.3",
     "mocha": "^3.2.0",
     "mocha-phantomjs": "^4.1.0",
+    "riot": "^3.2.1",
     "rollup-plugin-babel": "^2.6.1",
     "through2": "^2.0.3"
   }
