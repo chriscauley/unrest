@@ -95,6 +95,7 @@
 
   onChange(e) {
     if (self.parent.active) { self.show_errors = true; }
+    self.parent.onChange && sel.parent.onChange(e,this);
     self.onKeyUp(e);
   }
 
@@ -371,6 +372,7 @@
         return;
       }
     }
+    this.onChange = this.opts.onChange;
     this.schema = [];
     this.empty_initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
     this.initial = uR.storage.get(this.opts.action) || this.empty_initial;
