@@ -3,6 +3,8 @@ var SCHEMA = [
   {name: "email", type: "email"},
   {name: 'select_color', type: 'select', choices: ['red','green','blue']},
   {name: "textarea", type: "textarea"},
+  {name: "checkboxes", type: "checkbox-input",choices: ['red','green','blue']},
+  {name: "radioes", type: "radio",choices: ['red','green','blue']},
 ];
 var INITIAL = {
   first_name: "bob",
