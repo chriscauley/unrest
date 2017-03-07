@@ -1,13 +1,13 @@
 /* materialize does input + label.active... I hate that so I'm doing input.active + label */
 .input-field {
-  .active, select, checkbox-input {
+  .active, select, radio-input, checkbox-input {
     + label {
       font-size: 0.8rem;
       top: -0.8rem;
     }
   }
   select + label { top: -1.1rem; }
-  checkbox-input + label { top: -1rem; }
+  radio-input + label, checkbox-input + label { top: -1rem; }
   &.checkbox label { font-size: inherit; top: 0; }
 }
 
