@@ -26,6 +26,16 @@
         // update the ur-form
         this.parent.parent && this.parent.parent.update();
       }.bind(this);
+      if (this.parent.choices) {
+        var self = this;
+        this.choices = uR.form.parseChoices(this.parent.choices).map(function(choice_tuple,index) {
+          return {
+            label: choice_tuple[1],
+            id: self.parent.id+"__"+index,
+            value: uR.slugify(choice_tuple[0]),
+          }
+        });
+      }
     },
   });
 })();
@@ -197,6 +207,9 @@
           self.update();
         });
       }
+    }
+    if (this.input_type == "radio") {
+      this.input_type = "radio-input";
     }
     if (this.input_type == "textarea") { this.tagname = "textarea"; }
     if (this.input_type == "header") {
