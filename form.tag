@@ -38,6 +38,57 @@
       }
     },
   });
+  uR.form.prepField = function(field) {
+    var f = { ur_form: this }; // this == ur_form via bind
+    if (typeof field == "string") {
+      var name = field;
+      if (uR.schema.fields[field]) {
+        field = uR.schema.fields[field];
+        field.name = name;
+      } else {
+        field = { name: field, type: 'text' }
+      }
+    }
+    for (k in field) { f[k] = field[k]; }
+    f.ur_form = this;
+    f.initial_value = f.value || this.initial[f.name];
+
+    // tagname changes the riot tag
+    f.tagname = uR.config.input_overrides[f.type] || "ur-input";
+
+    f.name = f.name || f.type;
+    if (typeof(f.name) == "object") { // can't remember when this is used
+      console.warn("look at me!")
+    }
+    f.name = (typeof(f.name) == "object")?f.name[0]:f.name;
+
+    // verbose_name is useful for error messages
+    f.verbose_name = f.verbose_name || f.label || f.placeholder;
+    if (!f.verbose_name) {
+      var replace = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
+      f.verbose_name = f.name.replace(/[-_]/g," ").replace(/\w\S*/g, replace);
+    }
+    f.label = f.label || f.verbose_name;
+    f.id = f.id || "id_" + f.name + this.suffix;
+    f.input_type = f.type || "text";
+
+    // if there's a validator, use type=text to ignore browser default
+    if (uR.config.text_validators[f.input_type]) {
+      f.validate = uR.config.text_validators[f.input_type];
+      f.input_type = "text";
+    }
+    f.required = field.required != undefined;
+
+    f.validate = f.validate || function() {};
+    f.validate = (f.bounce)?uR.debounce(f.validate.bind(f),f.bounce):f.validate;
+    f.keyUp = f.keyUp || function() {};
+    f.keyUp = (f.bounce)?uR.debounce(f.keyUp.bind(f),f.bounce):f.keyUp;
+
+    // these bits may go better in a reset or something
+    f.show_errors = false;
+    f.IS_CHECKED = self.initial_checked;
+    return f;
+  }
 })();
 
 <image-input>
@@ -55,29 +106,12 @@
 </image-input>
 
 <ur-input>
-  <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
+  <style scoped> :scope { display: block; }</style>
   <input if={ tagname == 'textinput' } type={ input_type } name={ _name } id={ id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
          autocomplete="off">
-  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
-            onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
-            placeholder={ placeholder } required={ required } minlength={ minlength }
-            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
-            autocomplete="off">{ value }</textarea>
-  <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
-    <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.initial)?'selected':'' } each={ choice in choice_tuples }
-            value={ choice[0] }>{ choice[1] }</option>
-  </select>
-  <label for={ id } if={ _label } class={ required: required } onclick={ labelClick }
-         data-success={ data_success }>{ _label }</label>
-
-  <h5 if={ tagname == 'header' }>{ content }</h5>
-  <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
-  <div class="error">{ data_error }</div>
-  <style scoped> :scope { display: block; }</style>
 
   var self = this;
   onFocus(e) {
@@ -143,48 +177,23 @@
     if (!target || ['checkbox','radio','submit'].indexOf(target) != -1) {
       return; //#! TODO this should reset based off of initial values
     }
-    if (self.child) { self.child.setValue("") }
+    /*if (self.child) { self.child.setValue("") }*/
     self.show_errors = false;
     self.value = self.initial_value || "";
     self.activated = (self.value != "") || self.input_type == "select" || self.input_type == "file" || self.type == "ur-datetime";
     target.value = self.value;
     self.onKeyUp({target:target});
     self.update()
-    self.parent.update();
   }
 
   this.on("mount", function() {
-    // name is kind of a reserved word for riot since <element name="some_name"> appears as this.some_name
-    // if the schema.name == "name" then it causes massive issues
-    this.name = this.name || this.type;
-    this._name = (typeof(this.name) == "object")?this.name[0]:this.name;
-    this.verbose_name = this.verbose_name || this.label || this.placeholder;
-    if (!this.verbose_name) {
-      var f = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
-      this.verbose_name = this._name.replace(/[-_]/g," ").replace(/\w\S*/g, f);
-    }
-    this._label = this.label || this.verbose_name;
-    this.id = this.id || "id_" + this._name + this.parent.suffix;
-    this.input_type = this.type || "text";
-    this.validate = this.validate || function() {};
-    if (uR.config.text_validators[this.input_type]) {
-      this.validate = uR.config.text_validators[this.input_type];
-      this.input_type = "text";
-    }
-    if (this.required == undefined) { this.required = true; }
-    this._validate = (this.bounce)?uR.debounce(this.validate.bind(this),this.bounce):this.validate;
-    this.keyUp = this.keyUp || function() {};
-    this._keyUp = (this.bounce)?uR.debounce(this.keyUp.bind(this),this.bounce):this.keyUp;
-    this.show_errors = false;
-    this.tagname = "textinput";
-    this.IS_CHECKED = self.initial_checked;
     if (this.input_type == "hidden") {
       this.root.style.display = "none";
-      this._label = "";
+      this.label = "";
     }
     if (this.input_type == "select") {
       this.tagname = "select";
-      if (this.placeholder) { this._label = undefined };
+      if (this.placeholder) { this.label = undefined };
       function setChoices() {
         if (!self.choice_tuples) {
           self.verbose_choices = self.verbose_choices || self.choices;
@@ -208,23 +217,13 @@
         });
       }
     }
-    if (this.input_type == "radio") {
-      this.input_type = "radio-input";
-    }
     if (this.input_type == "textarea") { this.tagname = "textarea"; }
     if (this.input_type == "header") {
       this.tagname = "header";
-      this.content = this._label;
-      this._label = undefined;
+      this.content = this.label;
+      this.label = undefined;
       this.no_validation = true;
     }
-    if (uR.config.tag_templates.indexOf(this.input_type) != -1) {
-      this.tagname = this.input_type;
-      var _e = document.createElement(this.input_type);
-      this.root.insertBefore(_e,this.root.firstChild);
-      setTimeout(function() { riot.mount(_e,{parent:self,form: self.parent,is_ur_input: true}); },0);
-    }
-    if (this.parent && this.parent.fields) { this.parent.fields.push(this); }
 
     // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
     var i_tries = 0;
@@ -244,22 +243,44 @@
         this.root.querySelector("input").setAttribute(k,this.extra_attrs[k])
       }
     }
+    /*
     if (this.label_after) {
       var s = document.createElement("span");
       s.innerHTML = this.label_after;
       var label = this.root.querySelector("label");
       label.parentNode.insertBefore(s,label.nextSibling);
-    }
+    }*/
   });
   this.on("update", function() {
     this.invalid = this.data_error && this.show_errors;
   });
 </ur-input>
 
+<ur-todo>
+  <!-- lol -->
+  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
+            onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
+            placeholder={ placeholder } required={ required } minlength={ minlength }
+            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
+            autocomplete="off">{ value }</textarea>
+  <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
+    <option if={ placeholder } value="">{ placeholder }</option>
+    <option selected={ (choice[0]==parent.initial)?'selected':'' } each={ choice in choice_tuples }
+            value={ choice[0] }>{ choice[1] }</option>
+  </select>
+  <h5 if={ tagname == 'header' }>{ content }</h5>
+</ur-todo>
+
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
-    <ur-input each={ schema } class="{ name } { type } { uR.config.form.field_class }"/>
+    <div each={ schema } class="{ name } { type } { uR.config.form.field_class } ur-input">
+      <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
+      <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
+             data-success={ data_success }>{ label }</label>
+      <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
+      <div class="error">{ data_error }</div>
+    </div>
     <div if={ non_field_error } class="non_field_error">
       <div class={ uR.theme.error_class }>{ non_field_error }</div>
       <p if={ uR.config.support_email } style="text-align: center;">
@@ -281,6 +302,9 @@
   this.btn_success = this.opts.btn_success || uR.config.btn_success;
   this.btn_cancel = this.opts.btn_cancel || uR.config.btn_cancel;
   this.cancel_text = this.opts.cancel_text || uR.config.cancel_text;
+  this.success_text = this.opts.success_text || "Submit";
+  this.onChange = this.opts.onChange;
+  this.suffix = this.opts.suffix || "";
 
   submit(e,_super) {
     if (this._ajax_busy) { return; }
@@ -333,27 +357,6 @@
       var f = self.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
     },0)
   }
-  this.addField = function(field) {
-    var f = {};
-    if (typeof field == "string") {
-      var name = field;
-      if (uR.schema.fields[field]) {
-        field = uR.schema.fields[field];
-        field.name = name;
-      } else {
-        field = { name: field, type: 'text' }
-      }
-    }
-    for (k in field) { f[k] = field[k]; }
-    if (f.type == "checkbox") {
-      f.value = true;
-      f.initial_value = f.value;
-      f.initial_checked = self.initial[f.name];
-    } else {
-      f.initial_value = f.value || self.initial[f.name];
-    }
-    self.schema.push(f);
-  }
   getData() {
     var data = {};
     uR.forEach(this.fields,function(f) { data[f._name] = f.value || ""; });
@@ -379,20 +382,24 @@
       if (uR.schema[this.schema_url]) {
         _schema = uR.schema[this.schema_url];
       } else {
+        // #! TODO this is inefficient and takes multiple synchronous calls
         var url = _schema;
         uR.getSchema(url,this.mount.bind(this));
         _schema = [];
         return;
       }
     }
-    this.onChange = this.opts.onChange;
-    this.schema = [];
     this.empty_initial = uR.schema.__initial[this.schema_url] || this.opts.initial || _parent.opts.initial || {};
-    this.initial = uR.storage.get(this.opts.action) || this.empty_initial;
-    uR.forEach(_schema,this.addField);
-    this.suffix = this.opts.suffix || "";
-    this.success_text = this.opts.success_text || "Submit";
-    this.fields = [];
+    this.initial = uR.storage.get(this.opts.action) || this.empty_initial || {};
+    this.schema = _schema.map(uR.form.prepField.bind(this));
+    this.field_list = [];
+    this.fields = {};
+    uR.forEach(this.schema, function(field,i) {
+      var element = document.createElement(field.tagname);
+      self.field_list.push(riot.mount(element,field)[0]);
+      self.fields[field._name] = self.field_list[self.field_list.length-1];
+    });
+    this.update();
     this.update();
     if (this.fields.length && !opts.no_focus) {
       setTimeout(function() {
@@ -402,7 +409,17 @@
       },0)
     }
   });
+  this.renderFields = function() {
+    if (this._fields_rendered) { return }
+    var targets = this.root.querySelectorAll(".ur-input");
+    uR.forEach(this.field_list,function(field,i) {
+      targets[i].insertBefore(field.root,targets[i].firstElementChild);
+    });
+  }
+
   this.on("update",function() {
+    if (this.root.querySelectorAll(".ur-input").length == 0) { return; }
+    this.renderFields();
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
     if (!this.fields) { return }
