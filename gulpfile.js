@@ -28,8 +28,23 @@ gulp.task('build-js', ['build-tag'], function () {
     .pipe(gulp.dest(".dist/"));
 });
 
+var tag_files = [
+  "auth.tag",
+  "dialog.tag",
+
+  "form.tag",
+  "checkbox-input.tag",
+  "select-input.tag",
+  //"radio-input.tag",
+
+  "tabs.tag",
+  "markdown.tag",
+  "multi-file.tag",
+  "test.tag",
+]
+
 gulp.task('build-tag', function() {
-  return gulp.src("*.tag")
+  return gulp.src(tag_files)
     .pipe(riot())
     .pipe(concat("_tags.js"))
     .pipe(gulp.dest(".dist"));

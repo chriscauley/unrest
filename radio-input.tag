@@ -1,4 +1,7 @@
-uR.config.tag_templates.push("radio-input");
+// DEPRACATED: This is being merged with checkbox input and is currently unused.
+
+uR.config.input_overrides.checkbox = "radio-input";
+uR.config.input_overrides["radio-input"] = "radio-input";
 
 <radio-input>
   <div each={ choices } class="choice">

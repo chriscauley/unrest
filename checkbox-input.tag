@@ -1,14 +1,22 @@
-uR.config.tag_templates.push("checkbox-input");
+(function() {
+  uR.config.input_overrides.checkbox = uR.config.input_overrides["checkbox-input"] = "checkbox-input";
+  uR.config.input_overrides.radio = uR.config.input_overrides["radio-input"] = "checkbox-input";
+  uR.form.fields['checkbox-input'] = class CheckboxInput extends uR.form.URInput {
+    constructor(form,options) {
+      super(form,options)
+    }
+  }
+})();
 
 <checkbox-input>
-  <div each={ choices } class="choice">
-    <input type="checkbox" id="{ id }" value={ value } onchange={ update } />
-    <label for="{ id }">{ label }</label>
+  <div each={ field.choices } class="choice">
+    <input type={ parent.field.type } id={ id } value={ value } onchange={ update } name={ parent._name } />
+    <label for={ id }>{ label }</label>
   </div>
 
   var self = this;
   this.on("mount",function() {
-    if (this.parent.initial_value) {
+    if (this.field.initial_value) {
       var initial = this.parent.initial_value;
       if (typeof initial == "string") { initial = initial.split(",") }
       uR.forEach(initial,function(slug) {
@@ -25,6 +33,6 @@ uR.config.tag_templates.push("checkbox-input");
     uR.forEach(this.root.querySelectorAll("[type=checkbox]"),function(c) {
       c.checked && out.push(c.value);
     });
-    this.setValue(out.join(","));
+    this.field.value = out;
   });
 </checkbox-input>
