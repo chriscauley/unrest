@@ -1,5 +1,7 @@
+uR.__START = new Date().valueOf();
 (function() {
   uR.form = {};
+  uR._t = function(s) { console.log(new Date().valueOf()-uR.__START,s); }
   uR.form.parseChoices = function(choices) {
     // #! TODO This should eventually accomodate groupings as well like:
     // choices = [["group_name",[choice1,choice2,choice3]...],group2,group3]
@@ -8,14 +10,21 @@
       return c;
     });
   }
+  riot.mixin({ // anything with a ur-input like tag needs the following
+    init: function() {
+      if (!this.opts.is_ur_input) { return }
+      this.field = this.opts.field;
+    }
+  });
   uR.form.URForm = class URForm {
-    constructor(ur_form,options) {
-      this.riot_tag = ur_form;
+    constructor(ur_form) {
+      this.form_tag = ur_form;
+      this.opts = ur_form.opts;
       this.messages = [];
       this.prepSchema();
     }
     prepSchema() {
-      var tag = this.riot_tag;
+      var tag = this.form_tag;
       var _schema = tag.opts.schema || tag._parent.opts.schema || tag._parent.schema;
       if (typeof _schema == "string") {
         this.schema_url = _schema;
@@ -28,8 +37,8 @@
           return;
         }
       }
-      this.empty_initial = uR.schema.__initial[this.schema_url] || this.riot_tag.opts.initial || {};
-      this.initial = uR.storage.get(this.riot_tag.opts.action) || this.empty_initial || {};
+      this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
+      this.initial = uR.storage.get(this.form_tag.opts.action) || this.empty_initial || {};
       
       this.schema = _schema.map(function(field) {
         var f = {};
@@ -73,7 +82,7 @@
         }
       }
       for (var k in options) { this[k] = options[k]; }
-      this.required = this.required != undefined; // defaults to true!
+      this.required = this.required == undefined || this.required; // defaults to true!
 
       this.name = this.name || this.type;
       if (typeof(this.name) == "object") { // can't remember when this is used
@@ -88,7 +97,7 @@
         this.verbose_name = this.name.replace(/[-_]/g," ").replace(/\w\S*/g, replace);
       }
       this.label = this.label || this.verbose_name;
-      this.id = this.id || "id_" + this.name + this.suffix;
+      this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
       this.input_type = this.type || "text";
 
       // if there's a validator, use type=text to ignore browser default
@@ -113,8 +122,9 @@
           }
         });
       }
+      this.className = this.name + " " + this.type + " " + uR.config.form.field_class;
       var element = document.createElement(this.tagname);
-      this.field_tag = riot.mount(element,{ field: this, parent: this.form })[0];
+      this.field_tag = riot.mount(element,{ field: this, parent: this.form, is_ur_input: true })[0];
     }
 
     onKeyUp(e) {
@@ -125,8 +135,8 @@
       this.empty = !this.value.length;
       var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
       if (!this.required && !this.value) { invalid_email = false; }
-      this.show_error = true;
-      if (this.required && !this.empty) {
+      this.valid = false;
+      if (this.required && this.empty) {
         this.data_error = "This field is required.";
       }
       else if (this.value.length < this.minlength) {
@@ -137,7 +147,7 @@
         this.data_error = "Please enter a valid email address.";
       }
       else {
-        this.show_error = false;
+        this.valid = true;
       }
       //#! if (!this.data_error) { this.opts.ur_form.keyUp(this) }
       //#! if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
@@ -146,29 +156,29 @@
     onFocus(e) {
       // activate and show error for last field (if not first)
       this.activated = true;
-      var i = this.form.field_list.indexOf(this.field_tag);
-      if (i != 0) { this.form.field_list[i-1].show_error = true; }
+      var last = this.form.field_list[this._field_index-1];
+      if (last) {
+        last.show_error = true;
+        last.form.form_tag.update();
+      }
     }
 
-    fieldBlur(e) {
+    onBlur(e) {
       // deactivate, force reevaluation, show errors
-      var i = this.form.field_list.indexOf(field);
-      if (i !=0 && this.form.active) { field.show_errors = true; }
+      if (this._field_index !=0 && this.form.active) { this.show_error = true; }
       uR.onBlur(this);
       this.activated = false;
-      /* #! TODO need to think over this some more
-         field.last_value = undefined; // force re-validation
-         field.onChange(e);
-      */
+      this.last_value = undefined; // trigger re-evaluation
+      this.onChange(e);
     }
 
     onChange(e) {
       if (this.form.active) { field.show_error = true; }
       this.form.onChange && this.form.onChange(e,this);
-      this.KeyUp(e);
+      this.onKeyUp(e);
     }
     reset() {
-      this.show_errors = false;
+      this.show_error = false;
       this.value = this.initial_value || "";
       var target;
       if (this.field_tag) {
@@ -200,21 +210,13 @@
 </image-input>
 
 <ur-input>
-  <input type={ input_type } name={ _name } id={ id }
+  <!--<input type={ field.type } name={ field.name } id={ field.id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
          class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
-         autocomplete="off">
+         autocomplete="off">-->
 
   var self = this;
-  onFocus(e) {
-    this.opts.ur_form.fieldFocus(e,this);
-  }
-
-  onBlur(e) {
-    this.opts.ur_form.fieldBlur(e,this);
-  }
-
   /* #! TODO
   labelClick(e) {
     if (self.input_type == "checkbox") {
@@ -225,20 +227,16 @@
   }
   */
 
-  onChange(e) {
-    this.field.fieldChange(e,this);
-  }
-
-  onKeyUp(e) {
-    this.field.fieldKeyUp(e,this);
-  }
-
   this.on("mount", function() {
-    this.field = this.opts.field;
-    if (this.input_type == "hidden") {
-      this.root.style.display = "none";
-      this.label = "";
-    }
+    this._input = document.createElement("input");
+    this._input.type = this.field.type;
+    this._input.name = this.field.name;
+    this._input.id = this.field.id;
+    this._input.addEventListener("change",this.field.onChange.bind(this.field))
+    this._input.addEventListener("focus",this.field.onFocus.bind(this.field))
+    this._input.addEventListener("blur",this.field.onBlur.bind(this.field))
+    this._input.addEventListener("keyup",this.field.onKeyUp.bind(this.field))
+    this.root.appendChild(this._input);
 
     // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
     var i_tries = 0;
@@ -258,6 +256,7 @@
         this.root.querySelector("input").setAttribute(k,this.extra_attrs[k])
       }
     }
+    this.update()
     /*
     if (this.label_after) {
       var s = document.createElement("span");
@@ -266,9 +265,6 @@
       label.parentNode.insertBefore(s,label.nextSibling);
     }*/
   });
-  this.on("update", function() {
-    this.invalid = this.data_error && this.show_errors;
-  });
 </ur-input>
 
 <ur-todo>
@@ -276,7 +272,7 @@
   <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
             onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
             placeholder={ placeholder } required={ required } minlength={ minlength }
-            class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
+            class="validate { empty: empty, invalid: invalid, active: activated } { uR.theme.input }"
             autocomplete="off">{ value }</textarea>
   <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
     <option if={ placeholder } value="">{ placeholder }</option>
@@ -317,12 +313,16 @@
       this.label = undefined;
       this.no_validation = true;
     }
+    if (this.input_type == "hidden") {
+      this.root.style.display = "none";
+      this.label = "";
+    }
 </ur-todo>
 
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
-    <div each={ form.schema } class="{ name } { type } { uR.config.form.field_class } ur-input">
+    <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error } ur-input">
       <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
       <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
              data-success={ data_success }>{ label }</label>
@@ -358,7 +358,7 @@
     if (this._ajax_busy) { return; }
     if (!this.valid) {
       uR.forEach(this.fields,function (field) {
-        field.show_errors = true;
+        field.show_error = true;
         field.update();
       })
       return;
@@ -411,6 +411,7 @@
     return data;
   }
   this.on("mount",function() {
+    window.FORM = this;
     var _parent = this.parent || {};
     _parent.ur_form = this;
     _parent.opts = _parent.opts || {};
@@ -432,6 +433,7 @@
     uR.forEach(this.form.field_list,function(field,i) {
       targets[i].insertBefore(field.field_tag.root,targets[i].firstElementChild);
     });
+    this.opts.onload && this.opts.onload(this);
   }
 
   this.on("update",function() {
@@ -439,8 +441,8 @@
     this.renderFields();
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
-    if (!this.fields) { return }
-    uR.forEach(this.fields,function(field,i) {
+    if (!this.form.field_list) { return }
+    uR.forEach(this.form.field_list,function(field,i) {
       if (field.no_validation) { return }
       self.valid = self.valid && !field.data_error;
     })
