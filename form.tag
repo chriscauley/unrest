@@ -108,6 +108,7 @@ uR.__START = new Date().valueOf();
       }
       this.label = this.label || this.verbose_name;
       this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
+      this.input_tagname = (this.type == "textarea")?this.type:"input";
       this.input_type = this.type || "text";
 
       // if there's a validator, use type=text to ignore browser default
@@ -238,8 +239,7 @@ uR.__START = new Date().valueOf();
   */
 
   this.on("mount", function() {
-    var tagname = (this.field.type == "textarea")?this.field.type:"input";
-    this._input = document.createElement(tagname);
+    this._input = document.createElement(this.field.input_tagname);
     this._input.type = this.field.type;
     this._input.name = this.field.name;
     this._input.id = this.field.id;
