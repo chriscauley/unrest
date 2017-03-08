@@ -66,6 +66,16 @@ uR.__START = new Date().valueOf();
         }
       */
     }
+    renderFields() {
+      if (this._fields_rendered) { return }
+      this._fields_rendered = true;
+      var targets = this.form_tag.root.querySelectorAll(".ur-input");
+      uR.forEach(this.field_list,function(field,i) {
+        targets[i].insertBefore(field.field_tag.root,targets[i].firstElementChild);
+      });
+      this.opts.onload && this.opts.onload.bind(this)();
+      this.active = true; // form can now show errors
+    }
   }
 
   uR.form.URInput = class URInput {
@@ -159,21 +169,21 @@ uR.__START = new Date().valueOf();
       var last = this.form.field_list[this._field_index-1];
       if (last) {
         last.show_error = true;
-        last.form.form_tag.update();
       }
+      this.form.form_tag.update();
     }
 
     onBlur(e) {
       // deactivate, force reevaluation, show errors
-      if (this._field_index !=0 && this.form.active) { this.show_error = true; }
       uR.onBlur(this);
       this.activated = false;
       this.last_value = undefined; // trigger re-evaluation
       this.onChange(e);
+      this.form.form_tag.update();
     }
 
     onChange(e) {
-      if (this.form.active) { field.show_error = true; }
+      if (this.form.active) { this.show_error = true; }
       this.form.onChange && this.form.onChange(e,this);
       this.onKeyUp(e);
     }
@@ -213,7 +223,7 @@ uR.__START = new Date().valueOf();
   <!--<input type={ field.type } name={ field.name } id={ field.id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid, active: activated } { uR.theme.input }"
+         class="validate { empty:empty, invalid: invalid, active: activated || !empty } { uR.theme.input }"
          autocomplete="off">-->
 
   var self = this;
@@ -228,7 +238,8 @@ uR.__START = new Date().valueOf();
   */
 
   this.on("mount", function() {
-    this._input = document.createElement("input");
+    var tagname = (this.field.type == "textarea")?this.field.type:"input";
+    this._input = document.createElement(tagname);
     this._input.type = this.field.type;
     this._input.name = this.field.name;
     this._input.id = this.field.id;
@@ -322,7 +333,7 @@ uR.__START = new Date().valueOf();
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
-    <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error } ur-input">
+    <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input">
       <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
       <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
              data-success={ data_success }>{ label }</label>
@@ -427,18 +438,10 @@ uR.__START = new Date().valueOf();
     this.update();
     this.update();
   });
-  this.renderFields = function() {
-    if (this._fields_rendered) { return }
-    var targets = this.root.querySelectorAll(".ur-input");
-    uR.forEach(this.form.field_list,function(field,i) {
-      targets[i].insertBefore(field.field_tag.root,targets[i].firstElementChild);
-    });
-    this.opts.onload && this.opts.onload(this);
-  }
 
   this.on("update",function() {
     if (this.root.querySelectorAll(".ur-input").length == 0) { return; }
-    this.renderFields();
+    this.form.renderFields();
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
     if (!this.form.field_list) { return }
