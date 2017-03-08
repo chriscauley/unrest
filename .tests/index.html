@@ -11,15 +11,17 @@
       <link-list></link-list>
     </div>
   </body>
+  <script>
+    uR = {
+      TESTING: [
+        "_required-inputs.js",
+        "_nonrequired-inputs.js",
+        "_ur-input.js",
+      ]
+    };
+  </script>
   <script src="riot+compiler.js"></script>
   <script src="../.dist/unrest-built.js"></script>
   <script src="../.dist/token-built.js"></script>
-  <script src="ur-test.js"></script>
   <script src="mocha-chai.js"></script>
-  <script>
-    riot.mount("link-list",{links: [
-      "_required-inputs.js",
-      "_nonrequired-inputs.js",
-    ]});
-  </script>
 </html>
