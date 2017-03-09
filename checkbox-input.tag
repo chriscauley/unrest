@@ -10,7 +10,7 @@
 
 <checkbox-input>
   <div each={ field.choices } class="choice">
-    <input type={ parent.field.type } id={ id } value={ value } onchange={ update } name={ parent._name } />
+    <input type={ parent.field.type } id={ id } value={ value } onchange={ update } name={ parent.field.name } />
     <label for={ id }>{ label }</label>
   </div>
 

@@ -128,10 +128,10 @@ uR.__START = new Date().valueOf();
         this.choices = uR.form.parseChoices(this.choices).map(function(choice_tuple,index) {
           return {
             label: choice_tuple[1],
-            id: self.parent.id+"__"+index,
+            id: this.id+"__"+index,
             value: uR.slugify(choice_tuple[0]),
           }
-        });
+        }.bind(this));
       }
       this.className = this.name + " " + this.type + " " + uR.config.form.field_class;
       var element = document.createElement(this.tagname);
@@ -337,8 +337,8 @@ uR.__START = new Date().valueOf();
       <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
       <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
              data-success={ data_success }>{ label }</label>
-      <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
       <div class="error">{ data_error }</div>
+      <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
     </div>
     <div if={ non_field_error } class="non_field_error">
       <div class={ uR.theme.error_class }>{ non_field_error }</div>
