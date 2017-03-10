@@ -4,6 +4,20 @@
   uR.form.fields['checkbox-input'] = class CheckboxInput extends uR.form.URInput {
     constructor(form,options) {
       super(form,options)
+      this.initial = this.initial_value;
+      if (typeof this.initial == "string") { this.initial = this.initial.split(",") }
+    }
+    reset() {
+      this.show_error = false;
+      this.value = this.initial_value || "";
+      var target;
+      uR.forEach(this.initial,function(slug) {
+        var cb = this.field_tag.root.querySelector("[value="+slug+"]");
+        if (cb) { cb.checked = true }
+      }.bind(this));
+      this.onKeyUp({target:target});
+      this.activated = this.value != "";
+      this.field_tag.update();
     }
   }
 })();
@@ -15,19 +29,6 @@
   </div>
 
   var self = this;
-  this.on("mount",function() {
-    if (this.field.initial_value) {
-      var initial = this.parent.initial_value;
-      if (typeof initial == "string") { initial = initial.split(",") }
-      uR.forEach(initial,function(slug) {
-        var cb = self.root.querySelector("[value="+slug+"]");
-        if (cb) { cb.checked = true }
-      });
-      this.update();
-    }
-    this._is_mounted = true;
-    this.update();
-  });
   this.on("update",function() {
     var out = [];
     uR.forEach(this.root.querySelectorAll("[type=checkbox]"),function(c) {

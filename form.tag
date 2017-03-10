@@ -14,6 +14,9 @@ uR.__START = new Date().valueOf();
     init: function() {
       if (!this.opts.is_ur_input) { return }
       this.field = this.opts.field;
+      this.on("mount",function() {
+        setTimeout(this.field.reset.bind(this.field),0);
+      });
     }
   });
   uR.form.URForm = class URForm {
@@ -99,7 +102,7 @@ uR.__START = new Date().valueOf();
         console.warn("look at me!")
         this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
       }
-      this.initial_value = this.value || (this.initial || {})[this.name];
+      this.initial_value = this.value || (this.form.opts.initial || {})[this.name];
       // verbose_name is useful for error messages, other generated text
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
       if (!this.verbose_name) {
@@ -108,7 +111,7 @@ uR.__START = new Date().valueOf();
       }
       this.label = this.label || this.verbose_name;
       this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
-      this.input_tagname = (this.type == "textarea")?this.type:"input";
+      this.input_tagname = this.input_tagname || (this.type == "textarea")?this.type:"input";
       this.input_type = this.type || "text";
 
       // if there's a validator, use type=text to ignore browser default
@@ -192,13 +195,13 @@ uR.__START = new Date().valueOf();
       this.show_error = false;
       this.value = this.initial_value || "";
       var target;
-      if (this.field_tag) {
-        target = this.field_tag.root.querySelector("input");
+      if (this.field_tag && this.input_tagname) {
+        target = this.field_tag.root.querySelector(this.input_tagname);
         target.value = this.value;
       }
       this.onKeyUp({target:target});
-      this.activated = (this.value != "") || this.tagname != "ur-input";
-      //self.update()
+      this.activated = this.value != "";
+      this.field_tag.update();
     }
   }
   uR.form.fields = {
@@ -260,7 +263,6 @@ uR.__START = new Date().valueOf();
       }
     },1000);
     //this.update();
-    this.field.reset();
     this.onMount && setTimeout(this.onMount,0);
     if (this.extra_attrs) {
       for (k in this.extra_attrs) {
