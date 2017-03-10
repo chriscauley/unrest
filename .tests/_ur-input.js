@@ -15,13 +15,15 @@ describe("DOM Tests", function () {
           expect(document.querySelectorAll(selector).length).to.equal(1);
           expect(document.querySelectorAll(input_selector).length).to.equal(1);
         });
-        it(field.name+" has help_text",function() {
+        var _ht = _help_text + field.name;
+        it(`${ field.name } has help_text "${ _ht }"`,function() {
           var selector = `.${ field.name }.${ field.type }.input-field.ur-input .help_text`;
           expect(document.querySelectorAll(selector).length).to.equal(1);
-          expect(document.querySelector(selector).innerText).to.equal(_help_text + field.name);
+          expect(document.querySelector(selector).innerText).to.equal(_ht);
         });
-        it(field.name+" has initial value",function() {
-          console.log(field.value);
+        it(`${ field.name } has initial value "${ INITIAL[field.name] }"`,function() {
+          expect(field.value).to.equal(INITIAL[field.name]);
+          expect(field.field_tag.root.querySelector(field.input_tagname).value).to.equal(INITIAL[field.name]);
         });
       });
     },
