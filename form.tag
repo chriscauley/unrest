@@ -55,7 +55,7 @@ uR.__START = new Date().valueOf();
         field._field_index = this.field_list.length;
         var cls = uR.form.fields[field.tagname] || uR.form.fields["ur-input"];
         this.field_list.push(new cls(this,field));
-        this.fields[field._name] = this.field_list[this.field_list.length-1];
+        this.fields[field.name] = this.field_list[this.field_list.length-1];
       }.bind(this));
       /*
       this.update();
@@ -420,7 +420,7 @@ uR.__START = new Date().valueOf();
   }
   getData() {
     var data = {};
-    uR.forEach(this.fields,function(f) { data[f._name] = f.value || ""; });
+    uR.forEach(this.form.field_list,function(f) { data[f.name] = f.value || ""; });
     return data;
   }
   this.on("mount",function() {
@@ -449,7 +449,7 @@ uR.__START = new Date().valueOf();
     if (!this.form.field_list) { return }
     uR.forEach(this.form.field_list,function(field,i) {
       if (field.no_validation) { return }
-      self.valid = self.valid && !field.data_error;
+      self.valid = self.valid && field.valid;
     })
     if (this.opts.autosave) { this.autoSave(); }
   });

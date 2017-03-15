@@ -9,9 +9,12 @@
 })();
 
 <select-input>
-  <select id={ field.id } onchange={ field.onChange } onblur={ field.onBlur } class="browser-default">
+  <select id={ field.id } onchange={ onChange } onblur={ onBlur } class="browser-default" name={ field.name }>
     <option each={ field.choices } value={ value }>{ label }</option>
   </select>
+
+  onBlur(e) { this.field.onBlur(e) }
+  onChange(e) { this.field.onChange(e) }
 
   this.on("mount",function() {
     this.update();

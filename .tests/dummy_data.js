@@ -1,7 +1,7 @@
 var SCHEMA = [
   {name: "first_name", type: "text"},
   {name: "email", type: "email"},
-  {name: 'select_color', type: 'select', choices: ['red','green','blue','pink']},
+  {name: 'select_color', type: 'select', choices: [['',''],'red','green','blue','pink']},
   {name: "textarea", type: "textarea"},
   {name: "checkboxes", type: "checkbox",choices: ['red','green','blue']},
   {name: "radios", type: "radio",choices: ['red','green','blue']},
