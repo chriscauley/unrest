@@ -6,18 +6,20 @@
       super(form,options)
       this.initial = this.initial_value;
       if (typeof this.initial == "string") { this.initial = this.initial.split(",") }
+      if (!this.choices) {
+        this.choices = [["true",this.label]];
+        this.form.form_tag.root.querySelector("[for="+this.id+"]").style.display = "none";
+      }
     }
     reset() {
       this.show_error = false;
-      this.value = this.initial_value || "";
+      this.value = this.initial || [];
       var target;
-      var any_checked = false;
-      uR.forEach(this.initial,function(slug) {
+      uR.forEach(this.value,function(slug) {
         var cb = this.field_tag.root.querySelector("[value="+slug+"]");
-        if (cb) { cb.checked = true; any_checked = true; }
+        if (cb) { cb.checked = true; target = cb; }
       }.bind(this));
       this.onKeyUp({target:target});
-      this.activated = this.value != "";
       this.field_tag.update();
     }
     onKeyUp(e) {
@@ -46,5 +48,6 @@
 var self = this;
 onKeyUp(e) {
   this.field.onKeyUp(e)
+  console.log(this.field.choices);
 }
 </checkbox-input>

@@ -243,7 +243,7 @@ uR.__START = new Date().valueOf();
 
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
-    this._input.type = this.field.type;
+    this._input.type = "text";
     this._input.name = this.field.name;
     this._input.id = this.field.id;
     this._input.addEventListener("change",this.field.onChange.bind(this.field))
