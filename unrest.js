@@ -161,6 +161,16 @@ var uR = (function() {
     request.send(form_data);
   }
 
+  var AjaxMixin = {
+    init: function() {
+      this.ajax = function(options) {
+        options.that = this;
+        uR.ajax(options);
+      }
+    },
+  };
+  riot.mixin(AjaxMixin);
+
   uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
     return function() {
