@@ -1,13 +1,15 @@
 /* materialize does input + label.active... I hate that so I'm doing input.active + label */
 .input-field {
-  &.active, select-input +, radio-input +, checkbox-input + {
+  &.active {
     label {
       font-size: 0.8rem;
       top: -0.8rem;
     }
+    select-input , radio-input, checkbox-input {
+      + label { font-size: 0.8rem; top: -1.1rem; }
+    }
+    &.textarea label { font-size: 0.8rem; top: -1.1rem; }
   }
-  select-input + label { top: -1.1rem; }
-  radio-input + label, checkbox-input + label { top: -1rem; }
 }
 
 /* not a fan of materialize bottom margins, makes help_text and errors complicated */
