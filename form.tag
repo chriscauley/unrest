@@ -29,8 +29,10 @@ uR.__START = new Date().valueOf();
     prepSchema() {
       var tag = this.form_tag;
       var _schema = tag.opts.schema || tag._parent.opts.schema || tag._parent.schema;
+      this.action = this.form_tag.opts.action;
       if (typeof _schema == "string") {
         this.schema_url = _schema;
+        this.action = this.action || this.schema_url;
         if (uR.schema[this.schema_url]) {
           _schema = uR.schema[this.schema_url];
         } else {
@@ -41,7 +43,7 @@ uR.__START = new Date().valueOf();
         }
       }
       this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
-      this.initial = uR.storage.get(this.form_tag.opts.action) || this.empty_initial || {};
+      this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
       
       this.schema = _schema.map(function(field) {
         var f = {};
@@ -102,7 +104,7 @@ uR.__START = new Date().valueOf();
         console.warn("look at me!")
         this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
       }
-      this.initial_value = this.value || (this.form.opts.initial || {})[this.name];
+      this.initial_value = this.value || (this.form.initial || {})[this.name];
       // verbose_name is useful for error messages, other generated text
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
       if (!this.verbose_name) {
@@ -246,10 +248,11 @@ uR.__START = new Date().valueOf();
     this._input.type = "text";
     this._input.name = this.field.name;
     this._input.id = this.field.id;
-    this._input.addEventListener("change",this.field.onChange.bind(this.field))
-    this._input.addEventListener("focus",this.field.onFocus.bind(this.field))
-    this._input.addEventListener("blur",this.field.onBlur.bind(this.field))
-    this._input.addEventListener("keyup",this.field.onKeyUp.bind(this.field))
+    this._input.addEventListener("change",this.field.onChange.bind(this.field));
+    this._input.addEventListener("focus",this.field.onFocus.bind(this.field));
+    this._input.addEventListener("blur",this.field.onBlur.bind(this.field));
+    this._input.addEventListener("keyup",this.field.onKeyUp.bind(this.field));
+    this._input.classList.add(uR.theme.input);
     this.root.appendChild(this._input);
 
     // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
@@ -394,7 +397,7 @@ uR.__START = new Date().valueOf();
       else { alt_submit(this); }
     } else {
       uR.ajax({
-        url: this.opts.action,
+        url: this.form.action,
         method: this.opts.method,
         data: this.getData(),
         success: this.ajax_success,
@@ -406,7 +409,7 @@ uR.__START = new Date().valueOf();
   }
   clear() {
     this.initial = this.empty_initial;
-    uR.storage.set(this.opts.action,null); // nuke stored half finished form
+    uR.storage.set(this.form.action,null); // nuke stored half finished form
     uR.forEach(this.fields, function(field) {
       field.initial_value = self.initial[field.name];
       field.child && field.child.clear && field.child.clear();
@@ -439,6 +442,7 @@ uR.__START = new Date().valueOf();
     this.form = new uR.form.URForm(this);
     this.update();
     this.update();
+    this.root.style.opacity = 1
   });
 
   this.on("update",function() {
@@ -457,7 +461,7 @@ uR.__START = new Date().valueOf();
     // #! TODO Performance test this. Is it a memory leak? Is it using a lot of processor?
     var new_data = this.getData();
     //if (this.__data == new_data) { return; } // can't compare objects like this
-    uR.storage.set(this.opts.action,new_data);
+    uR.storage.set(this.form.action,new_data);
   }.bind(this),1000);
 </ur-form>
 
@@ -479,7 +483,7 @@ uR.__START = new Date().valueOf();
     for (var key in element.inputs) { form_data[key] = element.inputs[key].value }
     uR.ajax({
       method: "POST",
-      url: this.opts.action,
+      url: this.form.action,
       data: form_data,
       target: element.root,
       self: element,

@@ -14,6 +14,7 @@
     reset() {
       this.show_error = false;
       this.value = this.initial || [];
+      console.log(this.value)
       var target;
       uR.forEach(this.value,function(slug) {
         var cb = this.field_tag.root.querySelector("[value="+slug+"]");
@@ -48,6 +49,5 @@
 var self = this;
 onKeyUp(e) {
   this.field.onKeyUp(e)
-  console.log(this.field.choices);
 }
 </checkbox-input>
