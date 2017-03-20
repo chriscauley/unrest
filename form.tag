@@ -147,6 +147,7 @@ uR.__START = new Date().valueOf();
       if (this.no_validation) { return; }
       if (e.type == "keyup") { self.active = true; }
       this.value = e.value || (e.target && e.target.value) || ""; // e.value is a way to fake events
+      this.changed = this.last_value == this.value;
       this.last_value = this.value;
       this.empty = !this.value.length;
       var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
@@ -371,7 +372,7 @@ uR.__START = new Date().valueOf();
   this.suffix = this.opts.suffix || "";
 
   submit(e,_super) {
-    if (this._ajax_busy) { return; }
+    if (this._ajax_busy || !this.form.field_list.length) { return; }
     if (!this.valid) {
       uR.forEach(this.fields,function (field) {
         field.show_error = true;
@@ -443,7 +444,23 @@ uR.__START = new Date().valueOf();
     this.update();
     this.update();
     this.root.style.opacity = 1
+    if (this.opts.autosubmit) {
+      this._autosubmit = setInterval(this.autoSubmit.bind(this),1000);
+    }
   });
+
+autoSubmit(e) {
+  if (this._ajax_busy) { return }
+  var changed;
+  uR.forEach(this.form.field_list, function(field) {
+    changed = changed || field.changed;
+    field.changed = false;
+  });
+  if (changed) {
+    this.update(); // check to see if valid
+    this.submit(); // does nothing if invalid
+  }
+}
 
   this.on("update",function() {
     if (this.root.querySelectorAll(".ur-input").length == 0) { return; }
@@ -455,7 +472,7 @@ uR.__START = new Date().valueOf();
       if (field.no_validation) { return }
       self.valid = self.valid && field.valid;
     })
-    if (this.opts.autosave) { this.autoSave(); }
+    this.opts.autosave && this.autoSave();
   });
   this.autoSave = uR.dedribble(function() {
     // #! TODO Performance test this. Is it a memory leak? Is it using a lot of processor?

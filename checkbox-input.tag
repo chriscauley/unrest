@@ -6,6 +6,7 @@
       super(form,options)
       this.initial = this.initial_value;
       if (typeof this.initial == "string") { this.initial = this.initial.split(",") }
+      this.last_value = this.initial;
       if (!this.choices) {
         this.choices = [["true",this.label]];
         this.form.form_tag.root.querySelector("[for="+this.id+"]").style.display = "none";
@@ -23,9 +24,11 @@
       this.field_tag.update();
     }
     onKeyUp(e) {
+      this.changed = false;
       this.valid = true;
-      this.value = []
+      this.value = [];
       uR.forEach(this.field_tag.root.querySelectorAll("[name="+this.name+"]"),function(input) {
+        this.changed = this.changed || ((this.last_value.indexOf(input.value) != -1) !== input.checked);
         if (input.checked) { this.value.push(input.value); }
       }.bind(this));
       if (this.required) {
@@ -33,7 +36,8 @@
         this.valid = this.value.length;
       }
       this.show_error = true;
-      this.form.form_tag.update()
+      this.last_value = this.value;
+      this.form.form_tag.update();
     }
   }
 })();

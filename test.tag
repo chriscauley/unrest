@@ -86,21 +86,59 @@
 })();
 
 <link-list>
+  <h4>Tests</h4>
   <ul>
     <li each={ links }>
       <span class={ s_class }>{ status }</span> <a href="?ur-test={ url }">{ url }</a>
     </li>
   </ul>
-  this.on("mount",function() {
-    var self = this;
-    this.links = [];
-    uR.forEach(uR.TESTING,function(l) {
-      var link = { url: l, status: "untested" };
-      var errors = uR.storage.get(l);
-      if (errors == 0) { link.status = "pass"; link.s_class = "green"; }
-      if (errors) { link.status = errors; link.s_class = "red"; }
-      self.links.push(link);
-    });
-    this.update();
+  <!--
+  <h4>Events</h4>
+  <table>
+    <tr>
+      <th>Tag name</th>
+      <th>Updates</th>
+      <th>Mounts</th>
+    </tr>
+    <tr each={ stt in sorted_tag_types }>
+      <td each={ v in stt }>{ v }</td>
+    </tr>
+  </table>
+  -->
+
+var self = this;
+this.on("mount",function() {
+  /*
+  self.tag_types = {};
+  this.links = [];
+  update_proxy = uR.dedribble(this.update.bind(this),2000);
+  riot.mixin({
+    init: function() {
+      this.on("*",function(s) {
+        var tag_name = this.root.tagName;
+        self.tag_types[tag_name] = self.tag_types[tag_name] || {};
+        self.tag_types[tag_name][s] = (self.tag_types[tag_name][s] || 0)+1;
+        if (tag_name != "LINK-LIST") { update_proxy(); }
+      });
+    }
   });
+  uR.forEach(uR.TESTING,function(l) {
+    var link = { url: l, status: "untested" };
+    var errors = uR.storage.get(l);
+    if (errors == 0) { link.status = "pass"; link.s_class = "green"; }
+    if (errors) { link.status = errors; link.s_class = "red"; }
+    self.links.push(link);
+  });*/
+  this.update();
+});
+/*
+this.on("update",function() {
+  self.sorted_tag_types = [];
+  for (k in self.tag_types) {
+    var tt = [k,self.tag_types[k].updated,self.tag_types[k].mount];
+    self.sorted_tag_types.push(tt);
+    console.log(tt);
+  }
+});
+*/
 </link-list>
