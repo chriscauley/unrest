@@ -73,19 +73,23 @@ var uR = (function() {
     var target = opts.target || opts.form;  // default to body?
     var url = opts.url || form.action || '.';
     var that = opts.that;
-    var loading_attribute = opts.loading_attribute || (that && that.loading_attribute) || uR.config.loading_attribute;
+    if (that) {
+      console.warn('"that" has been depracated in favor of "tag".');
+    }
+    var tag = that || opts.tag;
+    var loading_attribute = opts.loading_attribute || (tag && tag.loading_attribute) || uR.config.loading_attribute;
     var success_attribute = opts.success_attribute || "";
     var success_reset = opts.success_reset || false;
-    var success = (opts.success || function(data,request) {}).bind(that);
-    var error = (opts.error || function(data,request) {}).bind(that);
+    var success = (opts.success || function(data,request) {}).bind(tag);
+    var error = (opts.error || function(data,request) {}).bind(tag);
     var filenames = opts.filenames || {};
-    if (that) {
-      that.messages = opts.messages || [];
-      that._ajax_busy = true;
-      that.form_error = undefined;
-      if (!target && that.target) { console.warn("Use of that.target is depracated in favor of that.ajax_target") }
-      target = target || that.target || that.ajax_target;
-      if (typeof target == "string") { target = that.root.querySelector(target) || document.querySelector(target); }
+    if (tag) {
+      tag.messages = opts.messages || [];
+      tag._ajax_busy = true;
+      tag.form_error = undefined;
+      if (!target && tag.target) { console.warn("Use of tag.target is depracated in favor of tag.ajax_target") }
+      target = target || tag.target || tag.ajax_target;
+      if (typeof target == "string") { target = tag.root.querySelector(target) || document.querySelector(target); }
     }
 
     // mark as loading
@@ -138,23 +142,25 @@ var uR = (function() {
       if (isEmpty(errors) && request.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";
       }
-      if (that && that.fields) {
-        uR.forEach(that.fields,function(field,i) {
-          field.error = errors[field.name];
+      if (tag && tag.form && tag.form.field_list) {
+        uR.forEach(tag.form.field_list,function(field,i) {
+          field.data_error = errors[field.name];
+          field.valid = !field.data_error;
+          field.show_error = true;
         });
       }
       if (non_field_error) {
         // if there's no form and no error function in opts, alert as a fallback
-        if (that) { that.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
+        if (tag) { tag.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
       }
 
       var complete = (request.status == 200 && isEmpty(errors));
       (complete?success:error)(data,request);
       if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
-      if (that) {
-        that._ajax_busy = false;
-        that.messages = data.messages || [];
-        that.update();
+      if (tag) {
+        tag._ajax_busy = false;
+        tag.messages = data.messages || [];
+        tag.update();
       }
       if (data.ur_route_to) { uR.route(data.ur_route_to); }
     };
