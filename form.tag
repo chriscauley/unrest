@@ -291,47 +291,6 @@
   });
 </ur-input>
 
-<ur-todo>
-  <!-- lol -->
-  <textarea if={ tagname == 'textarea' } name={ _name } id={ id }
-            onChange={ onChange } onKeyUp={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
-            placeholder={ placeholder } required={ required } minlength={ minlength }
-            class="validate { empty: empty, invalid: invalid, active: activated } { uR.theme.input }"
-            autocomplete="off">{ value }</textarea>
-  <select if={ tagname == 'select' } onchange={ onChange } id={ id } name={ _name } class={ uR.config.select_class }>
-    <option if={ placeholder } value="">{ placeholder }</option>
-    <option selected={ (choice[0]==parent.initial)?'selected':'' } each={ choice in choice_tuples }
-            value={ choice[0] }>{ choice[1] }</option>
-  </select>
-    if (this.input_type == "select") {
-      this.tagname = "select";
-      if (this.placeholder) { this.label = undefined };
-      function setChoices() {
-        if (!self.choice_tuples) {
-          self.verbose_choices = self.verbose_choices || self.choices;
-          self.choice_tuples = [];
-          for (var i=0;i<self.choices.length;i++) {
-            self.choice_tuples.push([self.choices[i],self.verbose_choices[i]]);
-          }
-        }
-        self.update();
-        self.root.querySelector("select").value = self.initial_value;
-      }
-      if (!this.choices_url) { setChoices(); }
-      else {
-        uR.storage.remote(this.choices_url,function(choices) {
-          self.choice_tuples = [];
-          uR.forEach(choices,function (choice) {
-            self.choice_tuples.push([choice[self.value_key || 0],choice[self.verbose_key] || 1]);
-          });
-          setChoices();
-          self.update();
-        });
-      }
-    }
-    if (this.input_type == "textarea") { this.tagname = "textarea"; }
-</ur-todo>
-
 <ur-form>
   <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
     <yield from="pre-form"/>
