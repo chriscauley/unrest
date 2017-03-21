@@ -22,7 +22,7 @@ uR.config.tmp_file_url = "/media_files/private/";
   validateAndUpload(e) {
     var form = this.root.querySelector("form");
     this.error_msg = undefined;
-    uR.ajax({
+    this.ajax({
       form: form,
       success: function(data) {
         this.files.push(data);
@@ -31,7 +31,6 @@ uR.config.tmp_file_url = "/media_files/private/";
       error: function(data) {
         self.error_msg = "An unknown error has occurred.";
       },
-      that: this,
     });
     this.root.querySelector("[type=file]").value = "";
   }

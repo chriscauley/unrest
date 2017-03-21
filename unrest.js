@@ -170,7 +170,7 @@ var uR = (function() {
   var AjaxMixin = {
     init: function() {
       this.ajax = function(options) {
-        options.that = this;
+        options.tag = options.tag || this;
         uR.ajax(options);
       }
     },
