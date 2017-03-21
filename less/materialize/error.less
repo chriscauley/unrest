@@ -1,12 +1,12 @@
-ur-form {
-  .input-field .error {
+.ur-form.input-field {
+  .error {
     color: var(--red);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s;
   }
 
-  .invalid.input-field .error {
+  &.invalid .error {
     display: block;
     max-height: 3rem;
   }
