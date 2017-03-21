@@ -1,6 +1,6 @@
-uR.__START = new Date().valueOf();
 (function() {
   uR.form = {};
+  uR.__START = new Date().valueOf();
   uR._t = function(s) { console.log(new Date().valueOf()-uR.__START,s); }
   uR.form.parseChoices = function(choices) {
     // #! TODO This should eventually accomodate groupings as well like:
@@ -374,7 +374,7 @@ uR.__START = new Date().valueOf();
   submit(e,_super) {
     if (this._ajax_busy || !this.form.field_list.length) { return; }
     if (!this.valid) {
-      uR.forEach(this.fields,function (field) {
+      uR.forEach(this.form.field_list,function (field) {
         field.show_error = true;
         field.update();
       })
@@ -404,14 +404,14 @@ uR.__START = new Date().valueOf();
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
         error: this.ajax_error,
-        that: self
+        tag: self
       });
     }
   }
   clear() {
     this.initial = this.empty_initial;
     uR.storage.set(this.form.action,null); // nuke stored half finished form
-    uR.forEach(this.fields, function(field) {
+    uR.forEach(this.form.field_list, function(field) {
       field.initial_value = self.initial[field.name];
       field.child && field.child.clear && field.child.clear();
       field.reset();
@@ -445,6 +445,7 @@ uR.__START = new Date().valueOf();
     this.update();
     this.root.style.opacity = 1
     if (this.opts.autosubmit) {
+      this.root.querySelector("#submit_button").style.display = "none";
       this._autosubmit = setInterval(this.autoSubmit.bind(this),1000);
     }
   });
@@ -452,7 +453,7 @@ uR.__START = new Date().valueOf();
 autoSubmit(e) {
   if (this._ajax_busy) { return }
   var changed;
-  uR.forEach(this.form.field_list, function(field) {
+  uR.forEach(this.form.field_list || [], function(field) {
     changed = changed || field.changed;
     field.changed = false;
   });

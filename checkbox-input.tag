@@ -31,7 +31,7 @@
         this.changed = this.changed || ((this.last_value.indexOf(input.value) != -1) !== input.checked);
         if (input.checked) { this.value.push(input.value); }
       }.bind(this));
-      if (this.required) {
+      if (this.required && !this.value.length) {
         this.data_error = "This field is required.";
         this.valid = this.value.length;
       }
