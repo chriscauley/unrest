@@ -271,6 +271,7 @@ var uR = (function() {
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
   uR.slugify = function(s) {
+    if (typeof s != "string") { s = s.toString() }
     return s.toLowerCase().replace(/(^[\s-]+|[\s-]+$)/g,"").replace(/[^\d\w -]+/g,"").replace(/[\s-]+/g,"-");
   };
   uR.theme = {

@@ -104,7 +104,8 @@
         console.warn("look at me!")
         this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
       }
-      this.initial_value = this.value || (this.form.initial || {})[this.name];
+      this.value = this.initial_value = this.value || (this.form.initial || {})[this.name];
+      this.valid = true;
       // verbose_name is useful for error messages, other generated text
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
       if (!this.verbose_name) {
@@ -329,10 +330,8 @@
   submit(e,_super) {
     if (this._ajax_busy || !this.form.field_list.length) { return; }
     if (!this.valid) {
-      uR.forEach(this.form.field_list,function (field) {
-        field.show_error = true;
-        field.update();
-      })
+      uR.forEach(this.form.field_list,function (field) { field.show_error = true; });
+      this.update();
       return;
     }
     // _super is a temporary hack to allow us to call the original submit function.
