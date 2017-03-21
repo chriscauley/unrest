@@ -246,7 +246,7 @@
 
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
-    this._input.type = "text";
+    this._input.type = this.field.input_type;
     this._input.name = this.field.name;
     this._input.id = this.field.id;
     this._input.addEventListener("change",this.field.onChange.bind(this.field));
@@ -254,6 +254,14 @@
     this._input.addEventListener("blur",this.field.onBlur.bind(this.field));
     this._input.addEventListener("keyup",this.field.onKeyUp.bind(this.field));
     this._input.classList.add(uR.theme.input);
+    if (this.field.input_type == "header") {
+      this._input.style.display = "none";
+      this.field.required = false;
+    }
+    if (this.input_type == "hidden") {
+      this.root.style.display = "none";
+      this.label = "";
+    }
     this.root.appendChild(this._input);
 
     // This interval validates the fields after autocomplete, since there's no easy way to handle it via js
@@ -296,7 +304,6 @@
     <option selected={ (choice[0]==parent.initial)?'selected':'' } each={ choice in choice_tuples }
             value={ choice[0] }>{ choice[1] }</option>
   </select>
-  <h5 if={ tagname == 'header' }>{ content }</h5>
     if (this.input_type == "select") {
       this.tagname = "select";
       if (this.placeholder) { this.label = undefined };
@@ -324,16 +331,6 @@
       }
     }
     if (this.input_type == "textarea") { this.tagname = "textarea"; }
-    if (this.input_type == "header") {
-      this.tagname = "header";
-      this.content = this.label;
-      this.label = undefined;
-      this.no_validation = true;
-    }
-    if (this.input_type == "hidden") {
-      this.root.style.display = "none";
-      this.label = "";
-    }
 </ur-todo>
 
 <ur-form>
