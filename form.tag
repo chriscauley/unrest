@@ -274,8 +274,7 @@
         self.onKeyUp({target: e});
       }
     },1000);
-    //this.update();
-    this.onMount && setTimeout(this.onMount,0);
+    this.field.onMount && setTimeout(this.field.onMount.bind(this.field),0);
     if (this.extra_attrs) {
       for (k in this.extra_attrs) {
         this.root.querySelector("input").setAttribute(k,this.extra_attrs[k])
