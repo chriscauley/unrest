@@ -3,8 +3,22 @@ ur-form {
   flex-wrap: wrap;
   opacity: 0; // set to one in javascript
   form { display: block; width: 100%; }
-  ur-input { display: block; }
-  ur-input, .button_div, .non_field_error {
+  .ur-input { display: block; }
+  .ur-input, .button_div, .non_field_error {
     flex-basis: 100%;
+  }
+}
+
+ur-form .ur-input {
+  .error {
+    color: red;
+    color: var(--red);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s;
+  }
+  &.invalid .error {
+    display: block;
+    max-height: 3rem;
   }
 }
