@@ -67,6 +67,7 @@ var uR = (function() {
     // create default options
     // note: !!form is always true, opts.form can be undefined (falsey)
     // but form.some_property will always be false if there is no form!
+    // #! TODO: Everythin on tag should be moved to AjaxMixin
     var form = opts.form || {};
     var method = (opts.method || form.method || "GET").toUpperCase();
     var data = opts.data;
@@ -171,6 +172,8 @@ var uR = (function() {
     init: function() {
       this.ajax = function(options) {
         options.tag = options.tag || this;
+        options.target = options.target || this.ajax_target || (this.theme && this.root.querySelector(this.theme.outer));
+        options.success = options.success || this.ajax_success;
         uR.ajax(options);
       }
     },
