@@ -40,6 +40,7 @@ var tag_files = [
   "tabs.tag",
   "markdown.tag",
   "multi-file.tag",
+  "ez-file.tag",
   "test.tag",
 ]
 
