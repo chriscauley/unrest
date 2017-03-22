@@ -46,6 +46,7 @@
       this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
       
       this.schema = _schema.map(function(field) {
+        if (typeof field == "string") { field = { name: field } }
         var f = {};
         for (var k in field) { f[k] = field[k] }
         return f;
@@ -110,7 +111,7 @@
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
       if (!this.verbose_name) {
         var replace = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
-        this.verbose_name = this.name.replace(/[-_]/g," ").replace(/\w\S*/g, replace);
+        this.verbose_name = (this.name || "").replace(/[-_]/g," ").replace(/\w\S*/g, replace);
       }
       this.label = this.label || this.verbose_name;
       this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
