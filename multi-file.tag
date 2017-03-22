@@ -1,5 +1,10 @@
-uR.config.tag_templates.push("multi-file");
+uR.config.input_overrides['multi-file'] = uR.config.input_overrides["multi-file"] = "multi-file";
 uR.config.tmp_file_url = "/media_files/private/";
+uR.form.fields['multi-file'] = class MultiFileInput extends uR.form.URInput {
+  constructor(form,options) {
+    super(form,options)
+  }
+}
 
 <multi-file>
   <form action={ action } method="POST" if={ can_upload }>
@@ -17,7 +22,6 @@ uR.config.tmp_file_url = "/media_files/private/";
   </div>
   <div if={ error_msg } class={ uR.theme.error_class }>{ error_msg }</div>
 
-  this.parent = this.opts.parent;
   var self = this;
   validateAndUpload(e) {
     var form = this.root.querySelector("form");
@@ -47,7 +51,7 @@ uR.config.tmp_file_url = "/media_files/private/";
     uR.storage.set(this.action+"__files",this.files);
   }
   this.on("mount",function() {
-    this.max_files = this.parent.max_files || Infinity;
+    this.max_files = this.field.max_files || Infinity;
     this.action = opts.action || uR.config.tmp_file_url;
     this.files = uR.storage.get(this.action+"__files") || [];
     this.update();
@@ -55,13 +59,10 @@ uR.config.tmp_file_url = "/media_files/private/";
   this.on("update",function() {
     if (this.files && this.files.length) {
       this.upload_text = opts.parent.upload_another_text || opts.parent.upload_text || "Upload another file";
+      this.field.value = (this.files).map(function(f) { return f.id }).join(",");
     } else {
-      this.upload_text = opts.parent.upload_text || 'Upload a file';
-    }
-    if (this.files.length) {
-      this.setValue((this.files).map(function(f) { return f.id }).join(","));
-    } else {
-      this.setValue("");
+      this.upload_text = this.field.upload_text || 'Upload a file';
+      this.value = "";
     }
     this.can_upload = !(this.files && this.files.length >= this.max_files);
   });

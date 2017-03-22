@@ -4,12 +4,17 @@
   uR.form.fields['checkbox-input'] = class CheckboxInput extends uR.form.URInput {
     constructor(form,options) {
       super(form,options)
+      if (this.type == "checkbox-input") { this.type = "checkbox"; }
       this.initial = this.initial_value;
       if (typeof this.initial == "string") { this.initial = this.initial.split(",") }
       this.last_value = this.initial;
       if (!this.choices) {
-        this.choices = [["true",this.label]];
-        this.form.form_tag.root.querySelector("[for="+this.id+"]").style.display = "none";
+        this.choices = [{
+          label: this.label,
+          id: this.id+"__"+0,
+          value: "true",
+        }];
+        this.field_tag.root.classList.add("no-label");
       }
     }
     reset() {
@@ -27,6 +32,7 @@
       this.changed = false;
       this.valid = true;
       this.value = [];
+      this.last_value = this.last_value || [];
       uR.forEach(this.field_tag.root.querySelectorAll("[name="+this.name+"]"),function(input) {
         this.changed = this.changed || ((this.last_value.indexOf(input.value) != -1) !== input.checked);
         if (input.checked) { this.value.push(input.value); }

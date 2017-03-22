@@ -29,7 +29,7 @@
     prepSchema() {
       var tag = this.form_tag;
       var _schema = tag.opts.schema || tag._parent.opts.schema || tag._parent.schema;
-      this.action = this.form_tag.opts.action;
+      this.action = tag.opts.action;
       if (typeof _schema == "string") {
         this.schema_url = _schema;
         this.action = this.action || this.schema_url;

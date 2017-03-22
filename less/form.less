@@ -32,3 +32,64 @@ ur-form .ur-input.header {
     position: static;
   }
 }
+
+.ur-input .no-label + label { display: none; }
+
+.ur-input checkbox-input {
+  [type=radio], [type=checkbox] {
+    display: none;
+    + label {
+      padding-left: 30px;
+      position: relative;
+      &:before {
+        border: 2px solid #5a5a5a;
+        content: '';
+        left: 0;
+        margin-top: 2px;
+        position: absolute;
+        top: 0;
+        z-index: 0;
+      }
+    }
+  }
+}
+
+.ur-input checkbox-input [type=checkbox] {
+  display: none;
+  + label:before {
+    border-radius: 1px;
+    height: 18px;
+    transition: .2s;
+    width: 18px;
+  }
+  &:checked + label:before {
+    backface-visibility: hidden;
+    border-color: transparent;
+    border-right-color: #26a69a;
+    border-bottom-color: #26a69a;
+    border-right-color: var(--blue);
+    border-bottom-color: var(--blue);
+    left: -5px;
+    height: 22px;
+    top: -4px;
+    transform: rotate(40deg);
+    transform-origin: 100% 100%;
+    width: 12px;
+  }
+}
+
+.ur-input checkbox-input [type=radio] {
+  + label:before {
+    content: '';
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    transition: .28s ease;
+  }
+  &:checked + label:before {
+    background: #26a69a;
+    background: var(--blue);
+    border-color: #26a69a;
+    border-color: var(--blue);
+  }
+}
