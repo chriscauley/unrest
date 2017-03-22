@@ -125,8 +125,9 @@
       }
 
       // It's easier to have an empty function than undefined, also make bouncy
-      this.validate = this.validate || function() {};
-      this.validate = (this.bounce)?uR.debounce(this.validate.bind(f),this.bounce):this.validate;
+      this.validate = this.validate || function() { return true };
+      //#! TODO: rethink bouncy validators as some kind of promise
+      //this.validate = (this.bounce)?uR.debounce(this.validate.bind(f),this.bounce):this.validate;
       this.keyUp = this.keyUp || function() {};
       this.keyUp = (this.bounce)?uR.debounce(this.keyUp.bind(f),this.bounce):this.keyUp;
 
@@ -154,6 +155,7 @@
       this.empty = !this.value.length;
       var invalid_email = !/[^\s@]+@[^\s@]+\.[^\s@]+/.test(this.value);
       if (!this.required && !this.value) { invalid_email = false; }
+      var was_valid = this.valid;
       this.valid = false;
       if (this.required && this.empty) {
         this.data_error = "This field is required.";
@@ -165,9 +167,11 @@
       else if (this.type == "email" && invalid_email) {
         this.data_error = "Please enter a valid email address.";
       }
+      else if (!this.validate(this.value,this)) { } //everything is handled in the function
       else {
         this.valid = true;
       }
+      if (was_valid != this.valid) { this.form.form_tag.update() }
       //#! if (!this.data_error) { this.opts.ur_form.keyUp(this) }
       //#! if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
     }
