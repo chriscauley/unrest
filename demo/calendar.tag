@@ -1,5 +1,9 @@
 <calendar>
-  <h1>{ moment.format("MMMM YYYY") }</h1>
+  <div class="top">
+    <a if={ prev_month } onclick={ showPrevMonth }>&laquo; { prev_month.format("MMMM") }</a>
+    <div class="title">{ moment.format("MMMM YYYY") }</div>
+    <a if={ next_month } onclick={ showNextMonth }>{ next_month.format("MMMM") } &raquo;</a>
+  </div>
   <div class="week" each={ calendar.weeks }>
     <div class="day { current: current, desktop: !occurrences }" each={ days }>
       <div class="dom">{ moment.date() }</div>
@@ -9,23 +13,26 @@
 
   <style scoped>
     :scope { display: block; position: relative; }
-    * { box-sizing: border-box; }
-    .week { align-items: stretch; display: flex; height: 100px; }
-    .day { flex: 0 1 auto; border: 1px solid black; opacity: 0.5; padding: 5px; width: 14.285714285%; }
-    .day.current { opacity: 1; }
-    .dom { font-weight: bold; text-align: right; }
-    .desktop { display: block; }
-    .mobile { display: none; }
-    .occurrence:before { content: attr(data-prefix); }
+    :scope a { cursor: pointer; }
+    :scope * { box-sizing: border-box; }
+    :scope .week { align-items: stretch; display: flex; height: 100px; }
+    :scope .day { flex: 0 1 auto; border: 1px solid black; opacity: 0.5; padding: 5px; width: 14.285714285%; }
+    :scope .day.current { opacity: 1; }
+    :scope .dom { font-weight: bold; text-align: right; }
+    :scope .desktop { display: block; }
+    :scope .mobile { display: none; }
+    :scope .occurrence:before { content: attr(data-prefix); }
     @media (max-width: 480px) {
-      .day { width: 100%; padding-bottom: 20px; }
-      .week { height: auto; display: block; }
-      .desktop { display: none; }
-      .mobile { display: block; }
-      .dom { text-align: center; }
+      :scope .day { width: 100%; padding-bottom: 20px; }
+      :scope .week { height: auto; display: block; }
+      :scope .desktop { display: none; }
+      :scope .mobile { display: block; }
+      :scope .dom { text-align: center; }
     }
+    :scope .title { font-size: 2em; font-weight: 0.2em; }
+    :scope .top { align-items: center; display: flex; justify-content: space-between; }
     @media (max-width: 768px) {
-      .occurrence:before { content: ""; }
+      :scope .occurrence:before { content: ""; }
     }
   </style>
 
@@ -42,17 +49,26 @@
     this.update();
   }
 
+  this.setFirstDate = function(d) {
+    this.first_date = d;
+    this.moment = moment(new Date(this.first_date));
+    this.update();
+    this.prev_month = this.opts.prev_month && this.moment.clone().add(-1,"months");
+    this.next_month = this.opts.next_month && this.moment.clone().add(1,"months");
+  }
+
+  this.on("mount",function() {
+    this.occurrences = this.opts.occurrences || [];
+    if (this.opts.date) { this.setFirstDate(this.opts.date); }
+    else if (this.occurrences.length) { this.setFirstDate(this.occurrences[0].start) }
+    else { this.setFirstDate(moment().format("YYYY-M-D")) }
+  });
+
   this.on("update", function() {
-    var first_date;
-    this.opts.occurrences = this.opts.occurrences || [];
-    if (this.opts.date) { first_date = this.opts.date; }
-    else if (this.opts.occurrences && this.opts.occurrences.length) {
-      first_date = this.opts.occurrences[0].start;
-    }
-    this.moment = moment(new Date(first_date));
+    if (!this.first_date) { return; }
     this.day_occurrences = {};
-    for (var i=0;i<this.opts.occurrences.length;i++) {
-      var o = this.opts.occurrences[i];
+    for (var i=0;i<this.occurrences.length;i++) {
+      var o = this.occurrences[i];
       o.moment = moment(new Date(o.start));
       if (o.end) { o.end_moment = moment(new Date(o.end)); }
       var d = o.moment.dayOfYear();
