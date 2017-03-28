@@ -16,7 +16,7 @@
     :scope a { cursor: pointer; }
     :scope a.disabled { filter: grayscale(1); cursor: default; }
     :scope * { box-sizing: border-box; }
-    :scope .week { align-items: stretch; display: flex; height: 100px; }
+    :scope .week { align-items: stretch; display: flex; min-height: 100px; }
     :scope .day { flex: 0 1 auto; border: 1px solid black; opacity: 0.5; padding: 5px; width: 14.285714285%; }
     :scope .day.current { opacity: 1; }
     :scope .dom { font-weight: bold; text-align: right; }
