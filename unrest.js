@@ -113,7 +113,7 @@ var uR = (function() {
     }
     // POST uses FormData, GET uses query string
     var form_data = new FormData(opts.form);
-    if (method=="POST" && !opts.form) {
+    if (method=="POST" && data) {
       for (var key in data) {
         filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
       };
