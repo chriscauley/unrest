@@ -1,8 +1,10 @@
 <ez-file>
   <input type="file" id="{_id }" onchange={ cropIt } name={ slug } />
   <yield>
-    <label if={ !done } for="{ _id }" class="btn-danger btn">{ opts.name }</label>
-    <button if={ done } class="btn btn-success" onclick={ edIt }>Edit Headshot</button>
+    <button if={ done && type != "img" } class="btn btn-success" onclick={ edIt }>{ opts.success_text || "Edit" }</button>
+    <label if={ !done } for="{ _id }" class="btn-danger btn">Add { name }</label>
+    <div if={ done && type == "img" } class="image" style="background-image: url({ done })" onclick={ edIt }></div>
+    <button if={ done } onclick={ clear } class="{ uR.config.btn_cancel } fa fa-trash"></button>
   </yield>
   <form action={ opts.url } method="POST">
     <input type="hidden" name="user_id" value={ opts.user_id } />
@@ -10,23 +12,49 @@
   </form>
 
   <style>
-    ez-file { display: block; }
-    ez-file input[type=file] { display: none; }
+    ez-file { display: block; position: relative; }
+    ez-file input[type=file], ez-file form { display: none; }
+    ez-file .image {
+      cursor: pointer;
+      display: inline-block;
+      width: 100%;
+    }
+    ez-file .image:before {
+      content: "";
+      display: block;
+      margin-top: 100%;
+    }
+    ez-file .fa-trash { bottom: 0; left: 0; position: absolute; }
   </style>
   var self = this;
   this.on("mount", function() {
     this.slug = (this.opts.name || "").replace(" ","_").toLowerCase();
+    this.name = this.opts.name || "File";
     this.done = this.opts.done;
+    this.type = this.opts.type;
     this._id = "file__"+this.slug+"__"+this.opts.user_id;
     this.update();
   });
+  clear(e) {
+    if (!e.target.innerHTML) {
+      e.target.innerHTML = "Confirm?";
+      setTimeout(function() { e.target.innerHTML = "" },2000)
+      return;
+    }
+    this.uploadFile(e,{ action: 'delete', user_id: opts.user_id });
+  }
   cropIt(e) {
-    var filesToUpload = this.root.querySelector("[type=file]").files;
-    var file = filesToUpload[0];
+    var file = this.root.querySelector("[type=file]").files[0];
 
     var img = document.createElement("img");
     var reader = new FileReader();  
-    reader.onload = function(e) {img.src = e.target.result}
+    reader.onload = function(e) {
+      if (this.opts.type == "img") { img.src = e.target.result; }
+      else {
+        this.root.querySelector("[name=blob]").value = e.target.result;
+        this.uploadFile(e);
+      }
+    }.bind(this);
     reader.readAsDataURL(file);
 
     img.onload = function() {
@@ -40,11 +68,12 @@
     }
     img.src = this.done;
   }
-  uploadFile(e) {
+  uploadFile(e,data) {
     var form = this.root.querySelector("form");
     this.ajax({
       url: this.opts.url,
       method: "POST",
+      data: data, // undefined except when in clear method
       form: form,
       success: function(data) { this.done = data.done },
       error: function() { uR.alert("an unknown error has occurred. Go bug Chris!") }
