@@ -292,5 +292,12 @@ var uR = (function() {
     },
     error_class: "card red white-text",
   }
+  uR.formatTimeRange = function formatTimeRange(start,end) {
+    var start = moment(start), end = moment(end);
+    var start_format = start.minute()?"h:mm":"h";
+    var end_format = end.minute()?"h:mm A":"h A";
+    if (start.hour() < 12 && end.hour() > 12) { start_format += " A"; }
+    return start.format(start_format) + " - " + end.format(end_format);
+  }
   return uR;
 })();
