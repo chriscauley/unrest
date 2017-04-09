@@ -157,7 +157,10 @@
       if (!this.required && !this.value) { invalid_email = false; }
       var was_valid = this.valid;
       this.valid = false;
-      if (this.required && this.empty) {
+      if (!this.required && this.empty) {
+        this.valid = true;
+      }
+      else if (this.required && this.empty) {
         this.data_error = "This field is required.";
       }
       else if (this.value.length < this.minlength) {
@@ -240,15 +243,6 @@
          autocomplete="off">-->
 
   var self = this;
-  /* #! TODO
-  labelClick(e) {
-    if (self.input_type == "checkbox") {
-      self.IS_CHECKED = !self.IS_CHECKED;
-      e.value = self.value;
-      self.onChange(e);
-    }
-  }
-  */
 
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
@@ -287,13 +281,6 @@
       }
     }
     this.update()
-    /*
-    if (this.label_after) {
-      var s = document.createElement("span");
-      s.innerHTML = this.label_after;
-      var label = this.root.querySelector("label");
-      label.parentNode.insertBefore(s,label.nextSibling);
-    }*/
   });
 </ur-input>
 
