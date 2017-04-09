@@ -1,0 +1,29 @@
+<html>
+  <body>
+    <div style="max-width: 500px; margin: 20px auto;">
+      <ur-form method="POST" action="/some_url/" schema="{ window.MY_SCHEMA }"
+               ajax_success="{ window.ajaxSuccess }"></ur-form>
+    </div>
+  </body>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.1/css/materialize.min.css">
+  <link rel="stylesheet" href="//static.unrest.io/.dist/unrest-built.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.6.7/riot.min.js"></script>
+  <script src="//static.unrest.io/.dist/unrest-built.js"></script>
+  <script>
+uR.auth.reset = function() {} // disables auth system
+function validatePhone(value,riot_tag) {
+  if (value.replace(/\D/g,'').length < 10) {
+    riot_tag.data_error = "Phone number must have at least 10 digits";
+    return false;
+  }
+  return true;
+}
+window.MY_SCHEMA = [
+  "first_name",
+  "last_name",
+  { name: "phone_number", validate: validatePhone, required: false },
+  { name: "email", type: "email" },
+];
+riot.mount("ur-form");
+  </script>
+</html>
