@@ -139,7 +139,7 @@ var uR = (function() {
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
       if (data.error) { errors = { non_field_error: data.error }; }
-      var non_field_error = errors.non_field_error;
+      var non_field_error = errors.non_field_error || errors.__all__; // __all__ is django default syntax
       if (isEmpty(errors) && request.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";
       }
