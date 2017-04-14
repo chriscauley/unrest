@@ -1,9 +1,9 @@
 <ez-file>
-  <input type="file" id="{_id }" onchange={ cropIt } name={ slug } />
+  <input type="file" id="{_id }" onchange={ cropIt } name={ slug } if={ can_edit }/>
   <yield>
-    <button if={ done && type != "img" } class="btn btn-success" onclick={ edIt }>{ opts.success_text || "Edit" }</button>
     <label if={ !done } for="{ _id }" class="btn-danger btn">Add { name }</label>
-    <div if={ done && type == "img" } class="image" style="background-image: url({ done })" onclick={ edIt }></div>
+    <button if={ done && !bg } class="btn btn-success" onclick={ edIt }>{ opts.success_text || "Edit" }</button>
+    <div if={ bg } class="image" style="background-image: url({ bg })" onclick={ edIt }></div>
     <button if={ done } onclick={ clear } class="{ uR.config.btn_cancel } fa fa-trash"></button>
   </yield>
   <form action={ opts.url } method="POST">
@@ -32,12 +32,19 @@
     this.name = this.opts.name || "File";
     this.done = this.opts.done;
     this.type = this.opts.type;
+    this.can_edit = this.opts.can_edit || this.opts.can_edit == undefined;
+    this.show_preview = !this.opts.no_preview;
     this._id = "file__"+this.slug+"__"+this.opts.user_id;
     this.update();
   });
+  this.on("update",function() {
+    if (this.done && this.show_preview) {
+      this.bg = this.done;
+    }
+  });
   clear(e) {
     if (!e.target.innerHTML) {
-      e.target.innerHTML = "Confirm?";
+      e.target.innerHTML = "?";
       setTimeout(function() { e.target.innerHTML = "" },2000)
       return;
     }
@@ -62,6 +69,7 @@
     }
   }
   edIt(e) {
+    if (!this.can_edit) { return; }
     img = document.createElement("img");
     img.onload = function() {
       uR.alertElement("resize-image",{ img: img, parent: self, });
@@ -128,12 +136,14 @@
 
     var img = document.createElement('img'); // create a Image Element
     img.src = canvas.toDataURL("image/png"); // cache the image data source
-    this.ctx.clearRect(0,0,canvas.width,canvas.height);
-    this.ctx.save();
-    this.ctx.translate(canvas.width/2,canvas.height/2);
-    this.ctx.rotate(this.rotate*Math.PI);
-    this.ctx.drawImage(img,-canvas.width/2,-canvas.height/2);
-    this.ctx.restore();
+    img.onload = function() {
+      this.ctx.clearRect(0,0,canvas.width,canvas.height);
+      this.ctx.save();
+      this.ctx.translate(canvas.width/2,canvas.height/2);
+      this.ctx.rotate(this.rotate*Math.PI);
+      this.ctx.drawImage(img,-canvas.width/2,-canvas.height/2);
+      this.ctx.restore();
+    }.bind(this);
   });
   cancel(e) {
     this.unmount();
