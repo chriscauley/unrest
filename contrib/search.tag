@@ -8,21 +8,26 @@ uR.ready(function() {
            ajax_success={ ajax_success }></ur-form>
 
   <div class="search_results rows" name="ajax_target">
-    <div onclick={ parent.opts.select } each={ search_results } class="fourth btn btn-primary">
-      <img if={ thumbnail } riot-src="{ thumbnail }" />
-      <div class="name">{ name }</div>
+    <div onclick={ parent.opts.select } each={ results }>
+      <a class="flexy" href={ url }>
+        <div class="thumbnail" if={ thumbnail } style="background-image: url({ thumbnail })"></div>
+        <div class="details">
+          <div class="name">{ name }</div>
+        </div>
+      </a>
     </div>
   </div>
+  var search_tag = this;
   this.schema = [
     { name: "q", placeholder: uR.config.search_placeholder || "Enter search query" },
   ];
   this.initial = { q: uR.getQueryParameter("q") }
 
   this.ajax_success = function(data,request) {
-    this.query = this.root.querySelector("[name=q]").value;
-    this.results = data.results;
-    this.update();
-    window.history.replaceState({},"Search: "+this.query,"?q="+escape(this.query));
+    search_tag.query = search_tag.root.querySelector("[name=q]").value;
+    search_tag.results = data.results;
+    window.history.replaceState({},"Search: "+search_tag.query,"?q="+escape(search_tag.query));
+    search_tag.update();
   }
 
   this.on("mount",function() {
