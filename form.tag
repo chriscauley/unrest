@@ -303,8 +303,10 @@
     </div>
     <div class="button_div">
       <yield from="button_div"/>
-      <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>{ success_text }</button>
-      <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>{ cancel_text }</button>
+      <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>
+        { success_text }</button>
+      <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>
+        { cancel_text }</button>
     </div>
     <ul class="messagelist" if={ messages.length }>
       <li class="{ level }" each={ messages }>{ body }</li>
