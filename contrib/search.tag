@@ -1,5 +1,5 @@
 uR.ready(function() {
-  uR.updateSearchResults = uR.updateSearchResults || {};
+  uR.updateSearchResults = uR.updateSearchResults || function(r) { return r; }
   uR.addRoutes({
     "^/(search)/$": function() { uR.mountElement("ur-search"); },
   });
@@ -9,7 +9,7 @@ uR.ready(function() {
            ajax_success={ ajax_success }></ur-form>
 
   <div class="search_results rows" name="ajax_target">
-    <div onclick={ parent.opts.select } each={ r in results }>
+    <div each={ r in results } if={ !uR.config.search_results_tag }>
       <a class="flexy" href={ r.url }>
         <div class="thumbnail" if={ r.thumbnail } style="background-image: url({ r.thumbnail })"></div>
         <div class="details">
@@ -18,22 +18,30 @@ uR.ready(function() {
       </a>
     </div>
   </div>
-  var search_tag = this;
+  var self = this;
   this.schema = [
     { name: "q", placeholder: uR.config.search_placeholder || "Enter search query" },
   ];
   this.initial = { q: uR.getQueryParameter("q") }
 
   this.ajax_success = function(data,request) {
-    search_tag.query = search_tag.root.querySelector("[name=q]").value;
-    search_tag.results = uR.search.updateSearchResults(data.results);
-    window.history.replaceState({},"Search: "+search_tag.query,"?q="+escape(search_tag.query));
-    search_tag.update();
+    self.query = self.root.querySelector("[name=q]").value;
+    window.history.replaceState({},"Search: "+self.query,"?q="+escape(self.query));
+    self.results = uR.updateSearchResults(data.results);
+    if (uR.config.search_results_tag) {
+      var target = self.ajax_target;
+      while (target.hasChildNodes()) { target.removeChild(target.lastChild); }
+      var t = document.createElement(uR.config.search_results_tag);
+      target.appendChild(t);
+      riot.mount(t,{ items: data.results });
+    } else {
+      self.update();
+    }
   }
 
   this.on("mount",function() {
     this.needs_search = this.initial.q;
     this.update();
-    this.keys = uR.config.search_display_fields || ["name","thumbnail"];
+    this.keys = uR.config.search_display_fields || ["name"];
   });
 </ur-search>
