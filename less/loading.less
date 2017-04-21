@@ -1,0 +1,21 @@
+[data-loading=fade] {
+  filter: grayscale(0.25) brightness(1);
+  position: relative;
+  &:after {
+    animation: fff 1s infinite alternate ease-in;
+    background: rgba(0,0,0,0.25);
+    border: solid white;
+    bottom: 0;
+    content: "";
+    display: flex;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+
+@keyframes fff {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
