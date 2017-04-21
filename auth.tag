@@ -35,8 +35,8 @@
   uR.auth.postAuth = function() {}
   uR.auth._getLinks = function() {
     return [
-      {url: "/account/settings/", icon: "gear", text: "Account Settings"},
-      {url: "/auth/logout/", icon: "sign-out", text: "Log Out"},
+      <!--{url: "/account/settings/", icon: "gear", text: "Account Settings"},-->
+      {url: "/accounts/logout/", icon: "sign-out", text: "Log Out"},
     ];
   }
   uR.auth.getLinks = uR.auth._getLinks;
@@ -159,13 +159,12 @@
     </ul>
   </li>
 
-  this.on("mount",function() {
-    if (uR.auth.user) { this.links = uR.auth.getLinks() }
+  this.on("update",function() {
+    if (uR.auth.user) { this.links = uR.auth.getLinks(); }
     else {
       this.url = uR.auth.login_url || "/auth/login/";
       this.icon = uR.auth.login_icon || "fa fa-user";
       this.text = uR.auth.login_text || "Login or Register";
     }
-    this.update();
   });
 </auth-dropdown>

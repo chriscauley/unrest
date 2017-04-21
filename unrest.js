@@ -170,10 +170,13 @@ var uR = (function() {
 
   var AjaxMixin = {
     init: function() {
-      this.ajax = function(options) {
+      this.ajax = function(options,e) {
+        e = e || {};
         options.tag = options.tag || this;
         options.target = options.target || this.ajax_target || (this.theme && this.root.querySelector(this.theme.outer));
+        options.target = options.target || e.target;
         options.success = options.success || this.ajax_success;
+        options.url = options.url || this.ajax_url;
         uR.ajax(options);
       }
     },
@@ -254,9 +257,8 @@ var uR = (function() {
   uR.config.form = {};
   uR.config[404] = 'four-oh-four';
   uR.config.form.field_class = "input-field";
-  uR.config.loading_attribute = uR.config.loading_attribute || 'spinner';
-  uR.config.loading_attribute = 'spinner';
-  uR.config.success_attribute = 'spinner';
+  uR.config.loading_attribute = uR.config.loading_attribute || 'fade';
+  uR.config.loading_attribute = 'fade';
   uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
   uR.config.input_overrides = {};

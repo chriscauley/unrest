@@ -5,7 +5,7 @@ uR.ready(function() {
   });
 });
 <ur-search>
-  <ur-form action={ uR.config.search_url } initial={ initial } schema={ schema } autosubmit="true"
+  <ur-form action={ uR.config.search_url } initial={ initial } schema={ schema } autosubmit="first"
            ajax_success={ ajax_success }></ur-form>
 
   <div class="search_results rows" name="ajax_target">

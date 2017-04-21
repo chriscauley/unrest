@@ -175,6 +175,7 @@
         this.valid = true;
       }
       if (was_valid != this.valid) { this.form.form_tag.update() }
+      this.form.form_tag.onChange(e);
       //#! if (!this.data_error) { this.opts.ur_form.keyUp(this) }
       //#! if (!this.data_error && e.type == "blur") { this._validate(this.value,this); }
     }
@@ -356,6 +357,7 @@
       });
     }
   }
+
   clear() {
     this.initial = this.empty_initial;
     uR.storage.set(this.form.action,null); // nuke stored half finished form
@@ -370,11 +372,13 @@
       var f = self.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
     },0)
   }
+
   getData() {
     var data = {};
     uR.forEach(this.form.field_list,function(f) { data[f.name] = f.value || ""; });
     return data;
   }
+
   this.on("mount",function() {
     window.FORM = this;
     var _parent = this.parent || {};
@@ -394,22 +398,23 @@
     this.root.style.opacity = 1
     if (this.opts.autosubmit) {
       this.root.querySelector("#submit_button").style.display = "none";
-      this._autosubmit = setInterval(this.autoSubmit.bind(this),1000);
+      (this.opts.autosubmit == "first") && this.onChange({},true);
     }
   });
 
-autoSubmit(e) {
-  if (this._ajax_busy) { return }
-  var changed;
-  uR.forEach(this.form.field_list || [], function(field) {
-    changed = changed || field.changed;
-    field.changed = false;
-  });
-  if (changed) {
-    this.update(); // check to see if valid
-    this.submit(); // does nothing if invalid
+  onChange(e,force) {
+    if (this._ajax_busy) { return }
+    if (!this.opts.autosubmit) { return; }
+    var changed;
+    uR.forEach(this.form.field_list || [], function(field) {
+      changed = changed || field.changed;
+      field.changed = false;
+    });
+    if (changed || force) {
+      this.update(); // check to see if valid
+      this.submit(); // does nothing if invalid
+    }
   }
-}
 
   this.on("update",function() {
     if (this.root.querySelectorAll(".ur-input").length == 0) { return; }
@@ -423,6 +428,7 @@ autoSubmit(e) {
     })
     this.opts.autosave && this.autoSave();
   });
+
   this.autoSave = uR.dedribble(function() {
     // #! TODO Performance test this. Is it a memory leak? Is it using a lot of processor?
     var new_data = this.getData();
