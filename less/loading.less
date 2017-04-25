@@ -1,12 +1,11 @@
 [data-loading=fade] {
-  filter: grayscale(0.25) brightness(1);
+  animation: fff 1s infinite alternate ease-in;
   position: relative;
   &:after {
-    animation: fff 1s infinite alternate ease-in;
-    background: rgba(0,0,0,0.25);
-    border: solid white;
+    background: rgba(0,0,0,0.1);
     bottom: 0;
     content: "";
+    cursor: wait;
     display: flex;
     left: 0;
     position: absolute;
@@ -16,6 +15,6 @@
 }
 
 @keyframes fff {
-  0% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0% { filter: grayscale(0.75) brightness(1); }
+  100% { filter: grayscale(0.25) brightness(1); }
 }
