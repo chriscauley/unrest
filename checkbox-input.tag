@@ -44,6 +44,7 @@
       this.show_error = true;
       this.last_value = this.value;
       this.form.form_tag.update();
+      this.form.form_tag.onChange();
     }
   }
 })();
