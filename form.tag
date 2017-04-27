@@ -247,7 +247,7 @@
 
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
-    this._input.type = this.field.input_type;
+    if (this.field.input_tagname != "textarea") { this._input.type = this.field.input_type; }
     this._input.name = this.field.name;
     this._input.id = this.field.id;
     this._input.addEventListener("change",this.field.onChange.bind(this.field));
@@ -380,7 +380,6 @@
   }
 
   this.on("mount",function() {
-    window.FORM = this;
     var _parent = this.parent || {};
     _parent.ur_form = this;
     _parent.opts = _parent.opts || {};
