@@ -7,6 +7,7 @@ var sourcemaps = require("gulp-sourcemaps");
 var through = require('through2');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
+var babel = require('gulp-babel');
 
 var PROJECT_NAME = "unrest";
 
@@ -21,6 +22,7 @@ var js_files = [
 
 gulp.task('build-js', ['build-tag'], function () {
   return gulp.src(js_files)
+    .pipe(babel({ presets: ['es2015'] }))
     .pipe(sourcemaps.init())
     .pipe(concat(PROJECT_NAME + '-built.js'))
     //.pipe(uglify({mangle: false, compress: false}))

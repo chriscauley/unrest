@@ -59,7 +59,7 @@ var uR = (function() {
   }
 
   function isEmpty(obj) {
-    for (key in obj) { return false; }
+    for (var key in obj) { return false; }
     return true;
   }
 

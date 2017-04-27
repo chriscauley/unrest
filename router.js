@@ -35,7 +35,7 @@
     uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
     data = data || {};
     data.location = new_url;
-    for (key in uR._routes) {
+    for (var key in uR._routes) {
       data.matches = pathname.match(new RegExp(key));
 
       if (data.matches) {
