@@ -54,7 +54,9 @@
     'password-reset': [ { name: 'email', label: 'Email Address', type: "email" }, ]
   };
   uR.urls.auth = {
-    login: "/auth/login/"
+    login: "#/auth/login/",
+    register: "#/auth/register/",
+    password_reset: "#/auth/forgot-password/",
   }
   uR.urls.api = uR.urls.api || {};
   uR.urls.api.login = "/api/login/";
@@ -103,14 +105,14 @@
       </div>
       <ur-form schema={ schema } action={ url } method="POST" ajax_success={ opts.success }></ur-form>
       <center if={ slug == 'login' }>
-        <a href="/auth/register/?next={ next }">Create an Account</a><br/>
-        <a href="/auth/forgot-password/?next={ next }">Forgot Password?</a>
+        <a href="{ uR.urls.auth.register }?next={ next }">Create an Account</a><br/>
+        <a href="{ uR.urls.auth.password_reset }?next={ next }">Forgot Password?</a>
       </center>
       <center if={ slug == 'register' }>
-        Already have an account? <a href="/auth/login/?next={ next }">Login</a> to coninue
+        Already have an account? <a href="{ uR.urls.auth.login }?next={ next }">Login</a> to coninue
       </center>
       <center if={ slug == 'password_reset' }>
-        Did you suddenly remember it? <a href="/auth/login/?next={ next }">Login</a>
+        Did you suddenly remember it? <a href="{ uR.urls.auth.login }?next={ next }">Login</a>
       </center>
     </div>
   </div>
@@ -163,7 +165,7 @@
   this.on("update",function() {
     if (uR.auth.user) { this.links = uR.auth.getLinks(); }
     else {
-      this.url = uR.auth.login_url || "/auth/login/";
+      this.url = uR.auth.login_url || uR.urls.auth.login;
       this.icon = uR.auth.login_icon || "fa fa-user";
       this.text = uR.auth.login_text || "Login or Register";
     }
