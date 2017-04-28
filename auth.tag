@@ -62,10 +62,10 @@
   uR.urls.api['password-reset'] = "/api/password-reset/";
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
   uR.addRoutes({
-    "/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
-    "/auth/logout/": function(path,data) {
+    "#?/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
+    "#?/auth/logout/": function(path,data) {
       uR.auth.setUser(null);
-      window.location = "/accounts/logout/";
+      uR.route("/accounts/logout/");
     },
   });
 
@@ -118,7 +118,7 @@
   ajax_success(data) {
     uR.auth.setUser(data.user);
     (uR.AUTH_SUCCESS || function() {
-      var path = self.next || window.location.href;
+      var path = self.next || window.location.pathname;
       if (path.match(uR.auth.auth_regexp)) { path == "/"; } // avoid circular redirect!
       uR.route(path);
     })();
@@ -143,7 +143,8 @@
     if (uR.auth.user) { self.ajax_success({user: uR.auth.user}) }
   });
   cancel(e) {
-    if (window.location.pathname(uR.auth.auth_regexp)) { window.location = "/" }
+    if (window.location.pathname.match(uR.auth.auth_regexp)) { uR.route("/") }
+    window.location.hash = "";
     this.unmount()
   }
 </auth-modal>

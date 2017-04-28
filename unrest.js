@@ -245,6 +245,7 @@ var uR = (function() {
       url: url,
       success: function(data) {
         uR.schema[url] = data.schema;
+        uR.schema[url].form_title = data.form_title;
         uR.schema.__initial[url] = data.initial;
         callback && callback();
       }

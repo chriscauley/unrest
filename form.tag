@@ -1,5 +1,16 @@
 (function() {
   uR.form = {};
+  uR.ready(function() {
+    if (uR.config.form_prefix != undefined) {
+      var _routes = {};
+      _routes[uR.config.form_prefix + "/([\\w]+\\.[\\w]+)/"] = function(path,data) {
+        data.schema = "/api/schema/"+data.matches[1]+"/";
+        data.method = "POST"; // #! TODO this should be an option tied to python schema
+        uR.mountElement("ur-form",data);
+      };
+      uR.addRoutes(_routes);
+    }
+  });
   uR.__START = new Date().valueOf();
   uR._t = function(s) { console.log(new Date().valueOf()-uR.__START,s); }
   uR.form.parseChoices = function(choices) {
@@ -44,7 +55,8 @@
       }
       this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
       this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
-      
+
+      tag.form_title = _schema.form_title;
       this.schema = _schema.map(function(field) {
         if (typeof field == "string") { field = { name: field } }
         var f = {};
@@ -286,33 +298,38 @@
 </ur-input>
 
 <ur-form>
-  <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
-    <yield from="pre-form"/>
-    <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input">
-      <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
-      <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
-             data-success={ data_success }>{ label }</label>
-      <div class="error">{ data_error }</div>
-      <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
+  <div class={ theme.outer }>
+    <div class={ theme.header } if={ form_title }><h3>{ form_title }</div>
+    <div class={ theme.content }>
+      <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
+        <yield from="pre-form"/>
+        <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input">
+          <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
+          <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
+                 data-success={ data_success }>{ label }</label>
+          <div class="error">{ data_error }</div>
+          <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
+        </div>
+        <div if={ non_field_error } class="non_field_error">
+          <div class={ uR.theme.error_class }>{ non_field_error }</div>
+          <p if={ uR.config.support_email } style="text-align: center;">
+            If you need assistance contact
+            <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
+          </p>
+        </div>
+        <div class="button_div">
+          <yield from="button_div"/>
+          <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>
+            { success_text }</button>
+          <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>
+            { cancel_text }</button>
+        </div>
+        <ul class="messagelist" if={ messages.length }>
+          <li class="{ level }" each={ messages }>{ body }</li>
+        </ul>
+      </form>
     </div>
-    <div if={ non_field_error } class="non_field_error">
-      <div class={ uR.theme.error_class }>{ non_field_error }</div>
-      <p if={ uR.config.support_email } style="text-align: center;">
-        If you need assistance contact
-        <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
-      </p>
-    </div>
-    <div class="button_div">
-      <yield from="button_div"/>
-      <button class="{ btn_success } { disabled: !valid }" id="submit_button" onclick={ submit }>
-        { success_text }</button>
-      <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>
-        { cancel_text }</button>
-    </div>
-    <ul class="messagelist" if={ messages.length }>
-      <li class="{ level }" each={ messages }>{ body }</li>
-    </ul>
-  </form>
+  </div>
 
   var self = this;
   this.btn_success = this.opts.btn_success || uR.config.btn_success;

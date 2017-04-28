@@ -2,6 +2,9 @@
   uR.mountElement = function mountElement(name,options) {
     name = name.replace(/\//g,''); // Some tags pass in tag name for path like /hello-world/
     options = options || {};
+    if (options.ur_modal) {
+      options.mount_to = options.mount_to || uR.config.mount_alerts_to;
+    }
     var target = document.querySelector(options.mount_to || uR.config.mount_to);
     var children = target.childNodes;
     var i = target.childNodes.length;
@@ -15,7 +18,6 @@
   uR.alertElement = function alertElement(name,options) {
     options = options || {};
     if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = true; }
-    options.mount_to = uR.config.mount_alerts_to;
     uR.mountElement(name,options);
   }
 
@@ -36,15 +38,30 @@
     data = data || {};
     data.location = new_url;
     for (var key in uR._routes) {
-      data.matches = pathname.match(new RegExp(key));
+      var regexp = new RegExp(key);
+      var path_match = pathname.match(regexp);
 
-      if (data.matches) {
+
+      if (path_match) {
         uR.STALE_STATE = true;
+        data.matches = path_match;
         uR._routes[key](pathname,data);
         uR.pushState(href);
-        return;
+      } else if (new_url.hash && key.startsWith("#?")) {
+        data.matches = new_url.hash.match(regexp);
+        if (data.matches) {
+          data.ur_modal = true;
+          data.cancel = function() {
+            window.location.hash = "";
+            this.unmount();
+          }
+          uR.STALE_STATE = true;
+          uR._routes[key](pathname,data);
+          uR.pushState(href);
+        }
       }
     }
+    if (data.matches) { return }
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
@@ -77,6 +94,7 @@
 
     /*if (el.href != loc.href && (
       el.href.split('#')[0] == loc.href.split('#')[0] // internal jump
+        || el.href.startsWith("#") // hash only
         || base[0] != '#' && getPathFromRoot(el.href).indexOf(base) !== 0 // outside of base
         || base[0] == '#' && el.href.split(base)[0] != loc.href.split(base)[0] // outside of #base
         || !go(getPathFromBase(el.href), el.title || document.title) // route not found
@@ -87,7 +105,9 @@
   }
 
   uR.addRoutes = function(routes) { uR.extend(uR._routes,routes); }
-  uR.startRouter = function() { document.addEventListener('click', onClick); };
+  uR.startRouter = function() {
+    document.addEventListener('click', onClick);
+  };
 
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
   uR._routes = uR._routes || {};

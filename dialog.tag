@@ -4,7 +4,7 @@
       if (this.opts.ur_modal){
         this.theme = this.opts.theme || uR.theme.modal;
         var e = document.createElement('div');
-        this.cancel = this.cancel || function() { this.unmount() };
+        this.cancel = this.cancel || this.opts.cancel || function() { this.unmount() };
         e.addEventListener("click",function() { this.cancel() }.bind(this));
         e.setAttribute("ur-mask",true);
         if (this.root.childNodes.length) {
