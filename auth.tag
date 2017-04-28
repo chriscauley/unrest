@@ -17,8 +17,8 @@
         }
         if (!uR.auth.user || data.force) {
           uR.AUTH_SUCCESS = success;
-          data.slug = "register";
-          uR.alertElement("auth-modal",data);
+          data.next = window.location.href;
+          uR.route(uR.urls.auth.login,data);
         }
         else { success(); }
       });
