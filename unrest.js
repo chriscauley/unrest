@@ -136,6 +136,9 @@ var uR = (function() {
       catch (e) {
           var data = {};
       }
+      if (data.status == 401) {
+        return uR.auth.loginRequired(function() { uR.ajax(opts); })();
+      }
       if (target) { target.removeAttribute('data-loading'); }
       var errors = data.errors || {};
       if (data.error) { errors = { non_field_error: data.error }; }
