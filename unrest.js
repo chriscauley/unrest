@@ -181,7 +181,7 @@ var uR = (function() {
       }
     },
   };
-  riot.mixin(AjaxMixin);
+  window.riot && riot.mixin(AjaxMixin);
 
   uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;

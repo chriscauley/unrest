@@ -1,30 +1,34 @@
+uR.ready(function() {
+  riot.mount("ur-tabs");
+});
 <ur-tabs>
   <div class="tab-anchors">
-    <a onclick={ showTab } each={ tabs } class={ active: title == parent.active_title }> { title }</a>
+    <a onclick={ showTab } each={ tab,i in tabs } class={ active: i == this.active }> { tab.title }</a>
   </div>
   <yield />
 
   <style scoped>
-    :scope .tab-anchors a {
+    :scope.default .tab-anchors a {
       color: inherit;
       cursor: pointer;
       display: inline-block;
       padding: 5px;
       border: 1px solid;
     }
-    :scope .tab-anchors a.active {
+    :scope.default .tab-anchors a.active {
       text-decoration: underline;
     }
   </style>
   showTab(e) {
-    this.active_title = e.item.title;
+    this.active = e.item.i;
   }
 
   this.on("mount",function() {
     // this['ur-tabs'].tab will be a single riot tag or an array. we want an array
     this.tabs = this.tags['ur-tab'];
     if (this.tabs && !this.tabs[0]) { this.tabs = [this.tabs] }
-    this.active_title = this.tabs[0].title;
+    uR.forEach(this.tabs,function(tab,i) { tab.index = i; });
+    this.active = 0;
     this.update();
   });
 </ur-tabs>
@@ -33,7 +37,7 @@
   <yield/>
 
   <style scoped>
-    :scope {
+   ur-tabs.default :scope {
       border: 1px solid;
       box-sizing: border-box;
       display: block;
@@ -46,8 +50,26 @@
     :scope.hidden { display: none; }
   </style>
 
-  this.title = opts.title;
+  this.title = this.opts.title;
+
+  show() {
+    this.root.classList.remove("hidden");
+    if (this.loaded) { return }
+    if (this.opts.href) {
+      this.ajax({
+        url: this.opts.href,
+        success: function(data,response) { this.root.innerHTML = data.content || response.response; this.loaded = true; }
+      });
+    }
+    this.opts.click && this.opts.click();
+  }
+
+  hide() { 
+    this.root.classList.add("hidden");
+  }
+
   this.on("update",function() {
-    this.root.className = (this.opts.title == this.parent.active_title)?"":"hidden";
+    if (this.parent.active == undefined) { return }
+    (this.parent.active == this.index?this.show:this.hide)();
   });
 </ur-tab>
