@@ -59,9 +59,9 @@
     password_reset: "#/auth/forgot-password/",
   }
   uR.urls.api = uR.urls.api || {};
-  uR.urls.api.login = "/api/login/";
-  uR.urls.api.register = "/api/register/";
-  uR.urls.api['password-reset'] = "/api/password-reset/";
+  uR.urls.api.login = "/auth/login_ajax/";
+  uR.urls.api.register = "/api/register/"; // #! TODO
+  uR.urls.api['password-reset'] = "/api/password-reset/"; // #! TODO
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
   uR.addRoutes({
     "#?/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
