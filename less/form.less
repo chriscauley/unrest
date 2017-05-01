@@ -7,6 +7,7 @@ ur-form {
   .ur-input, .button_div, .non_field_error {
     flex-basis: 100%;
   }
+  > div { width: 100%; }
 }
 
 ur-form .ur-input {
@@ -22,6 +23,7 @@ ur-form .ur-input {
     max-height: 3rem;
   }
   .help_text { white-space: pre-line; }
+  &.hidden { display: none; }
 }
 
 ur-form .ur-input.header {

@@ -13,7 +13,7 @@
           this.root.appendChild(e);
         }
       } else {
-        this.theme = this.opts.theme || uR.theme.default;
+        this.theme = this.opts.theme || uR.theme[this.root.tagName] || uR.theme.default;
       }
     }
   }

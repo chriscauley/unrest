@@ -1,5 +1,6 @@
 (function() {
   uR.form = {};
+  uR.theme['UR-FORM'] = {}
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
