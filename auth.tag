@@ -120,7 +120,7 @@
   ajax_success(data,request) {
     (uR.AUTH_SUCCESS || function() {
       var path = self.next || window.location.pathname;
-      if (path.match(uR.auth.auth_regexp)) { path == "/"; } // avoid circular redirect!
+      if (path.match(uR.auth.auth_regexp)) { path = "/"; } // avoid circular redirect!
       uR.route(path);
     })(data,request);
     self.unmount();
