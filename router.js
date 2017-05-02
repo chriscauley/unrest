@@ -21,10 +21,10 @@
     uR.mountElement(name,options);
   }
 
-  function pushState(path) {
+  function pushState(path,data) {
     if (window.location.pathname == path) { return; }
     // #! TODO the empty string here is the page title. Need some sort of lookup table
-    history.pushState({path:path},"" || document.title,path);
+    history.replaceState({path:path},"" || document.title,path);
   } 
 
   uR.pushState = uR.debounce(pushState,100);
@@ -36,11 +36,9 @@
 
     uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
     data = data || {};
-    data.location = new_url;
     for (var key in uR._routes) {
       var regexp = new RegExp(key);
       var path_match = pathname.match(regexp);
-
 
       if (path_match) {
         uR.STALE_STATE = true;
@@ -99,7 +97,6 @@
         || base[0] == '#' && el.href.split(base)[0] != loc.href.split(base)[0] // outside of #base
         || !go(getPathFromBase(el.href), el.title || document.title) // route not found
     )) return*/
-
     e.preventDefault();
     uR.route(el.href);
   }
@@ -107,6 +104,7 @@
   uR.addRoutes = function(routes) { uR.extend(uR._routes,routes); }
   uR.startRouter = function() {
     document.addEventListener('click', onClick);
+    // window.popstate = function(event) { console.log("pop",window.location.href); uR.route(window.location.href,event.state,false); };
   };
 
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
