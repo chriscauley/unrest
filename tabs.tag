@@ -29,6 +29,7 @@ uR.ready(function() {
     if (this.tabs && !this.tabs[0]) { this.tabs = [this.tabs] }
     uR.forEach(this.tabs,function(tab,i) { tab.index = i; });
     this.active = 0;
+    if (uR.config.default_tabs) { this.root.classList.add("default");}
     this.update();
   });
 </ur-tabs>
@@ -37,16 +38,16 @@ uR.ready(function() {
   <yield/>
 
   <style scoped>
-   ur-tabs.default :scope {
+    ur-tabs.default :scope {
       border: 1px solid;
       box-sizing: border-box;
-      display: block;
       height: 400px;
       max-width: 100%;
       overflow-y: auto;
       padding: 5px;
       width: 650px;
     }
+    :scope { display: block; }
     :scope.hidden { display: none; }
   </style>
 
