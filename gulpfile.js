@@ -11,7 +11,7 @@ var babel = require('gulp-babel');
 
 var PROJECT_NAME = "unrest";
 
-var js_files = [
+var JS_FILES = [
   "url-shim.js",
   "unrest.js",
   "static.js",
@@ -21,7 +21,7 @@ var js_files = [
 ];
 
 gulp.task('build-js', ['build-tag'], function () {
-  return gulp.src(js_files)
+  return gulp.src(JS_FILES)
     .pipe(babel({ presets: ['es2015'] }))
     .pipe(sourcemaps.init())
     .pipe(concat(PROJECT_NAME + '-built.js'))
@@ -30,7 +30,7 @@ gulp.task('build-js', ['build-tag'], function () {
     .pipe(gulp.dest(".dist/"));
 });
 
-var tag_files = [
+var TAG_FILES = [
   "auth.tag",
   "dialog.tag",
 
@@ -44,24 +44,27 @@ var tag_files = [
   "multi-file.tag",
   "ez-file.tag",
   "test.tag",
+  "contrib/nav.tag",
 ]
 
 gulp.task('build-tag', function() {
-  return gulp.src(tag_files)
+  return gulp.src(TAG_FILES)
     .pipe(riot())
     .pipe(concat("_tags.js"))
     .pipe(gulp.dest(".dist"));
 });
 
+LESS_FILES = ["less/base.less"];
+
 gulp.task('build-css', function () {
-  return gulp.src("less/base.less")
+  return gulp.src(LESS_FILES)
     .pipe(less({}))
     .pipe(concat(PROJECT_NAME+'-built.css'))
     .pipe(gulp.dest(".dist/"));
 });
 
 
-var token_js = [
+var TOKEN_JS_FILES = [
   "token-input/zepto.js",
   "token-input/zepto-extra.js",
   "token-input/data.js",
@@ -70,7 +73,7 @@ var token_js = [
 ];
 
 gulp.task('build-token-js', ['build-token-tag'], function () {
-  return gulp.src(token_js)
+  return gulp.src(TOKEN_JS_FILES)
     .pipe(sourcemaps.init())
     .pipe(concat('token-built.js'))
     .pipe(sourcemaps.write("."))
@@ -93,9 +96,9 @@ gulp.task('build-token-css', function () {
 
 var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css'];
 gulp.task('watch', build_tasks, function () {
-  gulp.watch("*.js", ['build-js']);
-  gulp.watch('*.tag', ['build-js']);
-  gulp.watch("less/**/*.less", ['build-css']);
+  gulp.watch(JS_FILES, ['build-js']);
+  gulp.watch(TAG_FILES, ['build-js']);
+  gulp.watch("less/**/*.less", ['build-css']); // have to watch directory because of relative imports
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);
   gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
