@@ -132,7 +132,7 @@ var uR = (function() {
       request.setRequestHeader("X-CSRFToken",uR.cookie.get("csrftoken"));
     }
     request.onload = function(){
-      try { var data = JSON.parse(request.response); }
+      try { var data = JSON.parse(this.response); }
       catch (e) {
           var data = {};
       }
@@ -143,7 +143,7 @@ var uR = (function() {
       var errors = data.errors || {};
       if (data.error) { errors = { non_field_error: data.error }; }
       var non_field_error = errors.non_field_error || errors.__all__; // __all__ is django default syntax
-      if (isEmpty(errors) && request.status != 200) {
+      if (isEmpty(errors) && this.status != 200) {
         non_field_error = opts.default_error || "An unknown error has occurred";
       }
       if (tag && tag.form && tag.form.field_list) {
@@ -158,14 +158,15 @@ var uR = (function() {
         if (tag) { tag.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
       }
 
-      var complete = (request.status == 200 && isEmpty(errors));
-      (complete?success:error)(data,request);
+      var complete = (this.status == 200 && isEmpty(errors));
+      (complete?success:error)(data,this);
       if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
       if (tag) {
         tag._ajax_busy = false;
         tag.messages = data.messages || [];
         tag.update();
       }
+      uR.postAjax && uR.postAjax.bind(request)(request);
       if (data.ur_route_to) { uR.route(data.ur_route_to); }
     };
     request.send(form_data);

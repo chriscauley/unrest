@@ -44,6 +44,7 @@ var TAG_FILES = [
   "multi-file.tag",
   "ez-file.tag",
   "test.tag",
+  "konsole.tag",
   "contrib/nav.tag",
 ]
 
