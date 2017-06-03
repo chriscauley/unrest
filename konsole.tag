@@ -13,21 +13,22 @@
       konsole._start = function(){}
     }
   });
+  uR._mount_tabs = false;
 })();
 
 <konsole>
-  <div class="left">
-    <u>Logs:</u>
-    <div each={ log }>
-      { text }
-    </div>
-  </div>
-  <div class="right">
-    <u>Watches:</u>
-    <div each={ watch }>
-      <b>{ key }:</b> { value }
-    </div>
-  </div>
+  <ur-tabs>
+    <ur-tab title="Logs">
+      <div each="{ parent.parent.log }">
+        { text }
+      </div>
+    </ur-tab>
+    <ur-tab title="Watches">
+      <div each="{ parent.parent.watch }">
+        <b>{ key }:</b> { value }
+      </div>
+    </ur-tab>
+  </ur-tabs>
 
   <style scoped>
     :scope {

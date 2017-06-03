@@ -1,5 +1,6 @@
+uR.mount_tabs = true;
 uR.ready(function() {
-  riot.mount("ur-tabs");
+  if (uR._mount_tabs) { riot.mount("ur-tabs"); }
 });
 <ur-tabs>
   <div class="tab-anchors">
