@@ -18,9 +18,15 @@
 
 <konsole>
   <ur-tabs>
+    <ur-tab title="Run">
+      <div each="{ command in uR.config.commands }">
+        <button class="btn { command.ur_status }" onclick={ command }>{ command.name }</button>
+      </div>
+    </ur-tab>
     <ur-tab title="Logs">
       <div each="{ parent.parent.log }">
         { text }
+        <button each={ action in actions } onclick={ action }>{ action.name }</button>
       </div>
     </ur-tab>
     <ur-tab title="Watches">
@@ -34,6 +40,8 @@
   var watch_ings = {};
   this.log = [];
   var that = this;
+  console.log(uR.config.commands);
+  //uR.commands = [function What() {console.log("wow");}]
 
   this.on('update',function() {
     this.watch = [];
@@ -47,9 +55,15 @@
   }
   this.on("mount",function() {
     window.konsole = {
-      log: function() {
-        var v = [].slice.apply(arguments).join(" ");
-        that.log.push({ text:v }); that.update();
+      log: function(text) {
+        // konsole.log(text, actionOne, actionTwo...)
+        var out = { text: text, actions: [] };
+        uR.forEach(arguments,function(func,i) {
+          // skip argument[0] == text
+          if (i > 0) { out.actions.push(func) }
+        });
+        that.log.push(out);
+        that.update();
       },
       watch: function(k,v) {
         if (watch_keys.indexOf(k) == -1) { watch_keys.push(k); }
