@@ -37,6 +37,22 @@
     click: function click(querySelector) {
       document.querySelector(querySelector).click();
     },
+    changeValue: function changeValue(querySelector,value) {
+      return uR.test.watchFor(querySelector).then(function() {
+        var e = document.querySelector(querySelector);
+        e.value = value;
+        e.dispatchEvent(new Event("change"));
+      });
+    },
+    Test: function Test(path,action_sets) {
+      var promise = uR.test.setPath("/");
+      uR.forEach(action_sets,function(action_set) {
+        uR.forEach(action_set(),function(action) {
+          promise = promise.then(action);
+        });
+        promise = promise.catch(function() { konsole.log("FAIL: '"+action_set.name+'"')});
+        promise = promise.then(function() { konsole.log('PASS: "'+action_set.name+'"')});
+      });
+    }
   }
-
 })();
