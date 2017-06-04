@@ -8,18 +8,6 @@ uR.ready(function() {
   </div>
   <yield />
 
-  <style scoped>
-    :scope.default .tab-anchors a {
-      color: inherit;
-      cursor: pointer;
-      display: inline-block;
-      padding: 5px;
-      border: 1px solid;
-    }
-    :scope.default .tab-anchors a.active {
-      text-decoration: underline;
-    }
-  </style>
   showTab(e) {
     this.active = e.item.i;
   }
@@ -37,20 +25,6 @@ uR.ready(function() {
 
 <ur-tab>
   <yield/>
-
-  <style scoped>
-    ur-tabs.default :scope {
-      border: 1px solid;
-      box-sizing: border-box;
-      height: 400px;
-      max-width: 100%;
-      overflow-y: auto;
-      padding: 5px;
-      width: 650px;
-    }
-    :scope { display: block; }
-    :scope.hidden { display: none; }
-  </style>
 
   this.title = this.opts.title;
 

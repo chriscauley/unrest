@@ -30,25 +30,6 @@
     </ur-tab>
   </ur-tabs>
 
-  <style scoped>
-    :scope {
-      background: rgba(200,200,200,0.8);
-      bottom: 0;
-      height: 200px;
-      position: fixed;
-      right: 0;
-      width: 400px;
-    }
-    .left, .right {
-      border: 1px solid;
-      box-sizing: border-box;
-      float: left;
-      height: 100%;
-      padding: 5px;
-      width: 50%;
-    }
-  </style>
-
   var watch_keys = [];
   var watch_ings = {};
   this.log = [];
