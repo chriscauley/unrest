@@ -74,7 +74,7 @@
   uR.auth.user = uR.storage.get("auth.user");
   uR.ready(function() {
     riot.mount(uR.auth.tag_names);
-    uR.auth.reset();
+    !uR.config.no_auth && uR.auth.reset();
   });
   var _ready = [];
   uR.auth.ready = function(f) { _ready.push(f) };
