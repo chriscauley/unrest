@@ -1,7 +1,7 @@
 (function() {
   var test_count = 0;
   uR.test = {
-    setPath: function setPath(pathname,hash) {
+    setPath: function setPath(pathname,hash) { // broke
       return uR.test.watch(function () {
         hash = hash || "#";
         if (pathname != window.location.pathname ||
@@ -11,13 +11,42 @@
         return true;
       });
     },
-    wait: function wait(ms) {
-      var time = new Date();
-      return uR.test.watch(
-        function() { return new Date()-time > ms },
-        { name: "wait "+ms+"ms" }
-      )
+    wait: function wait(ms,s) {
+      return function() {
+        return new Promise(function (resolve, reject) {
+          setTimeout(function () {
+            konsole.log('waited',ms,s);
+            resolve();
+          }, ms);
+        });
+      }
     },
+
+    when: function when(funcs,ms,max_ms) {
+      // we can take an array or a function
+      if (typeof funcs == "function") { funcs = [funcs] }
+      return function() {
+        return new Promise(function (resolve, reject) {
+          var start = new Date();
+          var interval = setInterval(function () {
+            uR.forEach(funcs,function(f) {
+              var out = f();
+              if (out) {
+                konsole.log('when '+f.name);
+                resolve(out);
+                clearInterval(interval)
+              }
+            });
+            if (new Date() - start > max_ms) {
+              konsole.log("rejected ",new Date() - start)
+              //reject(new Date() - start)
+              clearInterval(interval)
+            }
+          }, ms);
+        });
+      }
+    },
+
     watch: function watch(f,opts) {
       opts = opts || {};
       var max_ms = opts.max_ms || uC.config.max_ms;
