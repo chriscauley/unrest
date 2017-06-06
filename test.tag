@@ -1,7 +1,8 @@
 (function() {
+  var test_count = 0;
   uR.test = {
     setPath: function setPath(pathname,hash) {
-      return uR.test.watch(function() {
+      return uR.test.watch(function () {
         hash = hash || "#";
         if (pathname != window.location.pathname ||
             hash != window.location.has) {
@@ -10,49 +11,78 @@
         return true;
       });
     },
-    watch: function watch(f,max_ms,interval_ms) {
-      max_ms = max_ms || uC.config.max_ms;
-      interval_ms = interval_ms || uC.config.interval_ms;
+    wait: function wait(ms) {
+      var time = new Date();
+      return uR.test.watch(
+        function() { return new Date()-time > ms },
+        { name: "wait "+ms+"ms" }
+      )
+    },
+    watch: function watch(f,opts) {
+      opts = opts || {};
+      var max_ms = opts.max_ms || uC.config.max_ms;
+      var interval_ms = opts.interval_ms || uC.config.interval_ms;
+      var name = opts.name || f.name;
       var start = new Date(),
           interval;
-      var promise = new Promise(function(resolve,reject) {
-        interval = setInterval(function() {
-          var out = f(),
-              ms_since = (new Date()-start);
-          if (out) {
-            clearInterval(interval);
-            resolve(out);
-          } else if (ms_since > max_ms) {
-            clearInterval(interval);
-            console.error("promise not resolved after "+max_ms+" seconds");
-            reject(out);
-          }
-        }, interval_ms);
-      });
-      return promise
+      return function() {
+        return new Promise(function(resolve,reject) {
+          interval = setInterval(function() {
+            var out = f(),
+                ms_since = (new Date()-start);
+            var time_since = ms_since+"/"+max_ms;
+            konsole.watch(name,time_since);
+            if (out) {
+              clearInterval(interval);
+              konsole.log(test_count,name,"resolved@",time_since);
+              test_count ++;
+              resolve(out);
+            } else if (ms_since > max_ms) {
+              clearInterval(interval);
+              konsole.watch(name,"FAILED "+time_since);
+              reject(out);
+            }
+          }, interval_ms);
+        });
+      }
+    },
+    is: function exists(f) {
+      return uR.test.watch(f).then(
+        function() { konsole.log("test pass: "+f.name) },
+        function() { konsole.log("test fail: "+f.name) }
+      )
     },
     watchFor: function watchFor(querySelector) {
-      return uR.test.watch(function() { return document.querySelector(querySelector) });
+      var f = function() { return document.querySelector(querySelector) }
+      return function() { return uR.test.watch(f,{name: "watchFor "+querySelector}); }
     },
     click: function click(querySelector) {
-      document.querySelector(querySelector).click();
+      return function(resolve,reject) {
+        document.querySelector(querySelector).click();
+        konsole.log(test_count,"clicked "+querySelector);
+        test_count += 1;
+      }
     },
     changeValue: function changeValue(querySelector,value) {
-      return uR.test.watchFor(querySelector).then(function() {
+      return function(resolve,reject) {
         var e = document.querySelector(querySelector);
         e.value = value;
         e.dispatchEvent(new Event("change"));
-      });
+        konsole.log("changed "+querySelector);
+      };
     },
-    Test: function Test(path,action_sets) {
-      var promise = uR.test.setPath("/");
-      uR.forEach(action_sets,function(action_set) {
-        uR.forEach(action_set(),function(action) {
-          promise = promise.then(action);
-        });
-        promise = promise.catch(function() { konsole.log("FAIL: '"+action_set.name+'"')});
-        promise = promise.then(function() { konsole.log('PASS: "'+action_set.name+'"')});
-      });
+    Test: class Test {
+      constructor() {
+        this.promise = Promise.resolve(function() { return true });
+      }
+      click(qS) {
+        this.promise = this.promise.then(uR.test.click(qS));
+        return this;
+      }
+      changeValue(qS,value) {
+        this.promise = this.promise.then(uR.test.changeValue(qS,value));
+        return this;
+      }
     }
   }
 })();

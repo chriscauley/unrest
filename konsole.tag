@@ -19,18 +19,20 @@
 <konsole>
   <ur-tabs>
     <ur-tab title="Run">
-      <div each="{ command in uR.config.commands }">
+      <div each={ command in uR.config.commands }>
         <button class="btn { command.ur_status }" onclick={ command }>{ command.name }</button>
       </div>
     </ur-tab>
     <ur-tab title="Logs">
-      <div each="{ parent.parent.log }">
-        { text }
-        <button each={ action in actions } onclick={ action }>{ action.name }</button>
+      <div each={ line in parent.parent.log }>
+        <span each={ word in line }>
+          <a href="javascript:void()" if={ typeof(word) === 'function' } onclick={ word }></a>
+          <u if={ typeof(word) !== 'function' }>{ word }</u>
+        </span>
       </div>
     </ur-tab>
     <ur-tab title="Watches">
-      <div each="{ parent.parent.watch }">
+      <div each={ parent.parent.watch }>
         <b>{ key }:</b> { value }
       </div>
     </ur-tab>
@@ -40,8 +42,6 @@
   var watch_ings = {};
   this.log = [];
   var that = this;
-  console.log(uR.config.commands);
-  //uR.commands = [function What() {console.log("wow");}]
 
   this.on('update',function() {
     this.watch = [];
@@ -55,16 +55,13 @@
   }
   this.on("mount",function() {
     window.konsole = {
-      log: function(text) {
-        // konsole.log(text, actionOne, actionTwo...)
-        var out = { text: text, actions: [] };
-        uR.forEach(arguments,function(func,i) {
-          // skip argument[0] == text
-          if (i > 0) { out.actions.push(func) }
-        });
-        that.log.push(out);
+      log: function() {
+        // arguments can be strings or functions
+        that.log.push([].slice.call(arguments).concat([new Date() - (konsole.log._last || new Date())]))
         that.update();
+        konsole.log._last = new Date();
       },
+      update: that.update,
       watch: function(k,v) {
         if (watch_keys.indexOf(k) == -1) { watch_keys.push(k); }
         watch_ings[k] = v;
@@ -76,5 +73,6 @@
       var key = tup[0], args = tup[1];
       konsole[key].apply(this,[].slice.apply(args));
     });
+    setTimeout(konsole.update,500);
   });
 </konsole>

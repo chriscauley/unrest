@@ -4,6 +4,12 @@ konsole {
   position: fixed;
   right: 0;
   width: 400px;
-  ur-tabs .tab-anchors a { background: rgba(255,255,255,0.8); }
-  ur-tab { background: rgba(200,200,200,0.8); }
+  ur-tabs.default {
+    .tab-anchors {
+      bottom: 100%;
+      position: absolute;
+      a { background: rgba(255,255,255,0.8); }
+    }
+    ur-tab { background: rgba(200,200,200,0.8); height: 100%; }
+  }
 }
