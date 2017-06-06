@@ -1,5 +1,4 @@
 (function() {
-  var test_count = 0;
   uR.test = {
     setPath: function setPath(pathname,hash) { // broke
       return uR.test.watch(function () {
@@ -25,10 +24,18 @@
     when: function when(funcs,ms,max_ms) {
       // we can take an array or a function
       if (typeof funcs == "function") { funcs = [funcs] }
+      var func_names = funcs.map((f) => f.name||"(anon)").join("|");
+      ms = ms || 20; // how often to check
+      max_ms = max_ms || 5000; // how long before fail
       return function() {
         return new Promise(function (resolve, reject) {
           var start = new Date();
           var interval = setInterval(function () {
+            if (new Date() - start > max_ms) {
+              konsole.log("rejected ",new Date() - start)
+              clearInterval(interval)
+              return reject("["+func_names+"] failed at "+max_ms);
+            }
             uR.forEach(funcs,function(f) {
               var out = f();
               if (out) {
@@ -37,17 +44,18 @@
                 clearInterval(interval)
               }
             });
-            if (new Date() - start > max_ms) {
-              konsole.log("rejected ",new Date() - start)
-              //reject(new Date() - start)
-              clearInterval(interval)
-            }
           }, ms);
         });
       }
     },
 
-    watch: function watch(f,opts) {
+    waitFor: function waitFor(qS,ms,max_ms) {
+      ms = ms || 100;
+      max_ms = max_ms || 1500;
+      return uR.test.when(function (){ return document.querySelector(qS) },ms,max_ms);
+    },
+
+    watch: function watch(f,opts) { // broken
       opts = opts || {};
       var max_ms = opts.max_ms || uC.config.max_ms;
       var interval_ms = opts.interval_ms || uC.config.interval_ms;
@@ -63,8 +71,7 @@
             konsole.watch(name,time_since);
             if (out) {
               clearInterval(interval);
-              konsole.log(test_count,name,"resolved@",time_since);
-              test_count ++;
+              konsole.log(name,"resolved@",time_since);
               resolve(out);
             } else if (ms_since > max_ms) {
               clearInterval(interval);
@@ -75,21 +82,25 @@
         });
       }
     },
-    is: function exists(f) {
+    is: function exists(f) { // broken
       return uR.test.watch(f).then(
         function() { konsole.log("test pass: "+f.name) },
         function() { konsole.log("test fail: "+f.name) }
       )
     },
-    watchFor: function watchFor(querySelector) {
+    watchFor: function watchFor(querySelector) { // broken
       var f = function() { return document.querySelector(querySelector) }
       return function() { return uR.test.watch(f,{name: "watchFor "+querySelector}); }
     },
-    click: function click(querySelector) {
+    click: function click(element) {
       return function(resolve,reject) {
-        document.querySelector(querySelector).click();
-        konsole.log(test_count,"clicked "+querySelector);
-        test_count += 1;
+        element = (element instanceof HTMLElement)?element:document.querySelector(element);
+        try {
+          element.click();
+        } catch(e) {
+          return reject(e);
+        }
+        konsole.log("clicked "+element);
       }
     },
     changeValue: function changeValue(querySelector,value) {
@@ -111,6 +122,14 @@
       changeValue(qS,value) {
         this.promise = this.promise.then(uR.test.changeValue(qS,value));
         return this;
+      }
+      when(f) {
+        this.promise = this.promise.then(uR.test.when(f));
+        return this;
+      }
+      waitFor() {
+        this.promise = this.promise.then(uR.test.waitFor.apply(this,[].slice.apply(arguments)));
+        return this
       }
     }
   }
