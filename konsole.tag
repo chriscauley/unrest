@@ -17,6 +17,7 @@
 })();
 
 <konsole>
+  <button class="toggle" onclick={ toggle }></button>
   <ur-tabs>
     <ur-tab title="Run">
       <div each={ command in uR.config.commands }>
@@ -24,7 +25,7 @@
       </div>
     </ur-tab>
     <ur-tab title="Logs">
-      <div each={ line in parent.parent.log }>
+      <div each={ line,lineno in parent.parent.log } data-lineno={ lineno } data-ms="+{ line.ms || 0 }ms">
         <span each={ word in line }>
           <a href="javascript:void()" if={ typeof(word) === 'function' } onclick={ word }></a>
           <u if={ typeof(word) !== 'function' }>{ word }</u>
@@ -51,13 +52,16 @@
     }
   });
   toggle(e) {
-    this.active = !this.active;
+    console.log('t');
+    this.root.classList[this.root.classList.contains("collapsed")?"remove":"add"]("collapsed");
   }
   this.on("mount",function() {
     window.konsole = {
       log: function() {
         // arguments can be strings or functions
-        that.log.push([].slice.call(arguments).concat([new Date() - (konsole.log._last || new Date())]))
+        var a = [].slice.call(arguments)
+        a.ms = new Date() - konsole.log._last;
+        that.log.push(a)
         that.update();
         konsole.log._last = new Date();
       },

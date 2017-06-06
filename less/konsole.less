@@ -3,13 +3,46 @@ konsole {
   height: 200px;
   position: fixed;
   right: 0;
-  width: 400px;
+  width: 900px;
+  z-index: 99999;
   ur-tabs.default {
     .tab-anchors {
       bottom: 100%;
       position: absolute;
       a { background: rgba(255,255,255,0.8); }
     }
-    ur-tab { background: rgba(200,200,200,0.8); height: 100%; }
+    ur-tab { background: rgba(200,200,200,0.8); height: 100%; width: 100%; }
   }
+  [data-lineno]:before {
+    content: attr(data-lineno);
+    display: inline-block;
+    padding-right: 5px;
+    text-align: right;
+    width: 2em;
+  }
+  [data-ms] {
+    position: relative;
+    margin-left: 75px;
+    &:after {
+      border-right: 1px rgba(0,0,0,0.5)  solid;
+      content: attr(data-ms);
+      display: inline-block;
+      margin-right: 5px;
+      padding-right: 5px;
+      position: absolute;
+      right: 100%;
+    }
+  }
+  &.collapsed {
+    bottom: -200px;
+    .tab-anchors { display: none; }
+    .toggle:before { content: "^^" }
+    .toggle {
+      right: 0;
+      top: -30px;
+      height: 30px;
+    }
+  }
+  .toggle { height: 100%; position: absolute; right: 100%; top: 0; }
+  .toggle:before { content: "vv" }
 }
