@@ -20,7 +20,7 @@
   <button class="toggle" onclick={ toggle }></button>
   <ur-tabs>
     <ur-tab title="Run">
-      <div each={ command in uR.config.commands }>
+      <div each={ command in uC.test.commands }>
         <button class="btn { command.ur_status }" onclick={ command }>{ command.name }</button>
       </div>
     </ur-tab>

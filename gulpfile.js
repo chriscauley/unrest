@@ -43,7 +43,6 @@ var TAG_FILES = [
   "markdown.tag",
   "multi-file.tag",
   "ez-file.tag",
-  "test.tag",
   "konsole.tag",
   "contrib/nav.tag",
 ]
