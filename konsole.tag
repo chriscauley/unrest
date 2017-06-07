@@ -58,17 +58,23 @@
     window.konsole = {
       log: function() {
         // arguments can be strings or functions
-        var a = [].slice.call(arguments)
-        var ts = (new Date() - konsole.log._last)
-        if (!ts) { ts = 'START' }
+        var a = [].slice.call(arguments);
+        var ts = (new Date() - konsole.log._last);
+        if (!ts && ts !== 0) { ts = 'START' }
         else if (ts > 1000) { ts = "+"+ts.toFixed(1)+"s" }
         else { ts = "+"+ts+"ms" }
         a.ts = ts;
-        that.log.push(a)
+        that.log.push(a);
         that.update();
         konsole.log._last = new Date();
         var container = that.root.querySelector("ur-tab[title='Logs']");
         container.scrollTop = container.scrollHeight;
+      },
+      error: function() {
+        var args = [].slice.call(arguments);
+        args.unshift("ERROR");
+        konsole.log.apply(konsole,args);
+        console.error.apply(window,args); // interactive stack trace
       },
       clear: function() { konsole.log._last = undefined },
       update: that.update,
