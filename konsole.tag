@@ -25,7 +25,7 @@
       </div>
     </ur-tab>
     <ur-tab title="Logs">
-      <div each={ line,lineno in parent.parent.log } data-lineno={ lineno } data-ms="+{ line.ms || 0 }ms">
+      <div each={ line,lineno in parent.parent.log } data-lineno={ lineno } data-ms="{ line.ts }">
         <span each={ word in line }>
           <a href="javascript:void()" if={ typeof(word) === 'function' } onclick={ word }></a>
           <u if={ typeof(word) !== 'function' }>{ word }</u>
@@ -52,7 +52,6 @@
     }
   });
   toggle(e) {
-    console.log('t');
     this.root.classList[this.root.classList.contains("collapsed")?"remove":"add"]("collapsed");
   }
   this.on("mount",function() {
@@ -60,11 +59,18 @@
       log: function() {
         // arguments can be strings or functions
         var a = [].slice.call(arguments)
-        a.ms = new Date() - konsole.log._last;
+        var ts = (new Date() - konsole.log._last)
+        if (!ts) { ts = 'START' }
+        else if (ts > 1000) { ts = "+"+ts.toFixed(1)+"s" }
+        else { ts = "+"+ts+"ms" }
+        a.ts = ts;
         that.log.push(a)
         that.update();
         konsole.log._last = new Date();
+        var container = that.root.querySelector("ur-tab[title='Logs']");
+        container.scrollTop = container.scrollHeight;
       },
+      clear: function() { konsole.log._last = undefined },
       update: that.update,
       watch: function(k,v) {
         if (watch_keys.indexOf(k) == -1) { watch_keys.push(k); }
