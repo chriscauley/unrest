@@ -1,17 +1,25 @@
 konsole {
-  bottom: 0;
-  height: 200px;
+  display: flex;
+  flex-flow: column;
+  top: 100%; // offscreen unless body has .konsole-open
+  height: 100%;
+  margin-top: -32px;
+  overflow-y: auto;
   position: fixed;
   right: 0;
-  width: 900px;
+  width: 500px;
   z-index: 99999;
+  ur-tabs, .commands { flex-basis: 50%; height: 50%; }
+  ur-tab,.commands { background: rgba(200,200,200,0.8); }
   ur-tabs.default {
+    padding-top: 32px;
     .tab-anchors {
-      bottom: 100%;
+      left: 32px;
       position: absolute;
+      top: 0;
       a { background: rgba(255,255,255,0.8); }
     }
-    ur-tab { background: rgba(200,200,200,0.8); height: 100%; width: 100%; }
+    ur-tab { height: 100%; width: 100%; }
   }
   [data-lineno]:before {
     content: attr(data-lineno);
@@ -22,27 +30,40 @@ konsole {
   }
   [data-ms] {
     position: relative;
-    margin-left: 75px;
+    padding-left: 75px;
     &:after {
       border-right: 1px rgba(0,0,0,0.5)  solid;
       content: attr(data-ms);
       display: inline-block;
+      left: 0;
       margin-right: 5px;
       padding-right: 5px;
       position: absolute;
-      right: 100%;
+      width: 75px;
     }
   }
-  &.collapsed {
-    bottom: -200px;
-    .tab-anchors { display: none; }
-    .toggle:before { content: "^^" }
-    .toggle {
-      right: 0;
-      top: -30px;
-      height: 30px;
-    }
+  [data-ms="START"] {
+    border-top: 1px solid rgba(0,0,0,0.9);
+    font-weight: bold;
+    margin-top: 3px;
+    padding-top: 3px;
   }
-  .toggle { height: 100%; position: absolute; right: 100%; top: 0; }
-  .toggle:before { content: "vv" }
+  [data-lineno="0"] { border-top: 0; }
+  .toggle:before { content: "^^" }
+  .toggle {
+    height: 32px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 32px;
+  }
+}
+
+body.konsole-open {
+  //margin-right: 500px;
+  konsole {
+    top: 0;
+    margin-top: 0;
+    .toggle:before { content: "vv" }
+  }
 }

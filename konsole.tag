@@ -4,9 +4,10 @@
     _start: function() {
       var k = document.body.appendChild(document.createElement("konsole"));
       riot.mount("konsole");
+      document.body.classList.add("konsole-open");
     }
   };
-  uR.forEach(['log','warn','error','watch'],function(key) {
+  uR.forEach(['log','warn','error','watch','addCommands'],function(key) {
     konsole[key] = function() {
       konsole._ready.push([key,arguments]);
       konsole._start();
@@ -19,11 +20,6 @@
 <konsole>
   <button class="toggle" onclick={ toggle }></button>
   <ur-tabs>
-    <ur-tab title="Run">
-      <div each={ command in uC.test.commands }>
-        <button class="btn { command.ur_status }" onclick={ command }>{ command.name }</button>
-      </div>
-    </ur-tab>
     <ur-tab title="Logs">
       <div each={ line,lineno in parent.parent.log } data-lineno={ lineno } data-ms="{ line.ts }">
         <span each={ word in line }>
@@ -38,6 +34,11 @@
       </div>
     </ur-tab>
   </ur-tabs>
+  <div class="commands">
+    <div each={ command in konsole.commands }>
+      <button class="btn { command.ur_status }" onclick={ command.run }>{ command.name }</button>
+    </div>
+  </div>
 
   var watch_keys = [];
   var watch_ings = {};
@@ -52,7 +53,10 @@
     }
   });
   toggle(e) {
-    this.root.classList[this.root.classList.contains("collapsed")?"remove":"add"]("collapsed");
+    var c = "konsole-open";
+    var cL = document.body.classList;
+    cL[cL.contains(c)?"remove":"add"](c);
+    uR.storage.set("konsole_open",cL.classList.contains(c) || "");
   }
   this.on("mount",function() {
     window.konsole = {
@@ -74,7 +78,7 @@
         var args = [].slice.call(arguments);
         args.unshift("ERROR");
         konsole.log.apply(konsole,args);
-        console.error.apply(window,args); // interactive stack trace
+        console.error.apply(window,args); // to get chrome's interactive stack trace
       },
       clear: function() { konsole.log._last = undefined },
       update: that.update,
@@ -83,7 +87,13 @@
         watch_ings[k] = v;
         that.update();
       },
+      commands: [],
       _ready: konsole._ready,
+      addCommands: function() {
+        uR.forEach(arguments,function(command) {
+          konsole.commands.push(new uC.test.Test(command))
+        });
+      },
     };
     uR.forEach(konsole._ready,function(tup) {
       var key = tup[0], args = tup[1];
