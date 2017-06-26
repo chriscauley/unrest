@@ -273,6 +273,7 @@ var uR = (function() {
   uR.config.btn_primary = "btn blue";
   uR.config.btn_success = "btn green";
   uR.config.btn_cancel = "btn red";
+  uR.config.btn_warning = "btn yellow";
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
   uR.config.alert_success = "alert alert-success card card-content"; // bootstrap
