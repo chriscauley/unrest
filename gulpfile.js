@@ -2,7 +2,6 @@ var riot = require('gulp-riot');
 var gulp = require('gulp');
 var concat = require("gulp-concat");
 var less = require('gulp-less');
-var rollup = require('gulp-rollup');
 var sourcemaps = require("gulp-sourcemaps");
 var through = require('through2');
 var uglify = require('gulp-uglify');
@@ -43,7 +42,6 @@ var TAG_FILES = [
   "markdown.tag",
   "multi-file.tag",
   "ez-file.tag",
-  "konsole.tag",
   "contrib/nav.tag",
 ]
 

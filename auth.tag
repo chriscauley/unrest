@@ -79,7 +79,8 @@
   var _ready = [];
   uR.auth.ready = function(f) { _ready.push(f) };
   uR.auth.reset = function(callback) {
-    callback = callback || function() {}
+    if (!uR.auth_enabled) { return }
+    callback = callback || function() {};
     uR.ajax({
       url: "/user.json",
       success: function(data) {

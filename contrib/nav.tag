@@ -9,9 +9,7 @@ uR.ready(function() {
         <img src="{ uR.config.logo || 'logo.png' }" style="height: 100%">
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a href="/about/">About</a></li>
-        <li><a href="/event/schedule/">Schedule</a></li>
-        <li><a href="/admin/">Admin</a></li>
+        <yield></yield>
         <auth-dropdown></auth-dropdown>
       </ul>
     </div>
