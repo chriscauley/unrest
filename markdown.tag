@@ -13,4 +13,8 @@
     }
     this.root.innerHTML = markdown.toHTML(content.replace("&amp;","&"));
   });
+  setContent(content) {
+    this.content = content;
+    this.mount();
+  }
 </markdown>
