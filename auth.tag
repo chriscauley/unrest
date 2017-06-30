@@ -100,7 +100,7 @@
     </div>
     <div class={ theme.content }>
       <div class="social" if={ slug != 'fogot_password' && uR.auth.social_logins.length }>
-        <a class="btn btn-block btn-{ icon }" href="/login/{ slug }?next={ next }" each={ uR.auth.social_logins }>
+        <a class="btn btn-block btn-{ icon }" href="{ url }?next={ next }" each={ uR.auth.social_logins }>
           <i class="fa fa-{ icon }"></i> Connect with { name }</a>
         <center>- or { slug } using your email address -</center>
       </div>
