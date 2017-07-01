@@ -170,4 +170,7 @@
       this.text = uR.auth.login_text || "Login or Register";
     }
   });
+  toggle(e) {
+    this.root.classList[this.root.classList.contains("open")?"remove":"add"]("open")
+  }
 </auth-dropdown>

@@ -42,7 +42,6 @@ var TAG_FILES = [
   "markdown.tag",
   "multi-file.tag",
   "ez-file.tag",
-  "contrib/nav.tag",
 ]
 
 gulp.task('build-tag', function() {

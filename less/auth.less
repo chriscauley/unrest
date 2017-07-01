@@ -3,3 +3,18 @@ auth-modal .social {
     margin-bottom: 1em;
   }
 }
+
+auth-dropdown {
+  position: relative;
+  .dropdown-content {
+    display: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    right: 0;
+    top: 100%;
+  }
+  &:hover, &.open {
+    .dropdown-content { display: block; }
+  }
+}
