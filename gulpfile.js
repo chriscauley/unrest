@@ -91,7 +91,14 @@ gulp.task('build-token-css', function () {
     .pipe(gulp.dest(".dist/"));
 });
 
-var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css'];
+gulp.task('build-simplemde',function() {
+  return gulp.src(["simplemde/simplemde.tag"])
+    .pipe(riot())
+    .pipe(concat('simplemde-built.js'))
+    .pipe(gulp.dest(".dist/"))
+})
+
+var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css', 'build-simplemde'];
 gulp.task('watch', build_tasks, function () {
   gulp.watch(JS_FILES, ['build-js']);
   gulp.watch(TAG_FILES, ['build-js']);
@@ -100,6 +107,7 @@ gulp.task('watch', build_tasks, function () {
   gulp.watch("token-input/token-input.less", ['build-token-css']);
   gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
   gulp.watch("token-input/token-input.tag", ['build-token-js']);
+  gulp.watch("simplemde/simplemde.tag",["build-simplemde"]);
 });
 
 gulp.task('default', build_tasks);

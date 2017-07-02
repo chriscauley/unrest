@@ -4,7 +4,7 @@
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
-      _routes[uR.config.form_prefix + "/([\\w]+\\.[\\w]+)/"] = function(path,data) {
+      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/"] = function(path,data) {
         data.schema = "/api/schema/"+data.matches[1]+"/";
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
