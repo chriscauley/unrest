@@ -8,7 +8,7 @@
       this.initial = this.initial_value;
       if (typeof this.initial == "string") { this.initial = this.initial.split(",") }
       this.last_value = this.initial;
-      if (!this.choices) {
+      if (!(this.choices && this.choices.length)) {
         this.choices = [{
           label: this.label,
           id: this.id+"__"+0,
