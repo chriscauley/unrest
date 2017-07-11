@@ -5,7 +5,7 @@
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
       _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/"] = function(path,data) {
-        data.schema = "/api/schema/"+data.matches[1]+"/";
+        data.schema = "/api/schema/"+data.matches[1]+"/"+(location.search||"");
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
       };
@@ -58,6 +58,7 @@
       this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
 
       tag.form_title = _schema.form_title;
+      tag.rendered_content = _schema.rendered_content;
       this.schema = _schema.map(function(field) {
         if (typeof field == "string") { field = { name: field } }
         var f = {};
@@ -132,8 +133,8 @@
       this.input_type = this.type || "text";
 
       // if there's a validator, use type=text to ignore browser default
-      if (uR.config.text_validators[this.input_type]) {
-        this.validate = uR.config.text_validators[this.input_type];
+      if (uR.config.text_validators[this.name]) {
+        this.validate = uR.config.text_validators[this.name];
         this.input_type = "text";
       }
 
@@ -302,6 +303,7 @@
   <div class={ theme.outer }>
     <div class={ theme.header } if={ form_title }><h3>{ form_title }</div>
     <div class={ theme.content }>
+      <div class="rendered_content"></div>
       <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
         <yield from="pre-form"/>
         <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input">
@@ -412,7 +414,7 @@
     this.form = new uR.form.URForm(this);
     this.update();
     this.update();
-    this.root.style.opacity = 1
+    this.root.style.opacity = 1;
     if (this.opts.autosubmit) {
       this.root.querySelector("#submit_button").style.display = "none";
       (this.opts.autosubmit == "first") && this.onChange({},true);
@@ -444,6 +446,11 @@
       self.valid = self.valid && field.valid;
     })
     this.opts.autosave && this.autoSave();
+    if (this.rendered_content) {
+      // this gets lazy loaded via schema url, so needs to be here rather than in mount
+      this.root.querySelector(".rendered_content").innerHTML = this.rendered_content;
+      this.rendered_content = undefined; // don't do it twice
+    }
   });
 
   this.autoSave = uR.dedribble(function() {
