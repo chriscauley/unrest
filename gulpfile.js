@@ -102,7 +102,7 @@ var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css',
 gulp.task('watch', build_tasks, function () {
   gulp.watch(JS_FILES, ['build-js']);
   gulp.watch(TAG_FILES, ['build-js']);
-  gulp.watch("less/**/*.less", ['build-css']); // have to watch directory because of relative imports
+  gulp.watch(["less/*.less","less/min/*.less","less/materialize/*.less"], ['build-css']);
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);
   gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);

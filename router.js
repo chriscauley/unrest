@@ -41,7 +41,6 @@
     for (var key in uR._routes) {
       var regexp = new RegExp(key);
       var path_match = pathname.match(regexp);
-
       if (path_match) {
         uR.STALE_STATE = true;
         data.matches = path_match;
@@ -113,4 +112,7 @@
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
+  uR.router = {
+    routeElement: (element_name) => (pathname,data) => uR.mountElement(element_name,data),
+  };
 })();
