@@ -16,6 +16,7 @@ var JS_FILES = [
   "static.js",
   "storage.js",
   "router.js",
+  "time.js",
   ".dist/_tags.js"
 ];
 
