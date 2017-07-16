@@ -4,8 +4,13 @@
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
-      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/"] = function(path,data) {
+      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/$"] = function(path,data) {
         data.schema = "/api/schema/"+data.matches[1]+"/"+(location.search||"");
+        data.method = "POST"; // #! TODO this should be an option tied to python schema
+        uR.mountElement("ur-form",data);
+      };
+      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/(\\d+)/$"] = function(path,data) {
+        data.schema = "/api/schema/"+data.matches[1]+"/"+data.matches[2]+"/"+(location.search||"");
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
       };
@@ -50,6 +55,7 @@
         } else {
           var url = _schema;
           uR.getSchema(url,this.prepSchema.bind(this));
+          this._needs_update = true;
           _schema = [];
           return;
         }
@@ -74,6 +80,10 @@
         this.field_list.push(new cls(this,field));
         this.fields[field.name] = this.field_list[this.field_list.length-1];
       }.bind(this));
+      if (this._needs_update) {
+        this.form_tag.update();
+        this.form_tag.update();
+      };
       /*
       this.update();
       this.update();
