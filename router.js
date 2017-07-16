@@ -46,7 +46,7 @@
         data.matches = path_match;
         uR._routes[key](pathname,data);
         uR.pushState(href);
-      } else if (new_url.hash && key.startsWith("#?")) {
+      } else if (new_url.hash && key.startsWith("^#?")) {
         data.matches = new_url.hash.match(regexp);
         if (data.matches) {
           data.ur_modal = true;

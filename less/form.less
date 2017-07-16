@@ -3,7 +3,6 @@ ur-form {
   flex-wrap: wrap;
   opacity: 0; // set to one in javascript
   form { display: block; width: 100%; }
-  .ur-input { display: block; }
   .ur-input, .button_div, .non_field_error {
     flex-basis: 100%;
   }
@@ -58,6 +57,13 @@ ur-form .ur-input.header {
       }
     }
   }
+}
+
+.ur-input {
+  display: flex;
+  flex-wrap: wrap;
+  label { order: 0; flex-basis: 100%; }
+  ur-input { order: 1 }
 }
 
 .ur-input checkbox-input [type=checkbox] {
