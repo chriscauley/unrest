@@ -1,14 +1,27 @@
 <script src="/node_modules/riot/riot+compiler.js"></script>
 <script src="/node_modules/moment/moment.js"></script>
 <script src="/.dist/unrest-built.js"></script>
+<style>body { tab-size: 12em; }</style>
+<body></body>
 <script>
 uR.ready(function() {
   function _r(s) {
-    console.log(s.date(),s.verbose_date())
+    document.body.innerHTML += "<pre>"+[s.date(),s.hdate(),s.htime()].join("\t")+"</pre>";
   }
-  _r("2017-7-12")
-  _r("2017-7-13")
-  _r("2017-7-14")
-  _r("2017-7-15")
+  function doit() {
+    _r("2017-7-12 12:00");
+    _r("2017-7-13 14:35");
+    _r("2017-7-14 18:19");
+    _r("2017-7-15 20:21");
+    _r("2017-10-12 00:00||04:00");
+  }
+
+  doit();
+  document.body.innerHTML += "<h2>Changing formats</h2>";
+  String.lunch.HDATE = "M/D/YYYY";
+  String.lunch.HDATE_NO_YEAR = "M/D";
+  String.lunch.HTIME_HOUR = "HH.mm";
+  String.lunch.HTIME_MINUTE = "";
+  doit();
 })
 </script>
