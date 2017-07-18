@@ -37,6 +37,7 @@ var TAG_FILES = [
   "form.tag",
   "checkbox-input.tag",
   "select-input.tag",
+  "pagination.tag",
   //"radio-input.tag",
 
   "tabs.tag",
