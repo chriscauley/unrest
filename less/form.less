@@ -63,7 +63,12 @@ ur-form .ur-input.header {
   display: flex;
   flex-wrap: wrap;
   label { order: 0; flex-basis: 100%; }
-  ur-input { order: 1 }
+  ur-input, select-input, checkbox-input { order: 1;flex-basis: 100%; }
+  .error {
+    --red: red;
+    order: 2;
+    color: #F88;
+  }
 }
 
 .ur-input checkbox-input [type=checkbox] {
@@ -105,3 +110,5 @@ ur-form .ur-input.header {
     border-color: var(--blue);
   }
 }
+
+#content > ur-form .card-content { display: flex; }

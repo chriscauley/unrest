@@ -1,7 +1,5 @@
 (function() {
-  uR.mountElement = function mountElement(name,options) {
-
-    name = name.replace(/\//g,''); // Some tags pass in tag name for path like /hello-world/
+  uR.mountElement = function mountElement(names,options) {
     options = options || {};
     if (options.ur_modal) {
       options.mount_to = options.mount_to || uR.config.mount_alerts_to;
@@ -11,10 +9,17 @@
     var children = target.childNodes;
     var i = target.childNodes.length;
     while (i--) { target.removeChild(children[i]); }
-    var element = document.createElement(name);
-    if (options.innerHTML) { element.innerHTML = options.innerHTML; }
-    target.appendChild(element);
-    riot.mount(mount_to+" "+name,options);
+
+    if (typeof names == "string") { names = [names]; }
+    var _t = [];
+    uR.forEach(names,function(name) {
+      name = name.replace(/\//g,''); // Some tags pass in tag name for path like /hello-world/
+      var element = document.createElement(name);
+      if (options.innerHTML) { element.innerHTML = options.innerHTML; }
+      target.appendChild(element);
+      _t.push(mount_to + " " + name);
+    });
+    riot.mount(_t.join(","),options);
   }
 
   uR.alertElement = function alertElement(name,options) {

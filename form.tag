@@ -1,16 +1,15 @@
 (function() {
   uR.form = {};
-  uR.theme['UR-FORM'] = {}
+  uR.theme['UR-FORM'] = uR.theme.default;
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
-      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/$"] = function(path,data) {
-        data.schema = "/api/schema/"+data.matches[1]+"/"+(location.search||"");
-        data.method = "POST"; // #! TODO this should be an option tied to python schema
-        uR.mountElement("ur-form",data);
-      };
-      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/(\\d+)/$"] = function(path,data) {
-        data.schema = "/api/schema/"+data.matches[1]+"/"+data.matches[2]+"/"+(location.search||"");
+      _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/(\\d+)?/?$"] = function(path,data) {
+        var url = "/api/schema/"+data.matches[1]+"/"
+        if (data.matches[2]) {
+          url += data.matches[2]+"/";
+        }
+        data.schema = url+(location.search||"?ur_page=0");
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
       };
@@ -341,6 +340,7 @@
           <li class="{ level }" each={ messages }>{ body }</li>
         </ul>
       </form>
+      <ur-pagination></ur-pagination>
     </div>
   </div>
 

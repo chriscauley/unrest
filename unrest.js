@@ -1,5 +1,29 @@
 var uR = (function() {
   var uR = window.uR || {};
+  uR.Ready = function Ready(isReady) {
+    isReady = isReady || function () { return true };
+    var _ready = [];
+    function log() {
+      //console.log.apply(this,arguments);
+    }
+    function error() {
+      //console.error.apply(this,arguments);
+    }
+    var ready = function ready() {
+      uR.forEach(arguments || [],function(f) {
+        if (typeof f == "function") { _ready.push(f); log('in queue',f.name); }
+        else { log(f); }
+      });
+      var in_queue = _ready.length;
+      while (isReady() && _ready.length) {
+        log("doing it!");
+        _ready.shift()();
+      }
+      error("Ready",in_queue,_ready.length);
+    }
+    ready._name = isReady.name;
+    return ready;
+  }
 
   uR.serialize = function serialize(form) {
     var field, s = [];
@@ -160,6 +184,7 @@ var uR = (function() {
 
       var complete = (this.status == 200 && isEmpty(errors));
       (complete?success:error)(data,this);
+      uR.pagination = data.ur_pagination || uR.pagination;
       if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
       if (tag) {
         tag._ajax_busy = false;
@@ -252,6 +277,7 @@ var uR = (function() {
         uR.schema[url].form_title = data.form_title;
         uR.schema[url].rendered_content = data.rendered_content;
         uR.schema.__initial[url] = data.initial;
+        uR.pagination = data.ur_pagination;
         callback && callback();
       }
     });
@@ -286,6 +312,9 @@ var uR = (function() {
     if (typeof s != "string") { s = s.toString() }
     return s.toLowerCase().replace(/(^[\s-]+|[\s-]+$)/g,"").replace(/[^\d\w -]+/g,"").replace(/[\s-]+/g,"-");
   };
+  uR.icon = {
+    admin: 'fa fa-pencil-square-o',
+  }
   uR.theme = {
     modal: {
       outer: "card",
