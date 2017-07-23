@@ -8,7 +8,7 @@
     datetime: "",
 
     hdate: "MMM Do, YYYY",
-    hdate_no_year: "MMM Do, YYYY",
+    hdate_no_year: "MMM Do",
     htime_hour: "H? A",
     htime_minute: ":mm",
   };
