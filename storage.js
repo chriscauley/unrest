@@ -68,9 +68,9 @@
       return expire_ms < new Date().valueOf();
     }
     setExpire(key,epoch_ms) {
-      epoch_ms = epoc_ms || this.default_expire_ms + new Date().valueOf();
-      set(this.EXPIRY+key,epoch_ms);
-      return epock_ms;
+      epoch_ms = epoch_ms || this.default_expire_ms + new Date().valueOf();
+      this.set(this.EXPIRY+key,epoch_ms);
+      return epoch_ms;
     }
     remote(url,callback) {
       var stored = this.get(url);
@@ -81,7 +81,7 @@
           this.set(url,data);
           this.setExpire(url);
           callback(data);
-        }
+        }.bind(this),
       });
     }
   }
