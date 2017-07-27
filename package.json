@@ -27,11 +27,11 @@
     "gulp": "^3.9.1",
     "gulp-babel": "^6.1.2",
     "gulp-concat": "^2.6.1",
-    "gulp-less": "^3.3.0",
+    "gulp-less": "^3.3.2",
     "gulp-riot": "^1.1.1",
-    "gulp-sourcemaps": "^1.9.1",
-    "gulp-uglify": "^2.0.0",
-    "gulp-util": "^3.0.7",
+    "gulp-sourcemaps": "^1.12.0",
+    "gulp-uglify": "^2.1.2",
+    "gulp-util": "^3.0.8",
     "lodash": "^4.17.3",
     "through2": "^2.0.3"
   }
