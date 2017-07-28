@@ -8,5 +8,8 @@
   </div>
 
   this.on("update",function() {
+    uR.pagination && uR.forEach(uR.pagination.results,function(result) {
+      result.ur_admin = uR.config.form_prefix.replace("^#?","")+"/"+uR.form.current_form+"/"+result.id+"/";
+    });
   });
 </ur-pagination>
