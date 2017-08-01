@@ -3,8 +3,8 @@
     cache1: {},
     cache2: {},
 
-    date: "YYYY-MM-DD",
-    time: "HH:mm",
+    date: "YYYYMMDD",
+    time: "Hmm",
     datetime: "",
 
     hdate: "MMM Do, YYYY",
@@ -71,4 +71,8 @@
   String.prototype.hdatetime = function() {
     return this.hdate() + " at " + this.htime();
   }
+  String.prototype.itime = function() {
+    return parseInt(this.time());
+  }
+  String.prototype.unixtime = function() { return this.moment()+0 }
 })();
