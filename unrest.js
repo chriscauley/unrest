@@ -1,8 +1,8 @@
 var uR = (function() {
   var uR = window.uR || {};
-  uR.Ready = function Ready(isReady) {
-    isReady = isReady || function () { return true };
-    var _ready = [];
+  uR.Ready = function Ready(isReady,_ready) {
+    isReady = isReady || function () { return false };
+    _ready = _ready || [];
     function log() {
       //console.log.apply(this,arguments);
     }
@@ -22,6 +22,7 @@ var uR = (function() {
       error("Ready",in_queue,_ready.length);
     }
     ready._name = isReady.name;
+    ready.start = function() { isReady = function() { return true };ready(); }
     return ready;
   }
 
@@ -259,11 +260,9 @@ var uR = (function() {
   }
 
   // uR.ready is a function for handling window.onload
-  uR._ready = uR._ready || [];
-  uR.ready = function(func) { uR._ready.push(func); };
+  uR.ready = new uR.Ready(undefined,uR._ready);
   window.onload = function() {
-    for (var i=0;i<uR._ready.length;i++) { uR._ready[i]() }
-    uR.ready = function(func) { func(); }
+    uR.ready.start();
     uR.route && uR.route(window.location.href);
     // #! dummy route function. This is so everything can use uR.route without router.js
     uR.route = uR.route || function route(path,data) { window.location = path }
