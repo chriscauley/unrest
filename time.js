@@ -1,7 +1,7 @@
 (function() {
   String.lunch = {
-    cache1: {},
-    cache2: {},
+    moment_cache: {},
+    s2_cache: {},
 
     date: "YYYYMMDD",
     time: "Hmm",
@@ -15,7 +15,7 @@
 
   var Sl = String.lunch;
   String.prototype.moment = function moment() {
-    if (String.lunch.cache1[this]) { return String.lunch.cache1[this] }
+    if (String.lunch.moment_cache[this]) { return String.lunch.moment_cache[this] }
     var s1 = this,s2,m1,m2;
     if (s1.indexOf("||") != -1) {
       [s1,s2] = s1.split("||");
@@ -32,8 +32,8 @@
         m2 = m2.add(1,'days')
       }
     }
-    String.lunch.cache1[this] = m1;
-    String.lunch.cache2[this] = m2;
+    String.lunch.moment_cache[this] = m1;
+    String.lunch.s2_cache[this] = s2;
     return m1;
   }
   String.prototype.format = function(s) { return this.moment().format(s); }
@@ -42,7 +42,14 @@
   }
   String.prototype.range = function(format) {
     this.moment();
-    return this.hdate()+ " - "+Sl.cache2[this].hdate();
+    return this.hdate()+ " - "+Sl.s2_cache[this].hdate();
+  }
+  String.prototype.htimerange = function(format) {
+    this.moment();
+    var m1 = this.moment(),m2 = Sl.s2_cache[this].moment();
+    var time1 = m1.format(m1.minute()?"h:mm":"h"); // 12 or 12:45
+    if (m1.hour()>=12 != m2.hour()>=12) { time1 += m1.format(" A") } // add am/pm if am/pm changes from time1 to time2
+    return time1 + " - " + Sl.s2_cache[this].htime() // h(:mm)? (am|pm)? - h(:mm)? am|pm
   }
 
   String.prototype.date = function date() { return this.moment().format(Sl.date); }
