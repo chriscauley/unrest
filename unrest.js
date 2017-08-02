@@ -205,13 +205,16 @@ var uR = (function() {
         options.tag = options.tag || this;
         options.target = options.target || this.ajax_target || (this.theme && this.root.querySelector(this.theme.outer));
         options.target = options.target || e.target;
-        options.success = options.success || this.ajax_success;
+        options.success = options.success || this.ajax_success || uR.default_ajax_success;
         options.url = options.url || this.ajax_url;
         uR.ajax(options);
       }
     },
   };
   window.riot && riot.mixin(AjaxMixin);
+  uR.default_ajax_success = function(data,request) {
+    uR.extend(uR.data,data);
+  }
 
   uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
@@ -304,6 +307,7 @@ var uR = (function() {
   uR.config.success_text = "Submit";
   uR.config.alert_success = "alert alert-success card card-content"; // bootstrap
   uR._var = {};
+  uR.data = uR.data || {};
   uR.alert = function(s) { console.log(s) };//alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
