@@ -8,9 +8,9 @@ var uR = (function() {
       console.log(name,"took",(new Date() - start)/1000);
     }
   }
-  uR.Ready = function Ready(isReady) {
-    isReady = isReady || function () { return true };
-    var _ready = [];
+  uR.Ready = function Ready(isReady,_ready) {
+    isReady = isReady || function () { return false };
+    _ready = _ready || [];
     function log() {
       //console.log.apply(this,arguments);
     }
@@ -30,6 +30,7 @@ var uR = (function() {
       error("Ready",in_queue,_ready.length);
     }
     ready._name = isReady.name;
+    ready.start = function() { isReady = function() { return true };ready(); }
     return ready;
   }
 
@@ -212,13 +213,16 @@ var uR = (function() {
         options.tag = options.tag || this;
         options.target = options.target || this.ajax_target || (this.theme && this.root.querySelector(this.theme.outer));
         options.target = options.target || e.target;
-        options.success = options.success || this.ajax_success;
+        options.success = options.success || this.ajax_success || uR.default_ajax_success;
         options.url = options.url || this.ajax_url;
         uR.ajax(options);
       }
     },
   };
   window.riot && riot.mixin(AjaxMixin);
+  uR.default_ajax_success = function(data,request) {
+    uR.extend(uR.data,data);
+  }
 
   uR.debounce = function debounce(func, wait, immediate) {
     var timeout, wait = wait || 200;
@@ -267,11 +271,9 @@ var uR = (function() {
   }
 
   // uR.ready is a function for handling window.onload
-  uR._ready = uR._ready || [];
-  uR.ready = function(func) { uR._ready.push(func); };
+  uR.ready = new uR.Ready(undefined,uR._ready);
   window.onload = function() {
-    for (var i=0;i<uR._ready.length;i++) { uR._ready[i]() }
-    uR.ready = function(func) { func(); }
+    uR.ready.start();
     uR.route && uR.route(window.location.href);
     // #! dummy route function. This is so everything can use uR.route without router.js
     uR.route = uR.route || function route(path,data) { window.location = path }
@@ -313,6 +315,7 @@ var uR = (function() {
   uR.config.success_text = "Submit";
   uR.config.alert_success = "alert alert-success card card-content"; // bootstrap
   uR._var = {};
+  uR.data = uR.data || {};
   uR.alert = function(s) { console.log(s) };//alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};

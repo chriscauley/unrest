@@ -3,3 +3,4 @@ node_packages
 bower_components
 .dist/*
 node_modules/*
+node_modules

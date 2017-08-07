@@ -5,6 +5,7 @@ ur-form {
   form { display: block; width: 100%; }
   .ur-input, .button_div, .non_field_error {
     flex-basis: 100%;
+    input,select, textarea { width: 100%; }
   }
   > div { width: 100%; }
 }
@@ -21,7 +22,22 @@ ur-form .ur-input {
     display: block;
     max-height: 3rem;
   }
-  .help_text { white-space: pre-line; }
+  .help_text {
+    font-size: 0.8em;
+    order: 2;
+    white-space: pre-line;
+    &:before {
+      border: 2px solid;
+      border-radius: 100%;
+      content: "?";
+      display: inline-block;
+      font-weight: bolder;
+      height: 1.2em;
+      line-height: 1.2em;
+      text-align: center;
+      width: 1em;
+    }
+  }
   &.hidden { display: none; }
 }
 

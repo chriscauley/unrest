@@ -50,6 +50,7 @@
         uR.STALE_STATE = true;
         data.matches = path_match;
         uR._routes[key](pathname,data);
+        document.body.dataset.ur_path = pathname;
         uR.pushState(href);
       } else if (new_url.hash && key.startsWith("^#?")) {
         data.matches = new_url.hash.match(regexp);
