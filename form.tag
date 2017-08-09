@@ -189,6 +189,10 @@
         var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
         this.data_error = this.verbose_name + " must be at least " + this.minlength + type;
       }
+      else if (this.maxlength && this.value.length > this.maxlength) {
+        var type = (["number","tel"].indexOf(this.type) == -1)?" characters.":" numbers.";
+        this.data_error = this.verbose_name + " cannot be more than " + this.maxlength + type;
+      }
       else if (this.type == "email" && invalid_email) {
         this.data_error = "Please enter a valid email address.";
       }
