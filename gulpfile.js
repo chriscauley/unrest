@@ -17,7 +17,7 @@ var JS_FILES = [
   "storage.js",
   "router.js",
   "time.js",
-  ".dist/_tags.js"
+  ".dist/_tags.js",
 ];
 
 gulp.task('build-js', ['build-tag'], function () {
@@ -44,6 +44,7 @@ var TAG_FILES = [
   "markdown.tag",
   "multi-file.tag",
   "ez-file.tag",
+  "contrib/nav.tag",
 ]
 
 gulp.task('build-tag', function() {
