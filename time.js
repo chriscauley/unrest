@@ -16,17 +16,17 @@
   var Sl = String.lunch;
   String.prototype.moment = function moment() {
     if (String.lunch.moment_cache[this]) { return String.lunch.moment_cache[this] }
-    var s1 = this,s2,m1,m2;
+    var s1 = this,m1,s2,m2;
     if (s1.indexOf("||") != -1) {
       [s1,s2] = s1.split("||");
     }
     if (this.match(/^\d\d?:\d\d/)) { // passing in time with no date, set date to today
       m1 = window.moment(window.moment().format("YYYY-MM-DD ") + s1);
     } else {
-      m1 = window.moment(s1);
+      var m1 = window.moment(s1.toString());
     }
     if (s2 && s2.match(/^\d\d?:\d\d/)) {
-      s2 = m1.format(Sl.date)+" "+s2;
+      s2 = m1.format(Strin.lunch.date)+" "+s2;
       m2 = window.moment(s2);
       if (m2 < m1) {
         m2 = m2.add(1,'days')
@@ -46,7 +46,8 @@
   }
   String.prototype.htimerange = function(format) {
     this.moment();
-    var m1 = this.moment(),m2 = Sl.s2_cache[this].moment();
+    var m1 = this.moment();
+    var m2 = Sl.s2_cache[this].moment();
     var time1 = m1.format(m1.minute()?"h:mm":"h"); // 12 or 12:45
     if (m1.hour()>=12 != m2.hour()>=12) { time1 += m1.format(" A") } // add am/pm if am/pm changes from time1 to time2
     return time1 + " - " + Sl.s2_cache[this].htime() // h(:mm)? (am|pm)? - h(:mm)? am|pm
