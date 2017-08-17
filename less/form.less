@@ -13,10 +13,11 @@ ur-form {
 ur-form .ur-input {
   .error {
     color: red;
-    color: var(--red);
+    //color: var(--red);
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s;
+    width: 100%;
   }
   &.invalid .error {
     display: block;
@@ -26,17 +27,6 @@ ur-form .ur-input {
     font-size: 0.8em;
     order: 2;
     white-space: pre-line;
-    &:before {
-      border: 2px solid;
-      border-radius: 100%;
-      content: "?";
-      display: inline-block;
-      font-weight: bolder;
-      height: 1.2em;
-      line-height: 1.2em;
-      text-align: center;
-      width: 1em;
-    }
   }
   &.hidden { display: none; }
 }
@@ -100,8 +90,8 @@ ur-form .ur-input.header {
     border-color: transparent;
     border-right-color: #26a69a;
     border-bottom-color: #26a69a;
-    border-right-color: var(--blue);
-    border-bottom-color: var(--blue);
+    //border-right-color: var(--blue);
+    //border-bottom-color: var(--blue);
     left: -5px;
     height: 22px;
     top: -4px;
@@ -121,9 +111,9 @@ ur-form .ur-input.header {
   }
   &:checked + label:before {
     background: #26a69a;
-    background: var(--blue);
+    //background: var(--blue);
     border-color: #26a69a;
-    border-color: var(--blue);
+    //border-color: var(--blue);
   }
 }
 
