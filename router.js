@@ -52,7 +52,7 @@
         uR._routes[key](pathname,data);
         document.body.dataset.ur_path = pathname;
         uR.pushState(href);
-      } else if (new_url.hash && key.indexOf("#?") != -1) {
+      } else if (new_url.hash && key.indexOf("#") != -1) {
         data.matches = new_url.hash.match(regexp);
         if (data.matches) {
           data.ur_modal = true;
