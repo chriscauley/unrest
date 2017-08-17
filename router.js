@@ -39,7 +39,7 @@
   uR.route = function route(href,data) {
     var new_url = new URL(href,href.match("://")?undefined:window.location.origin);
     var old_url = new URL(window.location.href);
-    var pathname = new_url.pathname || href;
+    var pathname = (new_url.pathname || href).replace(window.location.origin,"");
 
     uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
     data = data || {};
