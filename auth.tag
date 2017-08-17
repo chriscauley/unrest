@@ -40,7 +40,7 @@
     ];
   }
   uR.auth.getLinks = uR.auth._getLinks;
-  uR.auth.auth_regexp = /^\/auth\//;
+  uR.auth.auth_regexp = /\/auth\//;
 
   uR.schema.auth = {
     login: [
@@ -64,7 +64,7 @@
   uR.urls.api['password-reset'] = "/api/password-reset/"; // #! TODO
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
   uR.addRoutes({
-    "#?/auth/(login|register|forgot-password)/[$?]": function(path,data) { uR.alertElement("auth-modal",data); },
+    "#?/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
     "#?/auth/logout/[?$]": function(path,data) {
       uR.auth.setUser(null);
       uR.route("/accounts/logout/");
