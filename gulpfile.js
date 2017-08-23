@@ -97,6 +97,7 @@ gulp.task('build-token-css', function () {
 gulp.task('build-simplemde',function() {
   return gulp.src(["simplemde/simplemde.tag"])
     .pipe(riot())
+    .pipe(babel({ presets: ['es2015'] }))
     .pipe(concat('simplemde-built.js'))
     .pipe(gulp.dest(".dist/"))
 })

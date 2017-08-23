@@ -6,7 +6,7 @@
     new URL(window.location.href,undefined);
     return;
   } catch (e) {
-    airbrake.log("Reason for using url shim:");
+    airbrake.log("Reason for using url shim:",e);
     airbrake.log(e);
   }
   window.URL = function shimURL(url, base) {
