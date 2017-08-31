@@ -61,7 +61,7 @@
       this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
       this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
 
-      tag.form_title = _schema.form_title;
+      tag.form_title = this.opts.form_title || _schema.form_title;
       tag.rendered_content = _schema.rendered_content;
       this.schema = _schema.map(function(field) {
         if (typeof field == "string") { field = { name: field } }
