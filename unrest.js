@@ -286,6 +286,9 @@ var uR = (function() {
         uR.schema[url] = data.schema;
         uR.schema[url].form_title = data.form_title;
         uR.schema[url].rendered_content = data.rendered_content;
+        if (window.markdown && window.markdown.toHTML && data.markdown && !data.rendered_content) {
+          uR.schema[url].rendered_content = markdown.toHTML(data.markdown);
+        }
         uR.schema.__initial[url] = data.initial;
         uR.pagination = data.ur_pagination;
         callback && callback();
