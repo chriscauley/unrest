@@ -155,7 +155,9 @@
 
       // universal choice parser, maybe move to uR.form?
       if (this.choices) {
+        this.choices_map = {};
         this.choices = uR.form.parseChoices(this.choices).map(function(choice_tuple,index) {
+          this.choices_map[choice_tuple[0]] = choice_tuple[1];
           return {
             label: choice_tuple[1],
             id: this.id+"__"+index,
