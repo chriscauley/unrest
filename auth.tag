@@ -106,14 +106,14 @@
       </div>
       <ur-form schema={ schema } action={ url } method="POST" ajax_success={ opts.success }></ur-form>
       <center if={ slug == 'login' }>
-        <a href="{ uR.urls.auth.register }?next={ next }">Create an Account</a><br/>
-        <a href="{ uR.urls.auth.password_reset }?next={ next }">Forgot Password?</a>
+        <a href="{ urls.register }?next={ next }">Create an Account</a><br/>
+        <a href="{ urls.password_reset }?next={ next }">Forgot Password?</a>
       </center>
       <center if={ slug == 'register' }>
-        Already have an account? <a href="{ uR.urls.auth.login }?next={ next }">Login</a> to coninue
+        Already have an account? <a href="{ urls.login }?next={ next }">Login</a> to coninue
       </center>
       <center if={ slug == 'password_reset' }>
-        Did you suddenly remember it? <a href="{ uR.urls.auth.login }?next={ next }">Login</a>
+        Did you suddenly remember it? <a href="{ urls.login }?next={ next }">Login</a>
       </center>
     </div>
   </div>
@@ -142,6 +142,11 @@
   });
   this.on("update", function() {
     // user logged in sometime after this was mounted!
+    this.urls = uR.urls.auth;
+    if (window.location.pathname.match(uR.auth.auth_regexp)) {
+      this.urls = {};
+      for (var key in uR.urls.auth) { this.urls[key] = uR.urls.auth[key].replace("#",""); }
+    }
     if (uR.auth.user) { self.ajax_success({user: uR.auth.user}) }
   });
   cancel(e) {
