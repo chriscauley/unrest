@@ -320,14 +320,14 @@
       <div class="rendered_content"></div>
       <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
         <yield from="pre-form"/>
-        <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input">
+        <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
           <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
           <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
                  data-success={ data_success }>{ label }</label>
-          <div class="error">{ data_error }</div>
+          <div class={ uR.theme.error_class }>{ data_error }</div>
           <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
         </div>
-        <div if={ non_field_error } class="non_field_error">
+        <div if={ non_field_error } class="non_field_error" data-field_id="non_field_error">
           <div class={ uR.theme.error_class }>{ non_field_error }</div>
           <p if={ uR.config.support_email } style="text-align: center;">
             If you need assistance contact
@@ -457,9 +457,22 @@
     this.valid = true;
     if (!this.form.field_list) { return }
     uR.forEach(this.form.field_list,function(field,i) {
+      if (field.html_error) {
+        var error_element = this.root.querySelector("[data-field_id="+field.id+"] .error")
+        if (field.id && error_element) {
+          error_element.innerHTML = field.html_error;
+        }
+      }
       if (field.no_validation) { return }
       self.valid = self.valid && field.valid;
-    })
+    }.bind(this));
+    if (self.non_field_error && self.non_field_html_error) {
+      setTimeout(function() { // #! TODO none_field_error should always be there so that timeout is not necessary
+        if (self.root.querySelector("[data-field_id=non_field_error]")) {
+          self.root.querySelector("[data-field_id=non_field_error]").innerHTML = self.non_field_error;
+        }
+      },0);
+    }
     this.opts.autosave && this.autoSave();
     if (this.rendered_content) {
       // this gets lazy loaded via schema url, so needs to be here rather than in mount

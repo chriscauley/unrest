@@ -182,13 +182,19 @@ var uR = (function() {
       if (tag && tag.form && tag.form.field_list) {
         uR.forEach(tag.form.field_list,function(field,i) {
           field.data_error = errors[field.name];
+          if (field.data_error && data.html_errors && ~data.html_errors.indexOf(field.name)) {
+            field.html_error = field.data_error
+          }
           field.valid = !field.data_error;
           field.show_error = true;
         });
       }
       if (non_field_error) {
         // if there's no form and no error function in opts, alert as a fallback
-        if (tag) { tag.non_field_error = non_field_error; } else if (!opts.error) { uR.alert(non_field_error); }
+        if (tag) {
+          tag.non_field_error = non_field_error;
+          if (data.html_errors && ~data.html_errors.indexOf("non_field_error")) { tag.non_field_html_error = true; }
+        } else if (!opts.error) { uR.alert(non_field_error); }
       }
 
       var complete = (request.status == 200 && isEmpty(errors));
