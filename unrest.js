@@ -111,6 +111,7 @@ var uR = (function() {
     var data = opts.data;
     var target = opts.target || opts.form;  // default to body?
     var url = opts.url || form.action || '.';
+    window.airbrake && window.airbrake.log("AJAX: "+url);
     var that = opts.that;
     if (that) {
       console.warn('"that" has been depracated in favor of "tag".');
