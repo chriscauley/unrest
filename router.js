@@ -87,7 +87,14 @@
     ) return
 
     var el = e.target, loc = (window.history.location || window.location);
-    while (el && el.nodeName != 'A') el = el.parentNode
+    if (el && el.nodeName) {
+      var selector = el.nodeName;
+      if (el.id) { "#"+el.id; }
+      if (el.className) { selector += "." + el.className; }
+      if (el.name) { selector += "[name="+el.name+"]" }
+      window.airbrake && window.airbrake.log("clicked: " + selector);
+    }
+    while (el && el.nodeName != 'A') el = el.parentNode;
 
     if (
       !el || el.nodeName != 'A' // not A tag

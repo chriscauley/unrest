@@ -19,6 +19,7 @@ var uR = (function() {
     }
     var ready = function ready() {
       uR.forEach(arguments || [],function(f) {
+        window.airbrake && f.name && window.airbrake.log("ready: " + f.name);
         if (typeof f == "function") { _ready.push(f); log('in queue',f.name); }
         else { log(f); }
       });
@@ -30,7 +31,11 @@ var uR = (function() {
       error("Ready",in_queue,_ready.length);
     }
     ready._name = isReady.name;
-    ready.start = function() { isReady = function() { return true };ready(); }
+    ready.start = function() {
+      window.airbrake && window.airbrake.log("unrest starting");
+      isReady = function() { return true };
+      ready();
+    }
     return ready;
   }
 
