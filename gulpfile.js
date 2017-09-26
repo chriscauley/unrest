@@ -16,7 +16,7 @@ var JS_FILES = [
   "static.js",
   "storage.js",
   "router.js",
-  "time.js",
+  "lunchtime/lunchtime.js",
   ".dist/_tags.js",
 ];
 
