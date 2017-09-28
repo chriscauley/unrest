@@ -23,7 +23,7 @@
   uR.alert = function(text,data) {
     data = data || {};
     data.close_text = data.close_text || "Close";
-    data.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
+    data.innerHTML = "<div class='inner-content'>"+text+"</div>";
     uR.alertElement("ur-modal",data);
   } 
   uR.confirm = function(text,data) {
@@ -36,7 +36,7 @@
       className: uR.config.btn_success,
       text: data.success_text || "Yes"
     });
-    data.innerHTML = "<center style='margin-bottom: 1em;'>"+text+"</center>";
+    data.innerHTML = "<div class='inner-content'>"+text+"</div>";
     uR.alert(text,data);
   }
 })();
@@ -44,7 +44,6 @@
 <ur-modal>
   <div class={ theme.outer }>
     <div class={ theme.content }>
-      <div class="inner-content"></div>
       <yield />
       <center>
         <button onclick={ close } class={ uR.config.btn_primary }>{ close_text }</button>

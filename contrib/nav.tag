@@ -10,7 +10,6 @@ uR.ready(function() {
       </a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <yield></yield>
-        <auth-dropdown></auth-dropdown>
       </ul>
     </div>
   </nav>

@@ -28,6 +28,14 @@
     uR.mountElement(name,options);
   }
 
+  uR.loadTemplate = function loadTemplate(template_name,data) {
+    template_name = template_name.match(/[^\/].+[^\/]/)[0].replace(/\//g,"-");
+    riot.compile(
+      uR.static("templates/"+template_name+".html"),
+      function(html) { uR.mountElement(template_name,data); }
+    );
+  }
+
   function pushState(path,data) {
     if (window.location.pathname == path) { return; }
     // #! TODO the empty string here is the page title. Need some sort of lookup table
@@ -46,24 +54,23 @@
     for (var key in uR._routes) {
       var regexp = new RegExp(key);
       var path_match = pathname.match(regexp);
+      var hash_match = new_url.hash && new_url.hash.match(regexp);
       if (path_match) {
         uR.STALE_STATE = true;
         data.matches = path_match;
-        uR._routes[key](pathname,data);
         document.body.dataset.ur_path = pathname;
+        uR._routes[key](pathname,data);
         uR.pushState(href);
-      } else if (new_url.hash && key.indexOf("#") != -1) {
-        data.matches = new_url.hash.match(regexp);
-        if (data.matches) {
-          data.ur_modal = true;
-          data.cancel = function() {
-            window.location.hash = "";
-            this.unmount();
-          }
-          uR.STALE_STATE = true;
-          uR._routes[key](pathname,data);
-          uR.pushState(href);
+      } else if (hash_match) {
+        uR.STALE_STATE = true;
+        data.matches = hash_match;
+        data.ur_modal = new_url.hash.match(uR.config.MODAL_PREFIX);
+        data.cancel = function() {
+          window.location.hash = "";
+          this.unmount();
         }
+        uR._routes[key](pathname,data);
+        uR.pushState(href);
       }
     }
     if (data.matches) { return }
@@ -122,6 +129,7 @@
   };
 
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
+  uR.config.MODAL_PREFIX = /^#/;
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
