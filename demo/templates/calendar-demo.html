@@ -1,0 +1,37 @@
+<calendar-demo>
+  <h1>Calendar</h1>
+  <calendar date="2015-6-1">
+    <div each="{ occurrences }">
+      <div onclick="{ select }">
+        { name }
+        <div if="{ end }">{ moment.format("h:mm a") } - { end_moment.format("h:mm a") }</div>
+      </div>
+      <modal if="{ active }" cancel="{ cancel }" class="absolute">
+        <h2>{ name }</h2>
+        { moment.format("dddd MMMM Do, YYYY") }
+        <div>{ moment.format("h:mm a") } - { end_moment.format("h:mm a"); }</div>
+      </modal>
+    </div>
+  </calendar>
+
+  this.on("mount",function() {
+    uR.ajax({
+      url:"holidays.json",
+      success: function(data) {
+        var dates = []
+        for (var date in data) { dates.push(date) }
+        occurrences = [
+          { 'start': '2015-6-20 7:00 pm', 'name': 'My birthday party', 'end': '2015-6-20 9:00 pm' }
+        ];
+        for (var i=0;i<dates.length;i++) {
+          var d = dates[i];
+          for (var i2=0;i2<data[d].length;i2++) {
+            var o = data[d][i2];
+            o.start = o.date;
+            occurrences.push(o);
+          }
+        }
+      }
+    });
+  });
+</calendar-demo>

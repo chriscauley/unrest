@@ -1,79 +1,27 @@
 <html>
-<head></head>
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://uc.unrest.io/.dist/uc-built.css" />
+  <link rel="stylesheet" href="https://static.unrest.io/.dist/unrest-built.css" />
+  <link rel="stylesheet" href="style.css" />
+</head>
 <body>
-
-<h1>Tabs</h1>
-<ur-tabs>
-  <ur-tab title="Code">
-    <pre>
-  &lt;ur-tabs&gt;
-    &lt;ur-tab title="Code"&gt;
-    &lt;/ur-tab&gt;
-    &lt;ur-tab title="Result"&gt;
-      You're looking at it!
-    &lt;/ur-tab&gt;
-  &lt;/ur-tabs&gt;
-    </pre>
-  </ur-tab>
-  <ur-tab title="Result">
-    You're looking at it!
-  </ur-tab>
-</ur-tabs>
-<hr/>
-<h1>Markdown</h1>
-<ur-tabs>
-  <ur-tab title="Code">
-<pre>&lt;markdown&gt;
-header
-=====
-
-testing
-
-and more!
-
-&lt;b&gt;tag!&lt;/b&gt;
-&lt;/markdown&gt;</pre>
-  </ur-tab>
-    </pre>
-  </ur-tab>
-  <ur-tab title="Result">
-<markdown>
-header
-=====
-
-testing
-
-and more!
-
-<b>tag!</b>
-</markdown>
-  </ur-tab>
-</ur-tabs>
-<hr/>
-<h1>Calendar</h1>
-<calendar date="2015-6-1">
-  <div each="{ occurrences }">
-    <div onclick="{ select }">
-      { name }
-      <div if="{ end }">{ moment.format("h:mm a") } - { end_moment.format("h:mm a") }</div>
-    </div>
-    <modal if="{ active }" cancel="{ cancel }" class="absolute">
-      <h2>{ name }</h2>
-      { moment.format("dddd MMMM Do, YYYY") }
-      <div>{ moment.format("h:mm a") } - { end_moment.format("h:mm a"); }</div>
-    </modal>
+  <div id="wrapper">
+    <header>
+      <ur-nav>
+        <li><a href="#tabs-demo">Tabs</a></li>
+        <li><a href="#markdown-demo">Markdown</a></li>
+        <li><a href="#calendar-demo">Calendar</a></li>
+      </ur-nav>
+    </header>
+    <div class="container"><div id="content"></div></div>
   </div>
-</calendar>
-<hr/>
 </body>
-<script src="moment.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
 <script src="calendar.tag" type="riot/tag"></script>
-<script src="modal.tag" type="riot/tag"></script>
-<script src="tabs.tag" type="riot/tag"></script>
-<script src="markdown.tag" type="riot/tag"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js"></script>
-<script src="//cdn.jsdelivr.net/g/riot@2.2(riot.min.js+compiler.min.js)"></script>
-<script src="http.min.js"></script>
-<script src="unrest.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.6.8/riot+compiler.min.js"></script>
+<script src="/.dist/unrest-built.js"></script>
 <script src="demo.js"></script>
 </html>
