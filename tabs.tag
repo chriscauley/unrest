@@ -5,7 +5,7 @@ uR.ready(function() {
 <ur-tabs>
   <div class="tab-wrapper">
     <div class="tab-anchors">
-      <a onclick={ showTab } each={ tab,i in tabs } title={ tab.title } class={ active: i == this.active }> { tab.title }</a>
+      <a onclick={ parent.showTab } each={ tab,i in tabs } title={ tab.title } class={ active: i == this.active }> { tab.title }</a>
     </div>
     <yield />
   </div>

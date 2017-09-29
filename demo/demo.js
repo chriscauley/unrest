@@ -27,7 +27,6 @@ uR.ready(function() {
       riot.mount("calendar",{occurrences: occurrences});
     }
   });
-  riot.mount("markdown,ur-tabs");
 })
 
 function foo(e) {
