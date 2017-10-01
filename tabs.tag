@@ -26,8 +26,13 @@ uR.ready(function() {
     }.bind(this))
     uR.forEach(this.tabs,function(tab,i) { tab.index = i; });
     this.active = 0;
+    if (this.opts.className) { this.root.className = this.opts.className }
     if (uR.config.default_tabs) { this.root.classList.add("default");}
     this.update();
+    window.ut = this;
+  });
+  this.on("update",function() {
+    uR.forEach(this.tabs || [], function(tab) { !tab.parent && tab.update(); });
   });
 </ur-tabs>
 
@@ -57,7 +62,7 @@ uR.ready(function() {
   });
 
   this.on("update",function() {
-    if (!this.parent || this._parent.active == undefined) { return }
+    if (!this._parent || this._parent.active == undefined) { return }
     (this._parent.active == this.index?this.show:this.hide)();
   });
 </ur-tab>

@@ -39,6 +39,9 @@ var uR = (function() {
     return ready;
   }
 
+  uR.escapeHTML = function escapeHTML(s) { // taken from under-construction/lib/diff.js
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
   uR.serialize = function serialize(form) {
     var field, s = [];
     if (typeof form != 'object' && form.nodeName != "FORM") { return }
