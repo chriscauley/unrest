@@ -1,0 +1,5 @@
+body {
+  --body-bg-color: white;
+}
+
+ur-form .active label { top: -0.8em; }
