@@ -40,7 +40,7 @@ var uR = (function() {
   }
 
   uR.escapeHTML = function escapeHTML(s) { // taken from under-construction/lib/diff.js
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return s && s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   uR.serialize = function serialize(form) {
     var field, s = [];
@@ -357,7 +357,7 @@ var uR = (function() {
       content: "card-content",
       footer: "card-action",
     },
-    error_class: "card red white-text",
+    error_class: "card red white-text error",
   }
   uR.formatTimeRange = function formatTimeRange(start,end) {
     var start = moment(start), end = moment(end);

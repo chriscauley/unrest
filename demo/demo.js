@@ -6,7 +6,8 @@ uR.ready(function() {
   uR.addRoutes({
     "#tabs-demo": function() { uR.loadTemplate("tabs-demo") },
     "#markdown-demo": function() { uR.loadTemplate("markdown-demo") },
-    "#calendar-demo": function() { uR.loadTemplate("calendar-demo") }
+    "#calendar-demo": function() { uR.loadTemplate("calendar-demo") },
+    "#ur-form-demo": function() { uR.loadTemplate("ur-form-demo") }
   });
   uR.ajax({
     url:"holidays.json",
