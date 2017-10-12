@@ -136,4 +136,9 @@
   uR.router = {
     routeElement: (element_name) => (pathname,data) => uR.mountElement(element_name,data),
   };
+  if (!document.querySelector("#alert-div")) { // #! TODO this is hardcoded, but am unsure what else to do CCC
+    var e = document.createElement("div");
+    e.id = "alert-div";
+    document.body.appendChild(e);
+  }
 })();
