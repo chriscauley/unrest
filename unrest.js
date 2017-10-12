@@ -46,7 +46,7 @@ var uR = (function() {
     var field, s = [];
     if (typeof form != 'object' && form.nodeName != "FORM") { return }
     var len = form.elements.length;
-    for (i=0; i<len; i++) {
+    for (var i=0; i<len; i++) {
       field = form.elements[i];
       if (!field.name || field.disabled || field.type == 'file' || field.type == 'reset' ||
           field.type == 'submit' || field.type == 'button') { continue }

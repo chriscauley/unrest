@@ -3,7 +3,7 @@ uR.ready(function() {
   if (uR._mount_tabs) { riot.mount("ur-tabs"); }
 });
 <ur-tabs>
-  <div class="tab-wrapper">
+  <div class="tab-wrapper { theme.outer }">
     <div class="tab-anchors">
       <a onclick={ parent.showTab } each={ tab,i in tabs } title={ tab.title } class={ active: i == this.active }> { tab.title }</a>
     </div>

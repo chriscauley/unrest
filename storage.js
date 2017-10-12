@@ -48,6 +48,11 @@
       this._saveTime()
     }
 
+    clear() {
+      for (var key in this.times) { localStorage.setItem(key,null); delete this.times[key]; }
+      this._saveTime();
+    }
+
     _saveTime() {
       localStorage.setItem(this.META+'times',JSON.stringify(this.times));
     }
