@@ -16,21 +16,8 @@ var JS_FILES = [
   "static.js",
   "storage.js",
   "router.js",
+  "log.js",
   "lunchtime/lunchtime.js",
-  ".dist/_tags.js",
-];
-
-gulp.task('build-js', ['build-tag'], function () {
-  return gulp.src(JS_FILES)
-    .pipe(babel({ presets: ['es2015'] }))
-    .pipe(sourcemaps.init())
-    .pipe(concat(PROJECT_NAME + '-built.js'))
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest(".dist/"));
-});
-
-var TAG_FILES = [
   "auth.tag",
   "dialog.tag",
 
@@ -45,13 +32,17 @@ var TAG_FILES = [
   "multi-file.tag",
   "ez-file.tag",
   "contrib/nav.tag",
-]
+];
 
-gulp.task('build-tag', function() {
-  return gulp.src(TAG_FILES)
+gulp.task('build-js', function () {
+  return gulp.src(JS_FILES)
     .pipe(riot())
-    .pipe(concat("_tags.js"))
-    .pipe(gulp.dest(".dist"));
+    .pipe(babel({ presets: ['es2015'] }))
+    .pipe(sourcemaps.init())
+    .pipe(concat(PROJECT_NAME + '-built.js'))
+    //.pipe(uglify({mangle: false, compress: false}))
+    .pipe(sourcemaps.write("."))
+    .pipe(gulp.dest(".dist/"));
 });
 
 LESS_FILES = ["less/base.less"];
@@ -105,7 +96,6 @@ gulp.task('build-simplemde',function() {
 var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css', 'build-simplemde'];
 gulp.task('watch', build_tasks, function () {
   gulp.watch(JS_FILES, ['build-js']);
-  gulp.watch(TAG_FILES, ['build-js']);
   gulp.watch(["less/*.less","less/min/*.less","less/materialize/*.less"], ['build-css']);
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);
