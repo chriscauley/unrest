@@ -284,6 +284,12 @@ var uR = (function() {
       if (b.hasOwnProperty(i)) { a[i] = b[i]; }
     }
   }
+  uR.defaults = function(a,b) {
+    // like extend but keeps the values of a instead of replacing them
+    for (var i in b) {
+      if (b.hasOwnProperty(i) && !a.hasOwnProperty(i)) { a[i] = b[i] }
+    }
+  }
 
   // uR.ready is a function for handling window.onload
   uR.ready = new uR.Ready(undefined,uR._ready);
