@@ -124,8 +124,8 @@
       return out;
     }
     if (opts.parent) {
-      parent.log = log;
-      uR.forEach(['warn','error'], function(s) { parent[s] = log[s] })
+      opts.parent.log = logs
+      uR.forEach(['warn','error'], function(s) { opts.parent[s] = log[s];console.log(s); })
     }
 
     uR.__logs.push(log);

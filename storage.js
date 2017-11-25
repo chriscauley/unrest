@@ -2,11 +2,10 @@
   class Storage {
     constructor(prefix) {
       this.PREFIX = prefix || "";
-      this.META = this.PREFIX + "META/";
+      this.META = "META/";
       this.EXIPIRY = '__expiry/'; // Key used for expiration storage
       this.default_expire_ms = 10*60*1000; // ten minutes
       this.defaults = {}; // table with default values
-      this.times = {};
       if (!this.test_supported()) {
         console.warn("Storage not supported, falling back to dummy storage");
         this.FAKE_STORAGE = {};
@@ -15,15 +14,21 @@
         this.has = function(key) { this.FAKE_STORAGE.hasOwnProperty(key); }
         this.remove = function(key) { delete this.FAKE_STORAGE[key]; }
       }
-      //this.times = this.get(this.META+"times") || {};
+      this.times = this.get(this.META+"times") || {};
+      this.keys = this.get(this.META+"keys") || [];
     }
 
-    get(k) {
+    _(key) { return this.PREFIX + key; }
+    _getItem(key) { return localStorage.getItem(this._(key)); }
+    _setItem(key,value) { return localStorage.setItem(this._(key),value); }
+    _removeItem(key) { return localStorage.removeItem(this._(key)); }
+    _hasOwnProperty(key) { return localStorage.hasOwnProperty(this._(key)) }
+
+    get(key) {
       // pull a json from local storage or get an object from the defaults dict
-      var key = this.PREFIX+k;
       var value;
-      if (localStorage.hasOwnProperty(key)) {
-        try { value = JSON.parse(localStorage.getItem(key)); }
+      if (this._hasOwnProperty(key)) {
+        try { value = JSON.parse(this._getItem(key)); }
         catch(e) { } // we only allow JSON here, so parse errors can be ignored
       } else if (this.defaults.hasOwnProperty(key)) {
         value = this.defaults[key];
@@ -31,30 +36,31 @@
       return value
     }
 
-    set(k,value) {
+    set(key,value) {
       // store stringified json in localstorage
-      var key = this.PREFIX+k;
       if (!value && value !== 0) { localStorage.removeItem(key); return; }
-      localStorage.setItem(key,JSON.stringify(value))
+      this._setItem(key,JSON.stringify(value))
       this.times[key] = new Date().valueOf();
-      this._saveTime()
+      this.keys.push(key);
+      this._save();
     }
-    has(key) { return localStorage.hasOwnProperty(key) }
+    has(key) { return this.keys.indexOf(key) != -1 }
 
-    remove(k) {
-      var key = this.PREFIX+k;
-      localStorage.removeItem(key);
+    remove(key) {
+      this._removeItem(key);
+      this.keys = this.keys.filter(function(k) { k != key });
       delete this.times[key];
-      this._saveTime()
+      this._save();
     }
 
     clear() {
       for (var key in this.times) { localStorage.setItem(key,null); delete this.times[key]; }
-      this._saveTime();
+      this._save();
     }
 
-    _saveTime() {
-      localStorage.setItem(this.META+'times',JSON.stringify(this.times));
+    _save() {
+      this._setItem(this.META+'times',JSON.stringify(this.times));
+      this._setItem(this.META+'keys',JSON.stringify(this.keys));
     }
 
     test_supported() {
