@@ -57,7 +57,7 @@ uR.ready(function() {
   }
 
   this.on("mount",function() {
-    this._parent = this.parent || this.opts.parent;
+    if (!this._parent) { this._parent = this.parent || this.opts.parent; }
     if (this.opts.innerHTML) { this.root.innerHTML = this.opts.innerHTML; }
   });
 
