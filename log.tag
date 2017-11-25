@@ -9,7 +9,6 @@
     this.opts.logger.riot_tag = this;
   })
   this.on("update",function() {
-    console.log("updoot");
     this._logs = this.opts.logger._logs;
   });
 </ur-logger>
@@ -27,12 +26,10 @@
       log.update_tag();
     }
     function log() {
-      var set_line;
       // arguments can be strings or functions
-      var args = log._prepArguments([].slice.call(arguments));
-      if (typeof args[0] == 'number') {
-        set_line = args.shift();
-      }
+      var args = [].slice.call(arguments);
+      var set_line = (typeof args[0] == 'number')?args.shift():undefined;
+      args = log._prepArguments(args);
       args.ts = log._getTimeStamp();
       log.last_log = new Date();
       if (set_line === undefined) {
@@ -42,6 +39,13 @@
       }
       log.update_tag();
     };
+    var _icons = {
+      "WARN": {className: "fa fa-warning",title: "WARNING"},
+      "ERROR": {className: "fa fa-error",title: "ERROR"},
+      "SUCCESS": {className: "fa fa-check",title: "SUCCESS"},
+    }
+
+
     log._logs = (opts._logs || []).slice();
     log._name = opts.name || ("logger "+Math.random());
     log._getTimeStamp = function _getTimeStamp() {
@@ -75,13 +79,9 @@
     log.update_tag = mount_then_update;
     log._prepArguments = function _prepArguments(args) {
       var className = "";
-      if (args[0] == "WARN") {
-        args[0] = {className: "fa fa-warning",title: "WARNING"};
-        className = "kwarning";
-      }
-      if (args[0] == "ERROR") {
-        args[0] = {className: "fa fa-error",title: "ERROR"};
-        className = "kerror";
+      if (_icons[args[0]]) {
+        className = "k"+args[0].toLowerCase();
+        args[0] = _icons[args[0]];
       }
       var out = args.map(function(word) {
         if (typeof word == "function") {
@@ -125,7 +125,7 @@
     }
     if (opts.parent) {
       opts.parent.log = logs
-      uR.forEach(['warn','error'], function(s) { opts.parent[s] = log[s];console.log(s); })
+      uR.forEach(['warn','error'], function(s) { opts.parent[s] = log[s]; })
     }
 
     uR.__logs.push(log);
