@@ -16,9 +16,6 @@ var JS_FILES = [
   "static.js",
   "storage.js",
   "router.js",
-  "db/object.js",
-  "db/models.js",
-  "db/fields/abstract.js",
   "log.tag",
   "lunchtime/lunchtime.js",
   "auth.tag",
@@ -35,6 +32,9 @@ var JS_FILES = [
   "multi-file.tag",
   "ez-file.tag",
   "contrib/nav.tag",
+  "db/object.js",
+  "db/models.js",
+  "db/fields/abstract.js",
 ];
 
 gulp.task('build-js', function () {

@@ -98,8 +98,10 @@
         } else if (typeof word == "string") {
           var new_word = {
             content: word,
-            _name: (word.length < 30)?word:word.slice(0,15)+"...",
+            title: word.title,
+            _name: word
           }
+          if (args.length > 1) { new_word._name = (word.length < 30)?word:word.slice(0,15)+"..."; }
           if (word.startsWith("data:image")) {
             new_word.className = "dataURL";
             new_word._name = "dataURL";
@@ -124,7 +126,7 @@
       return out;
     }
     if (opts.parent) {
-      opts.parent.log = logs
+      opts.parent.log = log;
       uR.forEach(['warn','error'], function(s) { opts.parent[s] = log[s]; })
     }
 

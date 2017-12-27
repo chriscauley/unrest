@@ -6,7 +6,6 @@ uR.db.BaseField = class BaseField extends uR.Object {
     this.required = this.required == undefined || this.required; // defaults to true!
 
     this.name = this.name || this.type;
-    console.log(1,parent.options[this.name],this.name);
     this.value = this.value || (parent.initial || {})[this.name] || (parent.options || {})[this.name];
     this.initial_value = this.value;
   }

@@ -35,7 +35,6 @@ class Model {
     if (this[field.name]) { throw "Field cannot have name that already exists on parent model" }
     this.META.fields.push(field);
     this[field.name] = field.value;
-    console.log(field.value);
     if (field.primary_key) { this.META.pk_field =field.name }
   }
 }
