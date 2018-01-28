@@ -20,6 +20,7 @@ var JS_FILES = [
   "lunchtime/lunchtime.js",
   "auth.tag",
   "dialog.tag",
+  "math.js",
 
   "form.tag",
   "checkbox-input.tag",
