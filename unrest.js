@@ -168,7 +168,10 @@ var uR = (function() {
     // create and send XHR
     var request = new XMLHttpRequest();
     request.open(method, url , true);
-    request.setRequestHeader("X-Requested-With", "XMLHttpRequest");
+    var headers = uR.defaults(opts.headers || {}, {
+      "X-Requested-With": "XMLHttpRequest",
+    })
+    for (var key in headers) { request.setRequestHeader(key,headers[key]); }
 
     if ("POSTDELETE".indexOf(method) != -1 && uR.cookie.get("csrftoken")) {
       request.setRequestHeader("X-CSRFToken",uR.cookie.get("csrftoken"));
@@ -205,7 +208,6 @@ var uR = (function() {
           if (data.html_errors && ~data.html_errors.indexOf("non_field_error")) { tag.non_field_html_error = true; }
         } else if (!opts.error) { uR.alert(non_field_error); }
       }
-
       var complete = (request.status == 200 && isEmpty(errors));
       (complete?success:error)(data,request);
       uR.pagination = data.ur_pagination || uR.pagination;
@@ -218,7 +220,7 @@ var uR = (function() {
       uR.postAjax && uR.postAjax.bind(request)(request);
       if (data.ur_route_to) { uR.route(data.ur_route_to); }
     };
-    request.send(form_data);
+    request.send((headers['Content-Type'] == 'application/json')?JSON.stringify(data):form_data);
   }
 
   var AjaxMixin = {
@@ -287,8 +289,10 @@ var uR = (function() {
   uR.defaults = function(a,b) {
     // like extend but keeps the values of a instead of replacing them
     for (var i in b) {
-      if (b.hasOwnProperty(i) && !a.hasOwnProperty(i)) { a[i] = b[i] }
+      if (b.hasOwnProperty(i) && !a.hasOwnProperty(i)) { a[i] = b[i]; }
+      if (a[i] == uR.REQUIRED) { throw "Attribute "+i+" is required on "+a; }
     }
+    return a;
   }
 
   // uR.ready is a function for handling window.onload
