@@ -28,6 +28,21 @@
     uR.mountElement(name,options);
   }
 
+  uR.newElement = function newElement(tagName,attrs,options) {
+    var element = document.createElement(tagName);
+    if (attrs.parent) {
+      attrs.parent.appendChild(element);
+      delete attrs.parent;
+    }
+
+    element.innerHTML = attrs.innerHTML || "";
+    delete attrs.innerHTML;
+
+    for (var attr in attrs) { element[attr] = attrs[attr]; }
+    if (options) { riot.mount(element,options); }
+    return element;
+  }
+
   uR.loadTemplate = function loadTemplate(template_name,data) {
     template_name = template_name.match(/[^\/].+[^\/]/)[0].replace(/\//g,"-");
     riot.compile(
