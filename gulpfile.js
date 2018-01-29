@@ -21,6 +21,7 @@ var JS_FILES = [
   "auth.tag",
   "dialog.tag",
   "math.js",
+  "random.js",
 
   "form.tag",
   "checkbox-input.tag",
