@@ -25,8 +25,11 @@
       return c;
     });
   }
-  riot.mixin({ // anything with a ur-input like tag needs the following
+  riot.mixin({
     init: function() {
+      this.opts.onUnmount && this.on("unmount", this.opts.onUnmount);
+
+      // chrome's annoying autofill doesn't proc a change event
       if (!this.opts.is_ur_input) { return }
       this.field = this.opts.field;
       this.on("mount",function() {
@@ -229,7 +232,7 @@
 
     onChange(e) {
       if (this.form.active) { this.show_error = true; }
-      this.form.onChange && this.form.onChange(e,this);
+      this.form.form_tag && this.form.form_tag.onChange && this.form.form_tag.onChange(e,this);
       this.onKeyUp(e);
     }
     reset() {
