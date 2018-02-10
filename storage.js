@@ -6,6 +6,7 @@
       this.EXIPIRY = '__expiry/'; // Key used for expiration storage
       this.default_expire_ms = 10*60*1000; // ten minutes
       this.defaults = {}; // table with default values
+      this._schema = {};
       if (!this.test_supported()) {
         console.warn("Storage not supported, falling back to dummy storage");
         this.FAKE_STORAGE = {};
@@ -36,12 +37,34 @@
       return value
     }
 
+    getDefault(key,_default,schema) {
+      if (_default && ! this.defaults[key]) {
+        if (typeof schema == "string") { schema = { type: schema, _default:_default } }
+        this._schema[key] = schema || {};
+        this._schema[key].name = key;
+        this.defaults[key] = _default;
+        !this.has(key) && this.set(key,_default);
+      }
+      return this.get(key) || _default;
+    }
+    getSchema(keys) {
+      keys = keys || this.keys;
+      var self = this;
+      return keys.map(key => (self._schema[key] || key) );
+    }
+
+    update(data) {
+      for (var key in data) {
+        if (data.hasOwnProperty(key)) { this.set(key,data[key]) }
+      }
+    }
+
     set(key,value) {
       // store stringified json in localstorage
       if (!value && value !== 0) { this.remove(key); return; }
       this._setItem(key,JSON.stringify(value))
       this.times[key] = new Date().valueOf();
-      this.keys.push(key);
+      (this.keys.indexOf(key)==-1)?this.keys.push(key):undefined;
       this._save();
     }
     has(key) { return this.keys.indexOf(key) != -1 }
