@@ -354,6 +354,7 @@ var uR = (function() {
   uR.icon = {
     admin: 'fa fa-pencil-square-o',
   }
+
   uR.theme = {
     modal: {
       outer: "card",
@@ -369,6 +370,18 @@ var uR = (function() {
     },
     error_class: "card red white-text error",
   }
+
+  uR.forEach(document.styleSheets, function (ss) {
+    uR.forEach(['materialize','spectre','bootstrap'],function(theme) {
+      if (!ss.href || ss.href.indexOf(theme) == -1) { return }
+      document.body.setAttribute("ur-theme",theme)
+      if (theme == "spectre") {
+        uR.theme.default.content = uR.theme.modal.content = "card-body";
+        uR.config.form.field_class = "form-group";
+        uR.theme.input = "form-input";
+      }
+    })
+  });
   uR.formatTimeRange = function formatTimeRange(start,end) {
     var start = moment(start), end = moment(end);
     var start_format = start.minute()?"h:mm":"h";
