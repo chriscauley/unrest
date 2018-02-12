@@ -78,6 +78,24 @@
       return out;
     }
 
+    openEditor() {
+      var self=this, dirty;
+      var opts = {
+        schema: self.getSchema(),
+        submit: function (riot_tag) {
+          self.update(riot_tag.getData());
+          dirty = true;
+        },
+        autosubmit: true,
+        onUnmount: function() { dirty && window.location.reload() }
+      }
+      uR.forEach(opts.schema,(s)=> {
+          s._default = s.value;
+          s.value = self.get(s.name);
+      });
+      uR.alertElement("ur-form",opts);
+    }
+
     update(data) {
       for (var key in data) {
         if (data.hasOwnProperty(key)) { this.set(key,data[key]) }
