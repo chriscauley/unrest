@@ -6,10 +6,16 @@
   </div>
 
   this.on("mount",function() {
-    this.opts.logger.riot_tag = this;
+    if (this.opts.command) {
+      this.opts.logger = this.opts.command.log;
+      this.root.classList.add("collection-content");
+    }
+    if (this.opts.logger) { this.opts.logger.riot_tag = this; }
   })
   this.on("update",function() {
-    this._logs = this.opts.logger._logs;
+    if (this.opts && this.opts.logger) {
+      this._logs = this.opts.logger._logs;
+    }
   });
 </ur-logger>
 
@@ -73,10 +79,9 @@
       watch_ings[k] = v;
       log.update_tag();
     }
-    log._update_tag = function update_tag() {
+    log.update_tag = function update_tag() {
       log.riot_tag && log.riot_tag.update && log.riot_tag.update();
     }
-    log.update_tag = mount_then_update;
     log._prepArguments = function _prepArguments(args) {
       var className = "";
       if (_icons[args[0]]) {
@@ -101,7 +106,7 @@
             title: word.title,
             _name: word
           }
-          if (args.length > 1) { new_word._name = (word.length < 30)?word:word.slice(0,15)+"..."; }
+//if (args.length > 1) { new_word._name = (word.length < 30)?word:word.slice(0,15)+"..."; }
           if (word.startsWith("data:image")) {
             new_word.className = "dataURL";
             new_word._name = "dataURL";
