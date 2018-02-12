@@ -7,6 +7,8 @@
         this.cancel = this.cancel || this.opts.cancel || function() { this.unmount() };
         e.addEventListener("click",function() { this.cancel() }.bind(this));
         e.setAttribute("ur-mask",true);
+        this.theme.mask && e.classList.add(this.theme.mask);
+        if (this.theme.root) { this.root.className = this.theme.root };
         if (this.root.childNodes.length) {
           this.root.insertBefore(e,this.root.childNodes[0])
         } else {
