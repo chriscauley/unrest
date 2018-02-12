@@ -38,19 +38,44 @@
     }
 
     getDefault(key,_default,schema) {
-      if (_default && ! this.defaults[key]) {
-        if (typeof schema == "string") { schema = { type: schema, _default:_default } }
+      if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
+      if (schema && !this._schema[key]) {
         this._schema[key] = schema || {};
         this._schema[key].name = key;
+      }
+      if (_default && ! this.defaults[key]) {
         this.defaults[key] = _default;
         !this.has(key) && this.set(key,_default);
       }
       return this.get(key) || _default;
     }
     getSchema(keys) {
-      keys = keys || this.keys;
       var self = this;
-      return keys.map(key => (self._schema[key] || key) );
+      return this._getSchemaKeys(keys).map(key => (self._schema[key] || key) );
+    }
+
+    setSchema(schema) {
+      var self = this;
+      uR.forEach(schema,function(s) {
+        if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
+        self.getDefault(s.name,s._default,s);
+      })
+      return this.getSchema();;
+    }
+
+    _getSchemaKeys(keys) {
+      var out = [];
+      for (var key in this._schema) {
+        if (keys && keys.indexOf(key) == -1) { continue }
+        this._schema.hasOwnProperty(key) && out.push(key)
+      }
+      return out
+    }
+    getData(keys) {
+      var out = {};
+      var self = this;
+      uR.forEach(this._getSchemaKeys(keys),(key) => out[key] = self.get(key));
+      return out;
     }
 
     update(data) {
