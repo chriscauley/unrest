@@ -376,9 +376,17 @@ var uR = (function() {
       if (!ss.href || ss.href.indexOf(theme) == -1) { return }
       document.body.setAttribute("ur-theme",theme)
       if (theme == "spectre") {
-        uR.theme.default.content = uR.theme.modal.content = "card-body";
+        uR.theme.default.content = "card-body";
         uR.config.form.field_class = "form-group";
         uR.theme.input = "form-input";
+        uR.theme.modal = {
+          root: "modal active",
+          outer: "modal-container",
+          mask: "modal-overlay",
+          header: "modal-header",
+          content: "modal-body",
+          footer: "modal-footer",
+        }
       }
     })
   });
