@@ -39,6 +39,10 @@
 
     getDefault(key,_default,schema) {
       if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
+      if (schema.type == "boolean") {
+        schema.type = "select";
+        schema.choices = [["","No"],[true,"Yes"]]
+      }
       if (schema && !this._schema[key]) {
         this._schema[key] = schema || {};
         this._schema[key].name = key;
@@ -58,7 +62,7 @@
       var self = this;
       uR.forEach(schema,function(s) {
         if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
-        self.getDefault(s.name,s._default,s);
+        self.getDefault(s.name,s._default || s.value,s);
       })
       return this.getSchema();;
     }
