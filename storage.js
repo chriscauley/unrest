@@ -37,69 +37,6 @@
       return value
     }
 
-    getDefault(key,_default,schema) {
-      if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
-      if (schema.type == "boolean") {
-        schema.type = "select";
-        schema.choices = [["","No"],[true,"Yes"]]
-      }
-      if (schema && !this._schema[key]) {
-        this._schema[key] = schema || {};
-        this._schema[key].name = key;
-      }
-      if (_default && ! this.defaults[key]) {
-        this.defaults[key] = _default;
-        !this.has(key) && this.set(key,_default);
-      }
-      return this.get(key) || _default;
-    }
-    getSchema(keys) {
-      var self = this;
-      return this._getSchemaKeys(keys).map(key => (self._schema[key] || key) );
-    }
-
-    setSchema(schema) {
-      var self = this;
-      uR.forEach(schema,function(s) {
-        if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
-        self.getDefault(s.name,s._default || s.value,s);
-      })
-      return this.getSchema();;
-    }
-
-    _getSchemaKeys(keys) {
-      var out = [];
-      for (var key in this._schema) {
-        if (keys && keys.indexOf(key) == -1) { continue }
-        this._schema.hasOwnProperty(key) && out.push(key)
-      }
-      return out
-    }
-    getData(keys) {
-      var out = {};
-      var self = this;
-      uR.forEach(this._getSchemaKeys(keys),(key) => out[key] = self.get(key));
-      return out;
-    }
-
-    openEditor() {
-      var self=this, dirty;
-      var opts = {
-        schema: self.getSchema(),
-        submit: function (riot_tag) {
-          self.update(riot_tag.getData());
-          dirty = true;
-        },
-        autosubmit: true,
-        onUnmount: function() { dirty && window.location.reload() }
-      }
-      uR.forEach(opts.schema,(s)=> {
-          s._default = s.value;
-          s.value = self.get(s.name);
-      });
-      uR.alertElement("ur-form",opts);
-    }
-
     update(data) {
       for (var key in data) {
         if (data.hasOwnProperty(key)) { this.set(key,data[key]) }
@@ -166,6 +103,73 @@
       });
     }
   }
+
+  class Config extends Storage {
+    getDefault(key,_default,schema) {
+      if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
+      if (schema.type == "boolean") {
+        schema.type = "select";
+        schema.choices = [[false,"No"],[true,"Yes"]]
+      }
+      if (schema && !this._schema[key]) {
+        this._schema[key] = schema || {};
+        this._schema[key].name = key;
+      }
+      if (_default && ! this.defaults[key]) {
+        this.defaults[key] = _default;
+        !this.has(key) && this.set(key,_default);
+      }
+      return this.get(key) || _default;
+    }
+    getSchema(keys) {
+      var self = this;
+      return this._getSchemaKeys(keys).map(key => (self._schema[key] || key) );
+    }
+
+    setSchema(schema) {
+      var self = this;
+      uR.forEach(schema,function(s) {
+        if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
+        self.getDefault(s.name,s._default || s.value,s);
+      })
+      return this.getSchema();;
+    }
+
+    _getSchemaKeys(keys) {
+      var out = [];
+      for (var key in this._schema) {
+        if (keys && keys.indexOf(key) == -1) { continue }
+        this._schema.hasOwnProperty(key) && out.push(key)
+      }
+      return out
+    }
+    getData(keys) {
+      var out = {};
+      var self = this;
+      uR.forEach(this._getSchemaKeys(keys),(key) => out[key] = self.get(key));
+      return out;
+    }
+
+    openEditor() {
+      var self=this, dirty;
+      var opts = {
+        schema: self.getSchema(),
+        submit: function (riot_tag) {
+          self.update(riot_tag.getData());
+          dirty = true;
+        },
+        autosubmit: true,
+        onUnmount: function() { dirty && window.location.reload() }
+      }
+      uR.forEach(opts.schema,(s)=> {
+          s._default = s.value;
+          s.value = self.get(s.name);
+      });
+      uR.alertElement("ur-form",opts);
+    }    
+  }
+
+  uR.Config = Config;
 
   uR.storage = new Storage();
   uR.Storage = Storage;

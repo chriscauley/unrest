@@ -15,27 +15,27 @@ function testStorage() {
     })
 }
 
-function testStorageDefault() {
-  var store = new uR.Storage("TestStorageDefault");
-  store.getDefault("test",1)
-  store.getDefault("test2",2,"integer")
-  store.getDefault("test2",3) // doesn't override
-  store.getDefault("default1now3",1)
+function testConfig() {
+  var config = new uR.Config("TestStorageDefault");
+  config.getDefault("test",1)
+  config.getDefault("test2",2,"integer")
+  config.getDefault("test2",3) // doesn't override
+  config.getDefault("default1now3",1)
   function allValid() {
-    return store.get("test") == 1 && store.get("test2") == 2 && store.get('default1now3') == 3;
+    return config.get("test") == 1 && config.get("test2") == 2 && config.get('default1now3') == 3;
   }
   this.do()
-    .then(function storeValuesInStorage() {
-      store.set('default1now3',3); // override
+    .then(function configValuesInStorage() {
+      config.set('default1now3',3); // override
       return true;
     })
     .then(allValid)
     .reloadWindow()
     .then(allValid)
-    .checkResults(function getData() { return store.getData() })
-    .checkResults(function getSchema() { return store.getSchema() })
+    .checkResults(function getData() { return config.getData() })
+    .checkResults(function getSchema() { return config.getSchema() })
     .checkResults(function setSchema() {
-      return store.setSchema([
+      return config.setSchema([
         {name: "A", _default: 'a'},
         {name: "OneIsInt", _default: 1, type: 'integer'}
       ]);
@@ -88,5 +88,5 @@ function testCalendar() {
 }
 
 konsole.addCommands(
-  testStorage,testStorageDefault,
+  testStorage,testConfig,
   testForm,testTabs,testMarkdown,testCalendar);
