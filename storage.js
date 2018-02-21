@@ -108,8 +108,7 @@
     getDefault(key,_default,schema) {
       if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
       if (schema.type == "boolean") {
-        schema.type = "select";
-        schema.choices = [[false,"No"],[true,"Yes"]]
+        schema.choices = [[uR.form.FALSE,"No"],["true","Yes"]]
       }
       if (schema && !this._schema[key]) {
         this._schema[key] = schema || {};
@@ -120,6 +119,14 @@
         !this.has(key) && this.set(key,_default);
       }
       return this.get(key) || _default;
+    }
+    get(key) {
+      var out = super.get(key);
+      var type = this._schema[key] && this._schema[key].type;
+      if (type == "boolean") { return out == "true" }
+      if (type == "int") { return parseInt(out) }
+      if (type == "float") { return parseFloat(out) }
+      return out;
     }
     getSchema(keys) {
       var self = this;

@@ -1,5 +1,5 @@
 (function() {
-  uR.form = {};
+  uR.form = { FALSE: 'false' };
   uR.theme['UR-FORM'] = uR.theme.default;
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
@@ -113,6 +113,7 @@
     constructor(form,options) {
       this.tag_name = this.tag_name || "ur-input"; // can be overridden by sub-classes
       this.form = form;
+      options = options || {};
       if (typeof options == "string") {
         var name = options;
         if (uR.schema.fields[options]) {
@@ -130,6 +131,7 @@
         console.warn("look at me!")
         this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
       }
+      if (this.value === false) { this.value = uR.form.FALSE }
       this.value = this.initial_value = this.value || (this.form.initial || {})[this.name];
       this.valid = true;
       // verbose_name is useful for error messages, other generated text
@@ -140,7 +142,7 @@
       }
       this.label = this.label || this.verbose_name;
       this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
-      this.input_tagname = this.input_tagname || (this.type == "textarea")?this.type:"input";
+      this.input_tagname = options.input_tagname || ((this.type == "textarea")?this.type:"input");
       this.input_type = this.type || "text";
 
       // if there's a validator, use type=text to ignore browser default
@@ -271,7 +273,7 @@
   <!--<input type={ field.type } name={ field.name } id={ field.id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { empty:empty, invalid: invalid, active: activated || !empty } { uR.theme.input }"
+         class="validate { ur_empty:empty, invalid: invalid, active: activated || !empty } { uR.theme.input }"
          autocomplete="off">-->
 
   var self = this;
@@ -323,7 +325,7 @@
       <div class="rendered_content"></div>
       <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
         <yield from="pre-form"/>
-        <div each={ form.field_list } class="{ className } { empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
+        <div each={ form.field_list } class="{ className } { ur_empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
           <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
           <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
                  data-success={ data_success }>{ label }</label>
