@@ -331,7 +331,9 @@ var uR = (function() {
   uR.config.loading_attribute = 'fade';
   uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
-  uR.config.input_overrides = {};
+  uR.config.input_overrides = {
+    boolean: 'select-input',
+  };
   uR.config.text_validators = {};
   uR.config.mount_to = "#content";
   uR.config.mount_alerts_to = "#alert-div";
