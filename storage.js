@@ -61,7 +61,7 @@
     }
 
     clear() {
-      for (var key in this.times) { localStorage.setItem(key,null); delete this.times[key]; }
+      for (var key in this.times) { this.remove(key); }
       this._save();
     }
 
