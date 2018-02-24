@@ -233,7 +233,7 @@ var uR = (function() {
         options.success = options.success || this.ajax_success || uR.default_ajax_success;
         options.url = options.url || this.ajax_url;
         uR.ajax(options);
-      }
+      };
     },
   };
   window.riot && riot.mixin(AjaxMixin);
@@ -286,11 +286,16 @@ var uR = (function() {
       if (b.hasOwnProperty(i)) { a[i] = b[i]; }
     }
   }
+
+  uR.REQUIRED = new Object();
+  uR.DEFAULT_TRUE = new Object();
+  uR.NotImplemented = (s) => "NotImplementedError: "+s;
   uR.defaults = function(a,b) {
     // like extend but keeps the values of a instead of replacing them
     for (var i in b) {
       if (b.hasOwnProperty(i) && !a.hasOwnProperty(i)) { a[i] = b[i]; }
       if (a[i] == uR.REQUIRED) { throw "Attribute "+i+" is required on "+a; }
+      if (a[i] == uR.DEFAULT_TRUE) { a[i] = true }
     }
     return a;
   }
@@ -353,6 +358,16 @@ var uR = (function() {
     if (typeof s != "string") { s = s.toString() }
     return s.toLowerCase().replace(/(^[\s-]+|[\s-]+$)/g,"").replace(/[^\d\w -]+/g,"").replace(/[\s-]+/g,"-");
   };
+  uR.unslugify = function(s) {
+    if (typeof s != "string") { s = s.toString() }
+    return s.replace(/-_/," ").replace(/^(.)|\s(.)/g, ($1) => $1.toUpperCase())
+  }
+  uR.reverseCamelCase = function(s) {
+    if (typeof s == "function") { s = s.name }
+    if (typeof s != "string") { s = s.toString() }
+    s = s.replace( /([A-Z])/g, " $1" )
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
   uR.icon = {
     admin: 'fa fa-pencil-square-o',
   }
