@@ -37,6 +37,7 @@ var JS_FILES = [
   "db/object.js",
   "db/models.js",
   "db/fields/abstract.js",
+  "admin/index.js",
 ];
 
 gulp.task('build-js', function () {
