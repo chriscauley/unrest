@@ -60,8 +60,7 @@
   <script>
   this.on("mount",function() {
     var app_label = this.opts.matches[1];
-    this.app = uR.db[app_label]
-    if (!this.app) { throw uR.NOT_IMPLEMENTED("App not found") }
+    this.app = uR.db.getApp(app_label);
     this.thead = ["Model","Count"];
     this.tbody = this.app._models.map(function(model) {
       return [`<a href="#/admin/${app_label}/${model.name}/">${model.verbose_name}</a>`,model.objects.count()];
@@ -71,37 +70,36 @@
   </script>
 </ur-admin-app>
 
-<ur-admin>
+<ur-admin-list>
   <div class={ theme.outer }>
-    <div class={theme.content}>
-      <table>
-        <tr each={ model in app.admin_models }>
-          <td><a onclick={ model.edit }>{ model.name }</a></td>
-        </tr>
-      </table>
+    <div class={ theme.header }>
+      <div class={ theme.header_title }>{ model.verbose_name } Admin</div>
+    </div>
+    <div class={ theme.content }>
+      <ur-table></ur-table>
     </div>
   </div>
 
-  this.on("mount",function() {
-    this.app = this.opts;
-    this.app.admin_models = this.app._models.map(function(model) {
-      return {
-        name: model.name,
-        model: model,
-        edit: function () { uR.admin.route(model.name) },
-      }
+  <script>
+  this.on("mount", function() {
+    var app_label = this.opts.matches[1];
+    var model_name = this.opts.matches[2];
+    this.app = uR.db.getApp(app_label);
+    this.model = uR.db.getModel(app_label,model_name);
+    this.thead = ["Object name"];
+    this.tbody = this.model.objects.all().map(function(obj) {
+      return [`<a href="#/admin/${app_label}/${model_name}/${obj.id}/">${obj.toString()}</a>`]
     });
-    this.update();
-  });
-
-</ur-admin>
+  })
+  </script>
+</ur-admin-list>
 
 uR.ready(function() {
   uR.addRoutes({
     "#/admin/$": uR.router.routeElement("ur-admin-home"),
     "#/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
-    "#/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-model"),
-    "#/admin/([^/]+)/([^/]+)/(\\d+)/$": uR.router.routeElement("ur-admin-model-detail"),
+    "#/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
+    "#/admin/([^/]+)/([^/]+)/(\\d+)/$": uR.router.routeElement("ur-admin-edit"),
   })
 });
 

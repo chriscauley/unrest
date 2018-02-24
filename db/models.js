@@ -10,6 +10,9 @@
       this.create_fields();
       this.objects = this.constructor.objects;
     }
+    __str() {
+      return this.constructor.verbose_name + " #" + this.id;
+    }
     create_fields() {
       var primary_key;
       this.META.fields = [];
@@ -157,7 +160,16 @@
     ModelManager: ModelManager,
     models: {},
     apps: [],
-    register: function(app_label,models) {
+    getApp: function(app_label) {
+      if (!uR.db[app_label]) { throw uR.NotImplemented(`App "${app_label}" not found`) }
+      return uR.db[app_label];
+    },
+    getModel: function(app_label, model_name) {
+      var app = uR.db.getApp(app_label);
+      if (!app[model_name]) { throw uR.NotImplemented(`Model "${model_name}" not found in app "${app_label}"`) }
+      return app[model_name];
+    },
+    register: function(app_label, models) {
       uR.db[app_label] = uR.db[app_label] || {
         _models: [],
         name: app_label,
@@ -165,13 +177,16 @@
       };
       var app = uR.db[app_label];
       (uR.db.apps.indexOf(app) == -1) && uR.db.apps.push(app);
-      uR.forEach(models,function(a) {
-        app[a.name] = a;
-        a.verbose_name = uR.reverseCamelCase(a.name);
-        app._models.push(a);
-        a.app_label = app_label;
-        a.db_table = "__db_"+a.name;
-        a.objects = new uR.db.ModelManager(a);
+      uR.forEach(models,function(model) {
+        app[model.name] = model;
+        model.prototype.toString = function() {
+          return this.__str();
+        };
+        model.verbose_name = uR.reverseCamelCase(model.name);
+        app._models.push(model);
+        model.app_label = app_label;
+        model.db_table = "__db_"+model.name;
+        model.objects = new uR.db.ModelManager(model);
       });
     },
   }
