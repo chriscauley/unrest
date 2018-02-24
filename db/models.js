@@ -2,18 +2,13 @@
   class Model {
     constructor(opts) {
       opts = opts || {};
-      this.storage = uR.db.storage;
       this.options = opts;
-      uR.defaults(this.options,{
-        app_label: "NO_APP_LABEL",
-        db_table: this.constructor.name.toLowerCase(),
-      });
       this.META = {
         app_label: this.options.app_label,
         db_table: this.options.db_table
       };
       this.create_fields();
-      this.objects = new uR.db.ModelManager(this);
+      this.objects = this.constructor.objects;
     }
     create_fields() {
       var primary_key;
@@ -27,8 +22,18 @@
           name: this.META.pk_field,
           type: 'int',
           primary_key: true,
+          editable: false,
         });
       }
+    }
+    alertForm() {
+      uR.alertElement("ur-form",{
+        schema: this.getSchema(),
+        submit: function() {},
+      })
+    }
+    getSchema() {
+      return this.META.fields.filter(f => f.editable).map(field => field.toSchema());
     }
     prepField(options) {
       if (typeof options == "string") {
@@ -46,15 +51,18 @@
       if (this[field.name]) { throw "Field cannot have name that already exists on parent model" }
       this.META.fields.push(field);
       this[field.name] = field.value;
-      if (field.primary_key) { this.META.pk_field =field.name }
-      this.pk = this[this.META.pk_field];
+      if (field.primary_key) {
+        this.META.pk_field = field.name
+        this.pk = this[this.META.pk_field];
+      }
     }
     save() {
       var is_new = !this.pk;
-      this.pk = this.pk || Math.ceil(Math.random()*2147483647); // using this number because it's the max int value in sql
+      this.pk = this.pk || this.objects._getNextPK();
       this[this.META.pk_field] = this.pk;
-      this.storage.set(this.objects.storage_key+this.pk,this.toJson());
+      this.objects.storage.set(this.pk,this.toJson());
       is_new && this.objects._addPK(this.pk);
+      return this;
     }
     toJson() {
       var out = {};
@@ -69,35 +77,74 @@
   }
 
   class ModelManager {
-    constructor(child) {
+    constructor(model) {
+      this.model = model;
+      this.NOT_FOUND = model.constructor.name + " not found";
+      this.MULTIPLE_OBJECTS_RETURNED = "Get query for " + model.constructor.name + " returned multiple objects";
       this.META = {
-        app_label: child.META.app_label,
-        db_table: child.META.db_table,
+        app_label: model.app_label,
+        db_table: model.db_table,
       };
-      this.storage = child.storage;
-      this.model_class = child.constructor;
       this.storage_key = this.META.app_label + "/" + this.META.db_table + "/";
+      if (!uR.db[this.storage_key]) { uR.db[this.storage_key] = new uR.Storage(this.storage_key); }
+      this.storage = uR.db[this.storage_key];
     }
     remove(pk) {
-      this.storage.remove(this.storage_key+this.pk);
+      this.storage.remove(this.pk);
       var pks = this._getPKs();
       pks.splice(pks.indexOf(pk),1);
-      this.storage.set(this.storage_key + "INDEX",pks);
+      this.storage.set("INDEX",pks);
     }
-    get(pk) {
-      return new this.model_class(this.storage.get(this.storage_key+pk));
+    _get(pk) {
+      if (this._getPKs().indexOf(pk) == -1) { throw this.NOT_FOUND }
+      return new this.model(this.storage.get(pk));
+    }
+    get(options) {
+      if (typeof options == 'number') { return this._get(options); }
+      else {
+        var results = this.filter(options);
+        if (!results.length) { throw this.NOT_FOUND }
+        if (results.length > 1) { throw this.MULTIPLE_OBJECTS_RETURNED }
+        return results[0];
+      }
+    }
+    getOrCreate(options) {
+      try {
+        return this.get(options);
+      } catch (e) {
+        if (e == this.NOT_FOUND) { return this.create(options); }
+        throw e;
+      }
+    }
+    create(options) {
+      return new this.model(options,{save: true}).save();
+    }
+    filter(options) {
+      options = options || {};
+      var all = this.all();
+      for (var key in options) {
+        all = all.filter(function(obj) { return obj[key] == options[key]  })
+      }
+      return all;
     }
     all() {
-      var pks = this._getPKs();
-      return pks.map(this.get.bind(this));
-   }
+      return this._getPKs().map(this._get.bind(this));
+    }
+    count() {
+      return this._getPKs().length;
+    }
     _getPKs() {
-      return this.storage.get(this.storage_key + "INDEX") || [];
+      return this.storage.get("INDEX") || [];
+    }
+    _getNextPK() {
+      var pks = this._getPKs();
+      if (!pks.length) { return 1 }
+      return Math.max.apply(this,pks) + 1;
     }
     _addPK(pk) {
       var pks = this._getPKs();
       pks.push(pk)
-      this.storage.set(this.storage_key + "INDEX",pks);
+      this.storage.set("INDEX",pks);
     }
     clear() {
       this.storage.clear();
@@ -108,6 +155,24 @@
   uR.db = {
     Model: Model,
     ModelManager: ModelManager,
+    models: {},
+    apps: [],
+    register: function(app_label,models) {
+      uR.db[app_label] = uR.db[app_label] || {
+        _models: [],
+        name: app_label,
+        verbose_name: uR.unslugify(app_label),
+      };
+      var app = uR.db[app_label];
+      (uR.db.apps.indexOf(app) == -1) && uR.db.apps.push(app);
+      uR.forEach(models,function(a) {
+        app[a.name] = a;
+        a.verbose_name = uR.reverseCamelCase(a.name);
+        app._models.push(a);
+        a.app_label = app_label;
+        a.db_table = "__db_"+a.name;
+        a.objects = new uR.db.ModelManager(a);
+      });
+    },
   }
 })()
-uR.ready(function() { uR.db.storage = new uR.Storage('db'); });
