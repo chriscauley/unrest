@@ -84,7 +84,7 @@
           window.location.hash = "";
           this.unmount();
         }
-        uR._routes[key](pathname,data);
+        uR._routes[key](new_url.hash,data);
         uR.pushState(href);
       }
     }
