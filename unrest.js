@@ -371,6 +371,7 @@ var uR = (function() {
       footer: "card-action",
     },
     error_class: "card red white-text error",
+    table: "table table-striped table-hover",
   }
 
   uR.forEach(document.styleSheets, function (ss) {
@@ -388,6 +389,7 @@ var uR = (function() {
           header: "modal-header",
           content: "modal-body",
           footer: "modal-footer",
+          header_title: "modal-title h4",
         }
       }
     })
