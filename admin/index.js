@@ -138,5 +138,12 @@ uR.ready(function() {
     var path = [uR.admin.URL_PREFIX].concat([].slice.call(arguments)).join("/");
     return uR.route("#/"+path+"/");
   }
-uR.admin.start = function() {}
+  uR.admin.start = function() {
+    var parent = uR.newElement("div",{id:"ur_root",parent: document.body});
+    var admin_button = uR.newElement("a",{
+      className: "fa fa-edit open-admin "+uR.config.btn_primary,
+      href: "#/admin/",
+      parent: parent,
+    });
+  }
 })()
