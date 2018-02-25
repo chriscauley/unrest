@@ -44,6 +44,12 @@
         uR.css.default.content = "card-body";
         uR.css.form.field = "form-group";
         uR.css.form.input = "form-input";
+        uR.css.btn = {
+          primary: "btn btn-primary",
+          success: "btn btn-success",
+          cancel: "btn btn-error",
+          warning: "btn bg-warning",
+        };
         uR.css.modal = {
           root: "modal active",
           outer: "modal-container",

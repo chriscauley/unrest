@@ -50,11 +50,7 @@
 <ur-admin-app>
   <div class={ theme.outer }>
     <div class={ theme.header }>
-      <div class={ theme.header_title }>
-        { app.verbose_name } Admin
-        <a class="{ uR.config.btn_primary } { uR.config.right }"
-           href="#/admin/{app.app_label}/{model.name}/new/">New { app.verbose_name }</a>
-      </div>
+      <div class={ theme.header_title }>{ app.verbose_name } Admin</div>
     </div>
     <div class={ theme.content }>
       <ur-table></ur-table>
@@ -77,7 +73,11 @@
 <ur-admin-list>
   <div class={ theme.outer }>
     <div class={ theme.header }>
-      <div class={ theme.header_title }>{ model.verbose_name } Admin</div>
+      <div class={ theme.header_title }>
+        { model.verbose_name } Admin
+        <a class="{ uR.css.btn.primary } { uR.css.right }"
+           href="#/admin/{app.name}/{model.name}/new/">New { model.verbose_name }</a>
+      </div>
     </div>
     <div class={ theme.content }>
       <ur-table></ur-table>
@@ -94,6 +94,7 @@
     this.tbody = this.model.objects.all().map(function(obj) {
       return [`<a href="#/admin/${app_label}/${model_name}/${obj.id}/">${obj.toString()}</a>`]
     });
+    this.update();
   })
   </script>
 </ur-admin-list>
@@ -114,8 +115,10 @@
     var obj_id = this.opts.matches[3];
     this.app = uR.db.getApp(app_label);
     this.model = uR.db.getModel(app_label,model_name);
-    this.obj = this.model.objects.get(obj_id);
+    if (obj_id == "new") { this.obj = new this.model() }
+    else { this.obj = this.model.objects.get(obj_id); }
     this.schema = this.obj.getSchema();
+    this.update();
   });
 </ur-admin-edit>
 
@@ -124,7 +127,7 @@ uR.ready(function() {
     "#/admin/$": uR.router.routeElement("ur-admin-home"),
     "#/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
     "#/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
-    "#/admin/([^/]+)/([^/]+)/(\\d+)/$": uR.router.routeElement("ur-admin-edit"),
+    "#/admin/([^/]+)/([^/]+)/(\\d+|new)/$": uR.router.routeElement("ur-admin-edit"),
   })
 });
 
