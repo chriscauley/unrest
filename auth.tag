@@ -63,7 +63,7 @@
   uR.urls.api.register = "/api/register/"; // #! TODO
   uR.urls.api['password-reset'] = "/api/password-reset/"; // #! TODO
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
-  uR.addRoutes({
+  uR.router.add({
     "[?#]?/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
     "[?#]?/auth/logout/": function(path,data) {
       uR.auth.setUser(null);

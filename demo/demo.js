@@ -3,7 +3,7 @@ uR.ready(function() {
   uR.config.STATIC_URL = "/demo/";
   uR.config.default_tabs = true;
   uR.startRouter();
-  uR.addRoutes({
+  uR.router.add({
     "#tabs-demo": function() { uR.loadTemplate("tabs-demo") },
     "#markdown-demo": function() { uR.loadTemplate("markdown-demo") },
     "#calendar-demo": function() { uR.loadTemplate("calendar-demo") },

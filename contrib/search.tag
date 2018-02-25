@@ -1,6 +1,6 @@
 uR.ready(function() {
   uR.updateSearchResults = uR.updateSearchResults || function(r) { return r; }
-  uR.addRoutes({
+  uR.router.add({
     "^/(search)/$": function() { uR.mountElement("ur-search"); },
   });
 });

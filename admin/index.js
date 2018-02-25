@@ -120,7 +120,7 @@
 </ur-admin-edit>
 
 uR.ready(function() {
-  uR.addRoutes({
+  uR.router.add({
     "#/admin/$": uR.router.routeElement("ur-admin-home"),
     "#/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
     "#/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),

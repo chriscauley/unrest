@@ -11,7 +11,7 @@
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
       };
-      uR.addRoutes(_routes);
+      uR.router.add(_routes);
     }
   });
   uR.__START = new Date().valueOf();
