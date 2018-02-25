@@ -27,7 +27,7 @@ uR.ready(function() {
     uR.forEach(this.tabs,function(tab,i) { tab.index = i; });
     this.active = 0;
     if (this.opts.className) { this.root.className = this.opts.className }
-    if (uR.config.default_tabs) { this.root.classList.add("default");}
+    this.root.classList.add(uR.css.tabs.root);
     this.update();
     window.ut = this;
   });

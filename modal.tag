@@ -6,8 +6,8 @@
     <a onclick={ cancel } class="cancel">X</a>
     <yield/>
     <center>
-      <button class="{ uR.config.btn_cancel }" onclick={ cancel } if={ cancel_text }>{ cancel_text }</button>
-      <button class="{ uR.config.btn_success }" onclick={ success } if={ success_text }>{ success_text }</button>
+      <button class="{ uR.css.btn.cancel }" onclick={ cancel } if={ cancel_text }>{ cancel_text }</button>
+      <button class="{ uR.css.btn.success }" onclick={ success } if={ success_text }>{ success_text }</button>
     </center>
   </div>
 

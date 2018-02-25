@@ -1,6 +1,5 @@
 (function() {
   uR.form = { };
-  uR.theme['UR-FORM'] = uR.theme.default;
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
@@ -174,7 +173,7 @@
           }
         }.bind(this));
       }
-      this.className = this.name + " " + this.type + " " + uR.config.form.field_class;
+      this.className = this.name + " " + this.type + " " + uR.css.form.field;
       var element = document.createElement(this.tagname);
       this.field_tag = riot.mount(element,{ field: this, parent: this.form, is_ur_input: true })[0];
     }
@@ -277,7 +276,7 @@
   <!--<input type={ field.type } name={ field.name } id={ field.id }
          onchange={ onChange } onkeyup={ onKeyUp } onfocus={ onFocus } onblur={ onBlur }
          placeholder={ placeholder } required={ required } minlength={ minlength }
-         class="validate { ur_empty:empty, invalid: invalid, active: activated || !empty } { uR.theme.input }"
+         class="validate { ur_empty:empty, invalid: invalid, active: activated || !empty } { uR.css.form.input }"
          autocomplete="off">-->
 
   var self = this;
@@ -291,7 +290,7 @@
     this._input.addEventListener("focus",this.field.onFocus.bind(this.field));
     this._input.addEventListener("blur",this.field.onBlur.bind(this.field));
     this._input.addEventListener("keyup",this.field.onKeyUp.bind(this.field));
-    this._input.classList.add(uR.theme.input);
+    this._input.classList.add(uR.css.form.input);
     if (this.field.input_type == "header") {
       this._input.style.display = "none";
       this.field.required = false;
@@ -333,11 +332,11 @@
           <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
           <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
                  data-success={ data_success }>{ label }</label>
-          <div class={ uR.theme.error_class }>{ data_error }</div>
+          <div class={ uR.css.error }>{ data_error }</div>
           <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
         </div>
         <div if={ non_field_error } class="non_field_error" data-field_id="non_field_error">
-          <div class={ uR.theme.error_class }>{ non_field_error }</div>
+          <div class={ uR.css.error }>{ non_field_error }</div>
           <p if={ uR.config.support_email } style="text-align: center;">
             If you need assistance contact
             <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
@@ -359,8 +358,8 @@
   </div>
 
   var self = this;
-  this.btn_success = this.opts.btn_success || uR.config.btn_success;
-  this.btn_cancel = this.opts.btn_cancel || uR.config.btn_cancel;
+  this.btn_success = this.opts.btn_success || uR.css.btn.success;
+  this.btn_cancel = this.opts.btn_cancel || uR.css.btn.cancel;
   this.cancel_text = this.opts.cancel_text || uR.config.cancel_text;
   this.success_text = this.opts.success_text || "Submit";
   this.onChange = this.opts.onChange;
@@ -504,7 +503,7 @@
       <b>{ name }</b> has been successfully added!<br /> Add more children or click <b>Next</b> to continue.
     </div>
   </ur-form>
-  <button class={ uR.config.btn_primary } disabled={ !valid }>Next</button>
+  <button class={ uR.css.btn.primary } disabled={ !valid }>Next</button>
   var self = this;
   this.forms = [];
   this.on("mount",function() {

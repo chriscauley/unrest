@@ -1,5 +1,5 @@
 <ur-table>
-  <table class={ uR.theme.table }>
+  <table class={ uR.css.table }>
     <thead></thead>
     <tbody></tbody>
     <tfoot></tfoot>

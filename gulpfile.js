@@ -13,6 +13,7 @@ var PROJECT_NAME = "unrest";
 var JS_FILES = [
   "url-shim.js",
   "unrest.js",
+  "css.js",
   "static.js",
   "storage.js",
   "router.js",

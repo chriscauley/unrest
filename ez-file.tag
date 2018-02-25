@@ -4,7 +4,7 @@
     <label if={ !done } for="{ _id }" class="btn-danger btn">Add { name }</label>
     <button if={ done && !bg } class="btn btn-success" onclick={ edIt }>{ opts.success_text || "Edit" }</button>
     <div if={ bg } class="image" style="background-image: url({ bg })" onclick={ edIt }></div>
-    <button if={ done } onclick={ clear } class="{ uR.config.btn_cancel } fa fa-trash"></button>
+    <button if={ done } onclick={ clear } class="{ uR.css.btn.cancel } fa fa-trash"></button>
   </yield>
   <form action={ opts.url } method="POST">
     <input type="hidden" name="user_id" value={ opts.user_id } />
@@ -94,13 +94,13 @@
       <center>
         <canvas></canvas>
         <div class="burtons">
-          <button onclick={ doZoom } class={ uR.config.btn_primary }>
+          <button onclick={ doZoom } class={ uR.css.btn.primary }>
             { zoom }x <i class="fa fa-search-plus"></i></button>
-          <button onclick={ doRotate } class={ uR.config.btn_primary }><i class="fa fa-rotate-right"></i></button>
-          <label for={ opts.parent._id } class={ uR.config.btn_success }><i class="fa fa-camera"></i></label>
+          <button onclick={ doRotate } class={ uR.css.btn.primary }><i class="fa fa-rotate-right"></i></button>
+          <label for={ opts.parent._id } class={ uR.css.btn.success }><i class="fa fa-camera"></i></label>
         </div>
-        <button onclick={ done } class={ uR.config.btn_success }>Save</button>
-        <button onclick={ cancel } class={ uR.config.btn_cancel }>Cancel</button>
+        <button onclick={ done } class={ uR.css.btn.success }>Save</button>
+        <button onclick={ cancel } class={ uR.css.btn.cancel }>Cancel</button>
       </center>
     </div>
   </div>

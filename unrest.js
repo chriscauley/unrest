@@ -341,7 +341,6 @@ var uR = (function() {
   uR.config.form.field_class = "input-field";
   uR.config.loading_attribute = uR.config.loading_attribute || 'fade';
   uR.config.loading_attribute = 'fade';
-  uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
   uR.config.input_overrides = {
     boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
@@ -349,13 +348,8 @@ var uR = (function() {
   uR.config.text_validators = {};
   uR.config.mount_to = "#content";
   uR.config.mount_alerts_to = "#alert-div";
-  uR.config.btn_primary = "btn blue";
-  uR.config.btn_success = "btn green";
-  uR.config.btn_cancel = "btn red";
-  uR.config.btn_warning = "btn yellow";
   uR.config.cancel_text = "Cancel";
   uR.config.success_text = "Submit";
-  uR.config.alert_success = "alert alert-success card card-content"; // bootstrap
   uR._var = {};
   uR.data = uR.data || {};
   uR.alert = function(s) { console.log(s) };//alert(s); }; // placeholder for future alert function
@@ -375,49 +369,7 @@ var uR = (function() {
     s = s.replace( /([A-Z])/g, " $1" )
     return s.charAt(0).toUpperCase() + s.slice(1);
   }
-  uR.icon = {
-    admin: 'fa fa-pencil-square-o',
-  }
 
-  uR.theme = {
-    modal: {
-      outer: "card",
-      header: "card-title",
-      content: "card-content",
-      footer: "card-action",
-    },
-    default: {
-      outer: "card",
-      header: "card-title",
-      content: "card-content",
-      footer: "card-action",
-    },
-    error_class: "card red white-text error",
-    table: "table table-striped table-hover",
-  }
-
-  uR.forEach(document.styleSheets, function (ss) {
-    uR.forEach(['materialize','spectre','bootstrap'],function(theme) {
-      if (!ss.href || ss.href.indexOf(theme) == -1) { return }
-      document.body.setAttribute("ur-theme",theme)
-      if (theme == "spectre") {
-        uR.theme.default.content = "card-body";
-        uR.config.form.field_class = "form-group";
-        uR.theme.input = "form-input";
-        uR.theme.modal = {
-          root: "modal active",
-          outer: "modal-container",
-          mask: "modal-overlay",
-          header: "modal-header",
-          content: "modal-body",
-          footer: "modal-footer",
-          header_title: "modal-title h4",
-        }
-        uR.config.right = "float-right";
-        uR.config.left = "float-left";
-      }
-    })
-  });
   uR.formatTimeRange = function formatTimeRange(start,end) {
     var start = moment(start), end = moment(end);
     var start_format = start.minute()?"h:mm":"h";

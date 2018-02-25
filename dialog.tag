@@ -2,7 +2,7 @@
   var DialogMixin = {
     init: function() {
       if (this.opts.ur_modal){
-        this.theme = this.opts.theme || uR.theme.modal;
+        this.theme = this.opts.theme || uR.css.modal;
         var e = document.createElement('div');
         this.cancel = this.cancel || this.opts.cancel || function() { this.unmount() };
         e.addEventListener("click",function() { this.cancel() }.bind(this));
@@ -15,7 +15,7 @@
           this.root.appendChild(e);
         }
       } else {
-        this.theme = this.opts.theme || uR.theme[this.root.tagName] || uR.theme.default;
+        this.theme = this.opts.theme || uR.css[this.root.tagName] || uR.css.default;
       }
     }
   }
@@ -35,7 +35,7 @@
     data.close_text = data.close_text || "No";
     data.buttons.push({
       onclick: data.success,
-      className: uR.config.btn_success,
+      className: uR.css.btn.success,
       text: data.success_text || "Yes"
     });
     data.innerHTML = "<div class='inner-content'>"+text+"</div>";
@@ -48,7 +48,7 @@
     <div class={ theme.content }>
       <yield />
       <center>
-        <button onclick={ close } class={ uR.config.btn_primary }>{ close_text }</button>
+        <button onclick={ close } class={ uR.css.btn.primary }>{ close_text }</button>
         <button each={ opts.buttons } class={ className } onclick={ _onclick }>{ text }</button>
       </center>
     </div>

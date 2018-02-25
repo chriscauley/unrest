@@ -8,19 +8,19 @@ uR.form.fields['multi-file'] = class MultiFileInput extends uR.form.URInput {
 
 <multi-file>
   <form action={ action } method="POST" if={ can_upload }>
-    <label class={ uR.config.btn_primary }>
+    <label class={ uR.css.btn.primary }>
       <input type="file" onchange={ validateAndUpload } style="display:none;" name="file" />
       { upload_text }
     </label>
   </form>
-  <div each={ files } class="file { uR.config.alert_success }">
+  <div each={ files } class="file { uR.css.alert.success }">
     <div>
       <div class="name">{ name }</div>
       <div class="content_type">{ content_type }</div>
     </div>
     <div onclick={ parent.deleteFile } class="fa fa-trash"></div>
   </div>
-  <div if={ error_msg } class={ uR.theme.error_class }>{ error_msg }</div>
+  <div if={ error_msg } class={ uR.css.error }>{ error_msg }</div>
 
   var self = this;
   validateAndUpload(e) {
