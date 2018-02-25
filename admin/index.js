@@ -50,7 +50,11 @@
 <ur-admin-app>
   <div class={ theme.outer }>
     <div class={ theme.header }>
-      <div class={ theme.header_title }>{ app.verbose_name } Admin</div>
+      <div class={ theme.header_title }>
+        { app.verbose_name } Admin
+        <a class="{ uR.config.btn_primary } { uR.config.right }"
+           href="#/admin/{app.app_label}/{model.name}/new/">New { app.verbose_name }</a>
+      </div>
     </div>
     <div class={ theme.content }>
       <ur-table></ur-table>
@@ -94,6 +98,27 @@
   </script>
 </ur-admin-list>
 
+<ur-admin-edit>
+  <div class={ theme.outer }>
+    <div class={ theme.header }>
+      <div class={ theme.header_title }>Editing: { obj.toString() }</div>
+    </div>
+    <div class={ theme.content }>
+      <ur-form></ur-form>
+    </div>
+  </div>
+
+  this.on("mount",function() {
+    var app_label = this.opts.matches[1];
+    var model_name = this.opts.matches[2];
+    var obj_id = this.opts.matches[3];
+    this.app = uR.db.getApp(app_label);
+    this.model = uR.db.getModel(app_label,model_name);
+    this.obj = this.model.objects.get(obj_id);
+    this.schema = this.obj.getSchema();
+  });
+</ur-admin-edit>
+
 uR.ready(function() {
   uR.addRoutes({
     "#/admin/$": uR.router.routeElement("ur-admin-home"),
@@ -113,4 +138,5 @@ uR.ready(function() {
     var path = [uR.admin.URL_PREFIX].concat([].slice.call(arguments)).join("/");
     return uR.route("#/"+path+"/");
   }
+uR.admin.start = function() {}
 })()
