@@ -137,20 +137,21 @@
     uR.route(el.href);
   }
 
-  uR.addRoutes = function(routes) { uR.extend(uR._routes,routes); }
-  uR.startRouter = function() {
-    document.addEventListener('click', onClick);
-    // window.popstate = function(event) { console.log("pop",window.location.href); uR.route(window.location.href,event.state,false); };
-  };
-
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
   uR.config.MODAL_PREFIX = /^#/;
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
   uR.router = {
+    start: function() {
+      document.addEventListener('click', onClick);
+      // window.popstate = function(event) { uR.route(window.location.href,event.state,false); };
+    },
+    add: function(routes) { uR.extend(uR._routes,routes); },
     routeElement: (element_name) => (pathname,data) => uR.mountElement(element_name,data),
   };
+  uR.startRouter = uR.depracated(uR.router.start,'uR.startRouter','uR.router.start()');
+  uR.addRoutes = uR.depracated(uR.router.add,'uR.addRoutes','uR.router.add()');
   if (!document.querySelector("#alert-div")) { // #! TODO this is hardcoded, but am unsure what else to do CCC
     var e = document.createElement("div");
     e.id = "alert-div";

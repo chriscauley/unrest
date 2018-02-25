@@ -287,9 +287,16 @@ var uR = (function() {
     }
   }
 
+  uR.FALSE = "false";
   uR.REQUIRED = new Object();
   uR.DEFAULT_TRUE = new Object();
   uR.NotImplemented = (s) => "NotImplementedError: "+s;
+  uR.depracated = function(f,old,alt) {
+    return function() {
+      console.warn(old,"is depracated in favor of",alt);
+      return f.apply(this,arguments)
+    }
+  }
   uR.defaults = function(a,b) {
     // like extend but keeps the values of a instead of replacing them
     for (var i in b) {
@@ -337,7 +344,7 @@ var uR = (function() {
   uR.config.select_class = 'browser-default';
   uR.config.tag_templates = [];
   uR.config.input_overrides = {
-    boolean: 'select-input',
+    boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
   };
   uR.config.text_validators = {};
   uR.config.mount_to = "#content";
@@ -406,6 +413,8 @@ var uR = (function() {
           footer: "modal-footer",
           header_title: "modal-title h4",
         }
+        uR.config.right = "float-right";
+        uR.config.left = "float-left";
       }
     })
   });
