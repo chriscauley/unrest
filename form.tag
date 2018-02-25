@@ -1,5 +1,5 @@
 (function() {
-  uR.form = { FALSE: 'false' };
+  uR.form = { };
   uR.theme['UR-FORM'] = uR.theme.default;
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
@@ -75,7 +75,11 @@
       this.field_list = [];
       this.fields = {};
       uR.forEach(this.schema, function(field,i) {
-        field.tagname = uR.config.input_overrides[field.type] || "ur-input";
+        var override = uR.config.input_overrides[field.type];
+        if (typeof override == "function") { override = override(); } // #! TODO: should this take in field and modify it?
+        if (typeof override == "string") { field.tagname = override; }
+        else { uR.defaults(field,override); }
+        field.tagname = field.tagname || "ur-input";
         field._field_index = this.field_list.length;
         var cls = uR.form.fields[field.tagname] || uR.form.fields["ur-input"];
         this.field_list.push(new cls(this,field));

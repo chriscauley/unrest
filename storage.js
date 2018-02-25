@@ -107,9 +107,6 @@
   class Config extends Storage {
     getDefault(key,_default,schema) {
       if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
-      if (schema.type == "boolean") {
-        schema.choices = [[uR.form.FALSE,"No"],["true","Yes"]]
-      }
       if (schema && !this._schema[key]) {
         this._schema[key] = schema || {};
         this._schema[key].name = key;

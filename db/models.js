@@ -99,11 +99,12 @@
       this.storage.set("INDEX",pks);
     }
     _get(pk) {
+      if (typeof pk != "number") { pk = parseInt(pk) }
       if (this._getPKs().indexOf(pk) == -1) { throw this.NOT_FOUND }
       return new this.model(this.storage.get(pk));
     }
     get(options) {
-      if (typeof options == 'number') { return this._get(options); }
+      if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
       else {
         var results = this.filter(options);
         if (!results.length) { throw this.NOT_FOUND }
