@@ -10,6 +10,7 @@
       this.create_fields();
       this.objects = this.constructor.objects;
     }
+    getAdminExtra() {}
     __str() {
       return this.constructor.verbose_name + " #" + this.id;
     }
@@ -36,7 +37,8 @@
       })
     }
     getSchema() {
-      return this.META.fields.filter(f => f.editable).map(field => field.toSchema());
+      var self = this;
+      return this.META.fields.filter(f => f.editable).map(field => field.toSchema(self[field.name]));
     }
     prepField(options) {
       if (typeof options == "string") {
@@ -53,7 +55,7 @@
       var field = new field_class(options);
       if (this[field.name]) { throw "Field cannot have name that already exists on parent model" }
       this.META.fields.push(field);
-      this[field.name] = field.value;
+      field.setValue(this,field.value);
       if (field.primary_key) {
         this.META.pk_field = field.name
         this.pk = this[this.META.pk_field];
@@ -70,7 +72,7 @@
     toJson() {
       var out = {};
       uR.forEach(this.META.fields,function(field) {
-        out[field.name] = this[field.name];
+        out[field.name] = field.toJson(this[field.name]);
       }.bind(this));
       return out;
     }
@@ -181,7 +183,7 @@
       uR.forEach(models,function(model) {
         app[model.name] = model;
         model.prototype.toString = function() {
-          return this.__str();
+          return (this.id && this.__str()) || `Unsaved ${this.constructor.verbose_name }`;
         };
         model.verbose_name = uR.reverseCamelCase(model.name);
         app._models.push(model);
