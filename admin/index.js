@@ -105,19 +105,27 @@
       <div class={ theme.header_title }>Editing: { obj.toString() }</div>
     </div>
     <div class={ theme.content }>
+      <div id="form-extra"></div>
       <ur-form></ur-form>
     </div>
   </div>
 
   this.on("mount",function() {
+    var self = this;
     var app_label = this.opts.matches[1];
     var model_name = this.opts.matches[2];
     var obj_id = this.opts.matches[3];
     this.app = uR.db.getApp(app_label);
     this.model = uR.db.getModel(app_label,model_name);
+    this.submit = function(form) {
+      uR.extend(self.obj,form.getData())
+      self.obj.save();
+    }
     if (obj_id == "new") { this.obj = new this.model() }
     else { this.obj = this.model.objects.get(obj_id); }
     this.schema = this.obj.getSchema();
+    var extra = this.obj.getAdminExtra();
+    if (extra) { this.root.querySelector("#form-extra").innerHTML = extra; }
     this.update();
   });
 </ur-admin-edit>
