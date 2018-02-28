@@ -88,6 +88,7 @@
         uR.pushState(href);
       }
     }
+    if (!data.matches && uR.router.default_route) { uR.router.default_route() }
     if (data.matches) { return }
     // uR.config.do404();
 
@@ -138,7 +139,7 @@
   }
 
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
-  uR.config.MODAL_PREFIX = /^#/;
+  uR.config.MODAL_PREFIX = /^#!/;
   uR._routes = uR._routes || {};
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }

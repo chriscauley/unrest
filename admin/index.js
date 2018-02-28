@@ -41,7 +41,7 @@
     this.tbody = [];
     var self = this;
     uR.db.apps.map(function(app) {
-      self.tbody.push([`<a href="#/admin/${app.name}/">${app.verbose_name}</a>`])
+      self.tbody.push([`<a href="#!/admin/${app.name}/">${app.verbose_name}</a>`])
     })
   });
   </script>
@@ -63,7 +63,7 @@
     this.app = uR.db.getApp(app_label);
     this.thead = ["Model","Count"];
     this.tbody = this.app._models.map(function(model) {
-      return [`<a href="#/admin/${app_label}/${model.name}/">${model.verbose_name}</a>`,model.objects.count()];
+      return [`<a href="#!/admin/${app_label}/${model.name}/">${model.verbose_name}</a>`,model.objects.count()];
     });
     this.update();
   });
@@ -76,7 +76,7 @@
       <div class={ theme.header_title }>
         { model.verbose_name } Admin
         <a class="{ uR.css.btn.primary } { uR.css.right }"
-           href="#/admin/{app.name}/{model.name}/new/">New { model.verbose_name }</a>
+           href="#!/admin/{app.name}/{model.name}/new/">New { model.verbose_name }</a>
       </div>
     </div>
     <div class={ theme.content }>
@@ -92,7 +92,7 @@
     this.model = uR.db.getModel(app_label,model_name);
     this.thead = ["Object name"];
     this.tbody = this.model.objects.all().map(function(obj) {
-      return [`<a href="#/admin/${app_label}/${model_name}/${obj.id}/">${obj.toString()}</a>`]
+      return [`<a href="#!/admin/${app_label}/${model_name}/${obj.id}/">${obj.toString()}</a>`]
     });
     this.update();
   })
@@ -124,10 +124,10 @@
 
 uR.ready(function() {
   uR.router.add({
-    "#/admin/$": uR.router.routeElement("ur-admin-home"),
-    "#/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
-    "#/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
-    "#/admin/([^/]+)/([^/]+)/(\\d+|new)/$": uR.router.routeElement("ur-admin-edit"),
+    "#!/admin/$": uR.router.routeElement("ur-admin-home"),
+    "#!/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
+    "#!/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
+    "#!/admin/([^/]+)/([^/]+)/(\\d+|new)/$": uR.router.routeElement("ur-admin-edit"),
   })
 });
 
@@ -139,13 +139,13 @@ uR.ready(function() {
   }
   uR.admin.route = function route() {
     var path = [uR.admin.URL_PREFIX].concat([].slice.call(arguments)).join("/");
-    return uR.route("#/"+path+"/");
+    return uR.route("#!/"+path+"/");
   }
   uR.admin.start = function() {
     var parent = uR.newElement("div",{id:"ur_root",parent: document.body});
     var admin_button = uR.newElement("a",{
       className: "fa fa-edit open-admin "+uR.config.btn_primary,
-      href: "#/admin/",
+      href: "#!/admin/",
       parent: parent,
     });
   }
