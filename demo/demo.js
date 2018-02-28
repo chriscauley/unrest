@@ -1,8 +1,8 @@
 uR.ready(function() {
-  uR.config.MODAL_PREFIX = "#!"; // this app uses has routing
   uR.config.STATIC_URL = "/demo/";
   uR.config.default_tabs = true;
-  uR.startRouter();
+  uR.router.start();
+  uR.admin.start();
   uR.router.add({
     "#tabs-demo": function() { uR.loadTemplate("tabs-demo") },
     "#markdown-demo": function() { uR.loadTemplate("markdown-demo") },

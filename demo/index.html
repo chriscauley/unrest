@@ -5,17 +5,19 @@
   <link rel="stylesheet" href="https://uc.unrest.io/.dist/uc-built.css" />
   <link rel="stylesheet" href="https://static.unrest.io/.dist/unrest-built.css" />
   <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono" rel="stylesheet">
 </head>
 <body>
-  <div id="wrapper">
-    <header>
-      <ur-nav>
-        <li><a href="#ur-form-demo">Form</a></li>
-        <li><a href="#tabs-demo">Tabs</a></li>
-        <li><a href="#markdown-demo">Markdown</a></li>
-        <li><a href="#calendar-demo">Calendar</a></li>
-      </ur-nav>
-    </header>
+  <div id="wrapper" class="d-flex">
+    <div class="sidebar">
+      <h1 class="logo">unrest</h1>
+      <ul class="nav">
+        <li class="nav-item"><a href="#ur-form-demo">Form</a></li>
+        <li class="nav-item"><a href="#tabs-demo">Tabs</a></li>
+        <li class="nav-item"><a href="#markdown-demo">Markdown</a></li>
+        <li class="nav-item"><a href="#calendar-demo">Calendar</a></li>
+      </ul>
+    </div>
     <div class="container"><div id="content"></div></div>
   </div>
   <div id="alert-div"></div>
@@ -32,4 +34,5 @@
 <script src="https://uc.unrest.io/.dist/uc-built.js"></script>
 <script src="demo.js"></script>
 <script src="tests.js"></script>
+<script src="../db/tests.js"></script>
 </html>
