@@ -1,4 +1,10 @@
 (function() {
+  class QueryError extends Error {
+    constructor(message,model,filters) {
+      console.error(model.name,filters);
+      super(message);
+    }
+  }
   class Model {
     constructor(opts) {
       opts = opts || {};
@@ -83,9 +89,19 @@
 
   class ModelManager {
     constructor(model) {
+      var self = this;
       this.model = model;
-      this.NOT_FOUND = model.constructor.name + " not found";
-      this.MULTIPLE_OBJECTS_RETURNED = "Get query for " + model.constructor.name + " returned multiple objects";
+      this.model.NotFound = this.NotFound = class NotFound extends QueryError {
+        constructor(filters) {
+          super(model.name + " not found",model,filters)
+        }
+      }
+      class MultipleObjectsReturned extends QueryError {
+        constructor(filters) {
+          super("Get query for " + model.name + " returned multiple objects",model,filters);
+        }
+      }
+      this.MultipleObjectsReturned = this.model.MultipleObjectsReturned = MultipleObjectsReturned;
       this.META = {
         app_label: model.app_label,
         db_table: model.db_table,
@@ -102,15 +118,15 @@
     }
     _get(pk) {
       if (typeof pk != "number") { pk = parseInt(pk) }
-      if (this._getPKs().indexOf(pk) == -1) { throw this.NOT_FOUND }
+      if (this._getPKs().indexOf(pk) == -1) { throw new this.NotFound({pk: pk}) }
       return new this.model(this.storage.get(pk));
     }
     get(options) {
       if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
       else {
         var results = this.filter(options);
-        if (!results.length) { throw this.NOT_FOUND }
-        if (results.length > 1) { throw this.MULTIPLE_OBJECTS_RETURNED }
+        if (!results.length) { throw new this.NotFound(options) }
+        if (results.length > 1) { throw new this.MultipleObjectsReturned(options) }
         return results[0];
       }
     }
@@ -118,7 +134,7 @@
       try {
         return this.get(options);
       } catch (e) {
-        if (e == this.NOT_FOUND) { return this.create(options); }
+        if (e instanceof this.NotFound) { return this.create(options); }
         throw e;
       }
     }
@@ -129,7 +145,13 @@
       options = options || {};
       var all = this.all();
       for (var key in options) {
-        all = all.filter(function(obj) { return obj[key] == options[key]  })
+        var value = options[key];
+        value = value && value.pk || value;
+        all = all.filter(function(obj) {
+          var obj_value = obj[key];
+          obj_value = obj_value && obj_value.pk || obj_value;
+          return obj_value == value;
+        });
       }
       return all;
     }
