@@ -12,7 +12,7 @@ uR.db.BaseField = class BaseField extends uR.Object {
     this.initial_value = this.value;
   }
   toSchema(value) {
-    return { name: this.name, type: this.type, value: this.toJson(value), }
+    return { name: this.name, type: this.input_type || this.type, value: this.toJson(value), }
   }
   toJson(value) { return value; }
   setValue(obj,value) { obj[this.name] = value; }
@@ -30,7 +30,7 @@ uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
   constructor(opts) {
     uR.defaults(opts,{
       to: uR.REQUIRED,
-      type: "select",
+      input_type: "select",
     })
     super(opts);
     var self = this; //this.name = author
@@ -46,6 +46,11 @@ uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
   }
   toJson(value) {
     return value && value.pk;
+  }
+  toSchema(value) {
+    var out = super.toSchema(value);
+    out.choices = this.fk_model.objects.all().map((obj) => [obj.id,obj.toString()])
+    return out;
   }
   setValue(obj,value) {
     // sets value of the object to null or the instance of the object

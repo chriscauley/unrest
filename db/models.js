@@ -10,8 +10,8 @@
       opts = opts || {};
       this.options = opts;
       this.META = {
-        app_label: this.options.app_label,
-        db_table: this.options.db_table
+        app_label: this.constructor.app_label,
+        db_table: this.constructor.db_table
       };
       this.create_fields();
       this.objects = this.constructor.objects;
@@ -36,11 +36,9 @@
         });
       }
     }
-    alertForm() {
-      uR.alertElement("ur-form",{
-        schema: this.getSchema(),
-        submit: function() {},
-      })
+    edit() {
+      path = "#!/"+['admin',this.META.app_label,this.constructor.name,this.id].join("/")+"/";
+      uR.route(path);
     }
     getSchema() {
       var self = this;
