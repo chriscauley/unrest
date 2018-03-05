@@ -1,5 +1,5 @@
 <ur-pagination>
-  <div class="flex-row" each={ uR.pagination.results }>
+  <div class="flex-row" each={ uR.pagination && uR.pagination.results }>
     <div class="col1">
       <a href={ url } class="fa fa-link" if={ url }></a>
       <a href={ ur_admin } class={ uR.icon.admin } if={ ur_admin }></a>

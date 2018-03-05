@@ -45,9 +45,8 @@ function testConfig() {
 
 function testForm() {
   this.do("ur-form tests")
-    .setPath("#ur-form-demo")
+    .setHash("#ur-form-demo")
     .wait("#id_first_name")
-    .wait(0) // #! TODO 
     .checkResults("ur-form-demo ur-form")
     .changeValue("#id_first_name","Testy")
     .changeValue("#id_last_name","Larou")

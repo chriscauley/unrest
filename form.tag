@@ -113,10 +113,9 @@
   }
 
   uR.form.URInput = class URInput {
-    constructor(form,options) {
+    constructor(form,options={}) {
       this.tag_name = this.tag_name || "ur-input"; // can be overridden by sub-classes
       this.form = form;
-      options = options || {};
       if (typeof options == "string") {
         var name = options;
         if (uR.schema.fields[options]) {
@@ -175,7 +174,7 @@
       }
       this.className = this.name + " " + this.type + " " + uR.css.form.field;
       var element = document.createElement(this.tagname);
-      this.field_tag = riot.mount(element,{ field: this, parent: this.form, is_ur_input: true })[0];
+      riot.mount(element,{ field: this, form: this.form, is_ur_input: true });
     }
 
     onKeyUp(e) {
@@ -267,7 +266,7 @@
   });
   onChange(e) {
     var files = e.target.files;
-    this.opts.parent.onChange(e);
+    this.opts.form.onChange(e);
   }
 
 </image-input>
@@ -280,7 +279,9 @@
          autocomplete="off">-->
 
   var self = this;
-
+  this.on("before-mount",function() {
+    this.opts.field.field_tag = this;
+  });
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
     if (this.field.input_tagname != "textarea") { this._input.type = this.field.input_type; }
@@ -328,7 +329,7 @@
       <div class="rendered_content"></div>
       <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
         <yield from="pre-form"/>
-        <div each={ form.field_list } class="{ className } { ur_empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
+        <div each={ form && form.field_list || [] } class="{ className } { ur_empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
           <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
           <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
                  data-success={ data_success }>{ label }</label>
@@ -349,7 +350,7 @@
           <button class="{ btn_cancel }" if={ opts.cancel_function } onclick={ opts.cancel_function }>
             { cancel_text }</button>
         </div>
-        <ul class="messagelist" if={ messages.length }>
+        <ul class="messagelist" if={ messages && messages.length }>
           <li class="{ level }" each={ messages }>{ body }</li>
         </ul>
       </form>

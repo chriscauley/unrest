@@ -58,7 +58,7 @@
   </div>
   
   <script>
-  this.on("mount",function() {
+  this.on("before-mount",function() {
     var app_label = this.opts.matches[1];
     this.app = uR.db.getApp(app_label);
     this.thead = ["Model","Count"];
@@ -85,7 +85,7 @@
   </div>
 
   <script>
-  this.on("mount", function() {
+  this.on("before-mount", function() {
     var app_label = this.opts.matches[1];
     var model_name = this.opts.matches[2];
     this.app = uR.db.getApp(app_label);
@@ -110,7 +110,7 @@
     </div>
   </div>
 
-  this.on("mount",function() {
+  this.on("before-mount",function() {
     var self = this;
     var app_label = this.opts.matches[1];
     var model_name = this.opts.matches[2];
@@ -124,9 +124,10 @@
     if (obj_id == "new") { this.obj = new this.model() }
     else { this.obj = this.model.objects.get(obj_id); }
     this.schema = this.obj.getSchema();
+  })
+  this.on("mount",function() {
     var extra = this.obj.getAdminExtra();
     if (extra) { this.root.querySelector("#form-extra").innerHTML = extra; }
-    this.update();
   });
 </ur-admin-edit>
 
