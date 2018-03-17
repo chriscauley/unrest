@@ -45,7 +45,7 @@ uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
     }
   }
   toJson(value) {
-    return value && value.pk;
+    return value && value.pk || value;
   }
   toSchema(value) {
     var out = super.toSchema(value);

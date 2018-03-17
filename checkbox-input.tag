@@ -56,8 +56,11 @@
     <label for={ id }>{ label }</label>
   </div>
 
-var self = this;
-onKeyUp(e) {
-  this.field.onKeyUp(e)
-}
+<script>
+  var self = this;
+  this.opts.field.field_tag = this;
+  onKeyUp(e) {
+    this.field.onKeyUp(e)
+  }
+</script>
 </checkbox-input>

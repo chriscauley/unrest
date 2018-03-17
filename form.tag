@@ -45,7 +45,7 @@
     }
     prepSchema() {
       var tag = this.form_tag;
-      var _schema = tag.opts.schema || tag._parent.opts.schema || tag._parent.schema;
+      var _schema = tag.opts.schema || tag.parent && tag.parent.opts.schema || tag.parent.schema;
       this.action = tag.opts.action;
       if (typeof _schema == "string") {
         this.schema_url = _schema;
