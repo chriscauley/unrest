@@ -65,31 +65,28 @@
     var pathname = (new_url.pathname || href).replace(window.location.origin,"");
 
     uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
-    data = data || {};
-    for (var key in uR._routes) {
-      var regexp = new RegExp(key);
-      var path_match = pathname.match(regexp);
-      var hash_match = new_url.hash && new_url.hash.match(regexp);
-      if (path_match) {
-        uR.STALE_STATE = true;
-        data.matches = path_match;
-        document.body.dataset.ur_path = pathname;
-        uR._routes[key](pathname,data);
-        uR.pushState(href);
-      } else if (hash_match) {
-        uR.STALE_STATE = true;
-        data.matches = hash_match;
-        data.ur_modal = new_url.hash.match(uR.config.MODAL_PREFIX);
-        data.cancel = function() {
+    var path_match = uR.router.resolve(pathname);
+    var hash_match = new_url && uR.router.resolve(new_url.hash);
+    if (path_match) {
+      var data = { matches: path_match };
+      document.body.dataset.ur_path = pathname;
+      uR._routes[path_match.key](pathname,data);
+    } else if (hash_match) {
+      var data = {
+        matches: hash_match,
+        ur_modal: new_url.hash.match(uR.config.MODAL_PREFIX),
+        cancel: function() {
           window.location.hash = "";
           this.unmount();
         }
-        uR._routes[key](new_url.hash,data);
-        uR.pushState(href);
       }
+      uR._routes[hash_match.key](new_url.hash,data);
     }
-    if (!data.matches && uR.router.default_route) { uR.router.default_route() }
-    if (data.matches) { return }
+    if (path_match || hash_match) {
+      uR.pushState(href);
+      uR.STALE_STATE = true;
+      return;
+    } else if (uR.router.default_route) { uR.router.default_route(); }
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
@@ -150,6 +147,16 @@
     },
     add: function(routes) { uR.extend(uR._routes,routes); },
     routeElement: (element_name) => (pathname,data) => uR.mountElement(element_name,data),
+    resolve: function(path) {
+      for (var key in uR._routes) {
+        var regexp = new RegExp(key);
+        var match = path.match(regexp)
+        if (match) {
+          match.key = key
+          return match;
+        }
+      }
+    },
   };
   uR.startRouter = uR.depracated(uR.router.start,'uR.startRouter','uR.router.start()');
   uR.addRoutes = uR.depracated(uR.router.add,'uR.addRoutes','uR.router.add()');
