@@ -133,7 +133,7 @@
         console.warn("look at me!")
         this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
       }
-      if (this.value === false) { this.value = uR.form.FALSE }
+      if (this.value === false) { this.value = uR.FALSE }
       this.value = this.initial_value = this.value || (this.form.initial || {})[this.name];
       this.valid = true;
       // verbose_name is useful for error messages, other generated text
