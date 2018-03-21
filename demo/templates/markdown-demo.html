@@ -1,8 +1,14 @@
 <markdown-demo>
 <h1>Markdown</h1>
+
+<markdown>
+**NOTE:** to prevent the browser from stripping out the whitespace, text inside the markdown tab must be included in a `pre` tag. This is removed before rendering the markdown unless you include `allow_pre="true"` as an option to the `markdown` tag.
+</markdown>
+
 <ur-tabs>
   <ur-tab title="Code">
 <pre>&lt;markdown&gt;
+&lt;pre&gt;
 header
 =====
 
@@ -10,21 +16,23 @@ testing
 
 and more!
 
-&lt;b&gt;tag!&lt;/b&gt;
-&lt;/markdown&gt;</pre>
+&lt;pre&gt;
+&lt;/markdown&gt;
+</pre>
   </ur-tab>
     </pre>
   </ur-tab>
   <ur-tab title="Result">
-<markdown>
+<markdown allow_pre="true">
+<pre>
 header
 =====
 
 testing
 
 and more!
-
 <b>tag!</b>
+</pre>
 </markdown>
   </ur-tab>
 </ur-tabs>

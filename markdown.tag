@@ -1,6 +1,10 @@
 <markdown><yield/>
   this.on("mount",function() {
     var content = this.content ||this.opts.content || this.root.innerHTML;
+    if (!this.opts.allow_pre) {
+      content = content.replace(/^<pre>/i,"");
+      content = content.replace(/<\/pre>$/i,"");
+    }
     if (this.opts.url && !content) {
       uR.ajax({
         url: this.opts.url,
