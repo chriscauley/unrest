@@ -57,12 +57,10 @@ uR.ready(function() {
   }
 
   this.on("mount",function() {
-    if (!this._parent) { this._parent = this.parent || this.opts.parent; }
     if (this.opts.innerHTML) { this.root.innerHTML = this.opts.innerHTML; }
   });
 
   this.on("update",function() {
-    if (!this._parent || this._parent.active == undefined) { return }
-    (this._parent.active == this.index?this.show:this.hide)();
+    (this.parent.active == this.index?this.show:this.hide)();
   });
 </ur-tab>

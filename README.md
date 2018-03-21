@@ -20,11 +20,13 @@ function validatePhone(value,riot_tag) {
   }
   return true
 }
+
 window.MY_SCHEMA = [
   "first_name",
   "last_name",
   { name: "phone_number", validate: validatePhone, required: false },
   { name: "email", type: "email" },
 ];
+
 riot.mount("ur-form");
 ```

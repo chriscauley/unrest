@@ -112,7 +112,4 @@
       current_moment.add(1,'day')
     }
   });
-  foo(e) {
-    console.log(e)
-  }
 </calendar>
