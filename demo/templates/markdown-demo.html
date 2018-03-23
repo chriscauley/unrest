@@ -2,20 +2,65 @@
 <h1>Markdown</h1>
 
 <markdown>
-**NOTE:** to prevent the browser from stripping out the whitespace, text inside the markdown tab must be included in a `pre` tag. This is removed before rendering the markdown unless you include `allow_pre="true"` as an option to the `markdown` tag.
+**NOTE:** to prevent the browser from stripping out the whitespace, text inside the markdown tab must be included in a `pre` tag. This is removed before rendering the markdown unless you include `allow_pre="true"` as an option to the `markdown` tag. If you pass in content as a tag option then the `pre` tags are not necessary.
 </markdown>
 
 <ur-tabs>
   <ur-tab title="Code">
 <pre>&lt;markdown&gt;
 &lt;pre&gt;
-header
-=====
+A First Level Header
+====================
 
-testing
+A Second Level Header
+---------------------
 
-and more!
+Now is the time for all good men to come to
+the aid of their country. This is just a
+regular paragraph.
 
+The quick brown fox jumped over the lazy
+dog's back.
+
+### Header 3
+
+> This is a blockquote.
+> 
+> This is the second paragraph in the blockquote.
+>
+> ## This is an H2 in a blockquote
+
+Some of these words *are emphasized*.
+Some of these words _are emphasized also_.
+
+Use two asterisks for **strong emphasis**.
+Or, if you prefer, __use two underscores instead__.
+
+*   Candy.
+*   Gum.
+*   Booze.
+
+1.  Red
+2.  Green
+3.  Blue
+
+I get 10 times more traffic from [Google][1] than from
+[Yahoo][2] or [MSN][3].
+
+[1]: http://google.com/        "Google"
+[2]: http://search.yahoo.com/  "Yahoo Search"
+[3]: http://search.msn.com/    "MSN Search"
+
+I start my morning with a cup of coffee and
+[The New York Times][NY Times].
+
+[ny times]: http://www.nytimes.com/
+
+![alt text](/favicon.ico "Title")
+
+![alt text][id]
+
+[id]: /favicon.ico "Title"
 &lt;pre&gt;
 &lt;/markdown&gt;
 </pre>
@@ -23,17 +68,64 @@ and more!
     </pre>
   </ur-tab>
   <ur-tab title="Result">
-<markdown allow_pre="true">
+<markdown>
 <pre>
-header
-=====
+A First Level Header
+====================
 
-testing
+A Second Level Header
+---------------------
 
-and more!
-<b>tag!</b>
+Now is the time for all good men to come to
+the aid of their country. This is just a
+regular paragraph.
+
+The quick brown fox jumped over the lazy
+dog's back.
+
+### Header 3
+
+> This is a blockquote.
+> 
+> This is the second paragraph in the blockquote.
+>
+> ## This is an H2 in a blockquote
+
+Some of these words *are emphasized*.
+Some of these words _are emphasized also_.
+
+Use two asterisks for **strong emphasis**.
+Or, if you prefer, __use two underscores instead__.
+
+*   Candy.
+*   Gum.
+*   Booze.
+
+1.  Red
+2.  Green
+3.  Blue
+
+I get 10 times more traffic from [Google][1] than from
+[Yahoo][2] or [MSN][3].
+
+[1]: http://google.com/        "Google"
+[2]: http://search.yahoo.com/  "Yahoo Search"
+[3]: http://search.msn.com/    "MSN Search"
+
+I start my morning with a cup of coffee and
+[The New York Times][NY Times].
+
+[ny times]: http://www.nytimes.com/
+
+![alt text](/favicon.ico "Title")
+
+![alt text][id]
+
+[id]: /favicon.ico "Title"
+
 </pre>
 </markdown>
   </ur-tab>
 </ur-tabs>
+window.MD= this
 </markdown-demo>
