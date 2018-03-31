@@ -42,7 +42,11 @@
     var self = this;
     uR.db.apps.map(function(app) {
       self.tbody.push([`<a href="#!/admin/${app.name}/">${app.verbose_name}</a>`])
-    })
+    });
+    self.tbody.push([""]);
+    uR._configs.map(function(config) { 
+      self.tbody.push([`<a href="#!/ur_config/${config.PREFIX}/">CONFIG: ${config.PREFIX}</a>`])
+    });
   });
   </script>
 </ur-admin-home>
@@ -137,6 +141,9 @@ uR.ready(function() {
     "#!/admin/([^/]+)/$": uR.router.routeElement("ur-admin-app"),
     "#!/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
     "#!/admin/([^/]+)/([^/]+)/(\\d+|new)/$": uR.router.routeElement("ur-admin-edit"),
+    "#!/ur_config/([^/]+)/$": function(path,data) {
+      uR._configs[data.matches[1]].openEditor();
+    }
   })
 });
 
@@ -151,11 +158,10 @@ uR.ready(function() {
     return uR.route("#!/"+path+"/");
   }
   uR.admin.start = function() {
-    var parent = uR.newElement("div",{id:"ur_root",parent: document.body});
     var admin_button = uR.newElement("a",{
-      className: "fa fa-edit open-admin "+uR.config.btn_primary,
+      className: uR.icon("edit"),
       href: "#!/admin/",
-      parent: parent,
+      parent: uR.getRootElement(),
     });
   }
 })()

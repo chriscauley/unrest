@@ -104,7 +104,13 @@
     }
   }
 
+  uR._configs = [];
   class Config extends Storage {
+    constructor(prefix) {
+      super(prefix);
+      uR._configs.push(this);
+      uR._configs[prefix] = this;
+    }
     getDefault(key,_default,schema) {
       if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
       if (schema && !this._schema[key]) {

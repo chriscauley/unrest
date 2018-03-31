@@ -333,25 +333,30 @@ var uR = (function() {
     });
   };
 
-  uR.onBlur = uR.onBlur || function() {};
-  uR.config = uR.config || {};
-  uR.config.doPostAuth = function() {}
-  uR.config.form = {};
-  uR.config[404] = 'four-oh-four';
-  uR.config.form.field_class = "input-field";
-  uR.config.loading_attribute = uR.config.loading_attribute || 'fade';
-  uR.config.loading_attribute = 'fade';
-  uR.config.tag_templates = [];
-  uR.config.input_overrides = {
-    boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
-  };
-  uR.config.text_validators = {};
-  uR.config.mount_to = "#content";
-  uR.config.mount_alerts_to = "#alert-div";
-  uR.config.cancel_text = "Cancel";
-  uR.config.success_text = "Submit";
+  uR.defaults(uR, {
+    icon: (i) => "fa fa-"+i,
+    onBlur: function() {},
+    config: {},
+    data: {},
+    getRootElement: function() {
+      return document.querySelector("#ur_root") || uR.newElement("div",{ id: "ur_root", parent: document.body });
+    }
+  })
+  uR.defaults(uR.config,{
+    loading_attribute: 'fade',
+    tag_templates: [],
+    input_overrides: {
+      boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
+    },
+    404: 'four-oh-four',
+    doPostAuth: function() {},
+    text_validators: {},
+    mount_to: "#content",
+    mount_alerts_to: "#alert-div",
+    cancel_text: "Cancel",
+    success_text: "Submit",
+  })
   uR._var = {};
-  uR.data = uR.data || {};
   uR.alert = function(s) { console.log(s) };//alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};
   uR.urls = {};
