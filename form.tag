@@ -367,6 +367,7 @@
   this.suffix = this.opts.suffix || "";
 
   submit(e,_super) {
+    e && e.preventDefault && e.preventDefault()
     if (this._ajax_busy || !this.form.field_list.length) { return; }
     if (!this.valid) {
       uR.forEach(this.form.field_list,function (field) { field.show_error = true; });

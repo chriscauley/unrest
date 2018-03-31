@@ -55,7 +55,7 @@
 
     remove(key) {
       this._removeItem(key);
-      this.keys = this.keys.filter(function(k) { k != key });
+      this.keys = this.keys.filter((k) => k != key );
       delete this.times[key];
       this._save();
     }
