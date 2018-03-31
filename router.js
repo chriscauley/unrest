@@ -77,7 +77,7 @@
         ur_modal: new_url.hash.match(uR.config.MODAL_PREFIX),
         cancel: function() {
           window.location.hash = "";
-          this.unmount();
+          this.unmount && this.unmount();
         }
       }
       uR._routes[hash_match.key](new_url.hash,data);

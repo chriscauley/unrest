@@ -160,7 +160,7 @@
       return out;
     }
 
-    openEditor() {
+    openEditor(tag_opts) {
       var self=this, dirty;
       var opts = {
         schema: self.getSchema(),
@@ -169,7 +169,10 @@
           dirty = true;
         },
         autosubmit: true,
-        onUnmount: function() { dirty && window.location.reload() }
+        onUnmount: function() {
+          tag_opts && tag_opts.cancel && tag_opts.cancel()
+          dirty && window.location.reload()
+        },
       }
       uR.forEach(opts.schema,(s)=> {
           s._default = s.value;

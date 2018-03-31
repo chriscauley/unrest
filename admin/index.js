@@ -142,7 +142,7 @@ uR.ready(function() {
     "#!/admin/([^/]+)/([^/]+)/$": uR.router.routeElement("ur-admin-list"),
     "#!/admin/([^/]+)/([^/]+)/(\\d+|new)/$": uR.router.routeElement("ur-admin-edit"),
     "#!/ur_config/([^/]+)/$": function(path,data) {
-      uR._configs[data.matches[1]].openEditor();
+      uR._configs[data.matches[1]].openEditor(data);
     }
   })
 });
