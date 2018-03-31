@@ -1,6 +1,6 @@
 <calculator>
   <div class="display bg-secondary">
-    <div class="input">{ current_command }</div>
+    <div class="input">{ input }</div>
     <div class="output" if={ output } title={ output }>{ output }</div>
   </div>
   <div class="buttons">
@@ -13,7 +13,10 @@
 
 <script>
 this.on("before-mount",function() {
-  this.current_command = "";
+  this.debug = true;
+  this.current_command = [];
+  this.old_commands = [];
+  this.old_outputs = [];
   this.button_groups = [];
   this.addButtonGroup({
     name: "numbers",
@@ -24,6 +27,13 @@ this.on("before-mount",function() {
     buttons: "/*-+",
     btn_class: uR.css.btn.primary,
   })
+  this.replaces = { // eg Pressing * then /, the * is dropped
+    "*": ".*/+-",
+    "/": ".*/+-",
+    "+": ".*/+-",
+    "-": ".+-",
+    ".": ".*/+-",
+  }
 });
 addButtonGroup(opts) {
   uR.defaults(opts,{
@@ -47,9 +57,17 @@ addButtonGroup(opts) {
   this.button_groups.push(out);
 }
 click(e) {
-  this.current_command += e.item.button.key;
+  var key = e.item.button.key;
+  for (var i=0;i<2;i++) {
+    var last = this.current_command[this.current_command.length-1];
+    if (last && this.replaces[key] && this.replaces[key].indexOf(last) != -1) {
+      this.current_command.pop();
+    }
+  }
+  this.current_command.push(key);
+  this.input = this.current_command.join("");
   try {
-    this.output = eval(this.current_command);
+    this.output = eval(this.input);
   } catch (e) { this.debug && console.warn(e); }
 }
 </script>
