@@ -4,10 +4,7 @@ uR.ready(function() {
   uR.router.start();
   uR.admin.start();
   uR.router.add({
-    "#tabs-demo": function() { uR.loadTemplate("tabs-demo") },
-    "#markdown-demo": function() { uR.loadTemplate("markdown-demo") },
-    "#calendar-demo": function() { uR.loadTemplate("calendar-demo") },
-    "#ur-form-demo": function() { uR.loadTemplate("ur-form-demo") }
+    "#([^/]+)-demo": function(path,data) { uR.loadTemplate(data.matches[1]+"-demo") },
   });
   uR.ajax({
     url:"holidays.json",
