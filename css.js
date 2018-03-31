@@ -19,6 +19,7 @@
       select: 'browser-default',
     },
     btn: {
+      default: "btn",
       primary: "btn blue",
       success: "btn green",
       cancel: "btn red",
@@ -45,6 +46,7 @@
         uR.css.form.field = "form-group";
         uR.css.form.input = "form-input";
         uR.css.btn = {
+          default: "btn",
           primary: "btn btn-primary",
           success: "btn btn-success",
           cancel: "btn btn-error",

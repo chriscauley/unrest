@@ -32,7 +32,7 @@ uR.ready(function() {
     window.ut = this;
   });
   this.on("update",function() {
-    uR.forEach(this.tabs || [], function(tab) { !tab.parent && tab.update(); });
+    uR.forEach(this.tabs || [], function(tab) { tab.update && tab.update(); });
   });
 </ur-tabs>
 
@@ -61,6 +61,6 @@ uR.ready(function() {
   });
 
   this.on("update",function() {
-    (this.parent.active == this.index?this.show:this.hide)();
+    this.parent && (this.parent.active == this.index?this.show:this.hide)();
   });
 </ur-tab>
