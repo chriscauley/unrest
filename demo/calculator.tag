@@ -92,7 +92,15 @@ click(e) {
   padding: 5px;
   justify-content: space-between;
 }
-:scope .display .ans { font-size: 0.7em; line-height: .8rem; flex-basis: 100% }
+:scope .display .ans {
+  flex-basis: 100%;
+  font-size: 0.7em;
+  font-style: italic;
+  height: 10px;
+  line-height: 10px;
+}
+:scope .display .ans:before { content: "ans=" }
+:scope .display .ans:empty:before { content: ""; }
 :scope .display .output {
   overflow: hidden;
   text-overflow: ellipsis;
