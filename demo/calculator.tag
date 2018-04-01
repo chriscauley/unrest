@@ -1,7 +1,8 @@
 <calculator>
   <div class="display bg-secondary">
+  <div class="ans">{ ans }</div>
     <div class="input">{ input }</div>
-    <div class="output" if={ output } title={ output }>{ output }</div>
+    <div class="output" if={ output !== undefined } title={ output }>{ output }</div>
   </div>
   <div class="buttons">
     <div each={ group,i in button_groups } class={ group.className }>
@@ -33,7 +34,9 @@ this.on("before-mount",function() {
     "+": ".*/+-",
     "-": ".+-",
     ".": ".*/+-",
+    "=": ".*/+-",
   }
+  this.concatenation_keys = "0123456789+-*/."; // keys that can be added to a string for eval
 });
 addButtonGroup(opts) {
   uR.defaults(opts,{
@@ -64,11 +67,16 @@ click(e) {
       this.current_command.pop();
     }
   }
-  this.current_command.push(key);
+  if (this.concatenation_keys.indexOf(key) != -1) { this.current_command.push(key); }
   this.input = this.current_command.join("");
   try {
-    this.output = eval(this.input);
+    this.output = eval(this.input.replace("ans",this.current_command.ans));
   } catch (e) { this.debug && console.warn(e); }
+  if (key == "=" && this.input != this.output) {
+    this.current_command = ['ans'];
+    this.current_command.ans = this.output;
+                        this.ans = this.output;
+  }
 }
 </script>
 <style>
@@ -78,11 +86,13 @@ click(e) {
 }
 :scope .display {
   display: flex;
+  flex-wrap: wrap;
   line-height: 1em;
-  height: 25px;
+  height: 3em;
   padding: 5px;
   justify-content: space-between;
 }
+:scope .display .ans { font-size: 0.7em; line-height: .8rem; flex-basis: 100% }
 :scope .display .output {
   overflow: hidden;
   text-overflow: ellipsis;
