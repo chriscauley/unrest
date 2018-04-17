@@ -137,7 +137,7 @@
 
   var RouterMixin = {
     init: function() {
-      if (uR.router._current_tagname == this.root.tagName && typeof this.route == "function") {
+      if (uR.router._current_tagname == this.__.tagName.toUpperCase()) {
         // this tag can be updated, so store it in uR.router
         uR.router._current_tag = this;
         this.on("unmount",function () {
@@ -163,10 +163,13 @@
     add: function(routes) { uR.extend(uR._routes,routes); },
     routeElement: function(element_name) {
       return function(pathname,data) {
-        if (uR.router._current_tag && uR.router._current_tag.root.tagName == element_name.toUpperCase()) {
+        var tagName = element_name.toUpperCase();
+        if (uR.router._current_tag &&
+            uR.router._current_tag.root.tagName == tagName &&
+            typeof uR.router._current_tag.route == "function") {
           uR.router._current_tag.route(pathname,data);
         } else {
-          uR.router._current_tagname = element_name.toUpperCase();
+          uR.router._current_tagname = tagName;
           uR.mountElement(element_name,data);
         }
       }
