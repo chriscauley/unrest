@@ -12,7 +12,13 @@ uR.db.BaseField = class BaseField extends uR.Object {
     this.initial_value = this.value;
   }
   toSchema(value) {
-    return { name: this.name, type: this.input_type || this.type, value: this.toJson(value), }
+    return {
+      name: this.name,
+      type: this.input_type || this.type,
+      value: this.toJson(this.value || this.initial),
+      label: this.label,
+      choices: this.choices,
+    }
   }
   toJson(value) { return value; }
   setValue(obj,value) { obj[this.name] = value; }
