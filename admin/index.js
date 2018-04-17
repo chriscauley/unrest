@@ -45,6 +45,7 @@
     });
     self.tbody.push([""]);
     uR._configs.map(function(config) { 
+      if (config.PREFIX[0] == "_") { return }
       self.tbody.push([`<a href="#!/ur_config/${config.PREFIX}/">CONFIG: ${config.PREFIX}</a>`])
     });
   });

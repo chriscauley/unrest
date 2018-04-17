@@ -1,12 +1,12 @@
 <calendar>
-  <div class="top">
+  <div class="top" if={ current_moment }>
     <a class={ disabled: !allow_prev_month } onclick={ showPrevMonth }>&laquo; { prev_month.format("MMMM") }</a>
-    <div class="title">{ moment.format("MMMM YYYY") }</div>
+    <div class="title">{ current_moment.format("MMMM YYYY") }</div>
     <a class={ disabled: !allow_next_month } onclick={ showNextMonth }>{ next_month.format("MMMM") } &raquo;</a>
   </div>
-  <div class="week" each={ calendar.weeks }>
-    <div class="day { current: current, desktop: !occurrences }" each={ days }>
-      <div class="dom">{ moment.date() }</div>
+  <div class="week" each={ week,i in calendar.weeks }>
+    <div class="day { current: day.current, desktop: !day.occurrences }" each={ day, i in week.days }>
+      <div class="dom">{ day.moment.date() }</div>
       <yield/>
     </div>
   </div>
@@ -52,32 +52,33 @@
 
   showNextMonth(e) {
     if (!this.allow_next_month) { return; }
-    this.setFirstDate(this.moment.clone().add(1,"months"));
+    this.setFirstDate(this.current_moment.clone().add(1,"months"));
   }
 
   showPrevMonth(e) {
     if (!this.allow_prev_month) { return; }
-    this.setFirstDate(this.moment.clone().add(-1,"months"));
+    this.setFirstDate(this.current_moment.clone().add(-1,"months"));
   }
 
   this.setFirstDate = function(d) {
     this.first_date = d;
-    this.moment = moment(new Date(this.first_date)).startOf("month");
+    this.current_moment = moment(new Date(this.first_date)).startOf("month");
     this.update();
-    this.prev_month = this.moment.clone().add(-1,"days");
-    this.next_month = this.moment.clone().add(1,"days");
-    this.allow_prev_month = (this.min_month < this.moment);
-    this.allow_next_month = (this.max_month > this.moment);
+    this.prev_month = this.current_moment.clone().add(-1,"days");
+    this.next_month = this.current_moment.clone().add(1,"days");
+    this.allow_prev_month = (this.min_month < this.current_moment);
+    this.allow_next_month = (this.max_month > this.current_moment);
   }
 
-  this.on("mount",function() {
+  this.on("before-mount",function() {
+    this.calendar = {};
     this.max_month = moment(new Date(this.opts.max_month));
     this.min_month = moment(new Date(this.opts.min_month));
     this.occurrences = this.opts.occurrences || [];
     if (this.opts.date) { this.setFirstDate(this.opts.date); }
     else if (this.occurrences.length) { this.setFirstDate(this.occurrences[0].start) }
     else { this.setFirstDate(moment().format("YYYY-M-D")) }
-  });
+  })
 
   this.on("update", function() {
     if (!this.first_date) { return; }
@@ -90,8 +91,8 @@
       this.day_occurrences[d] = this.day_occurrences[d] || [];
       this.day_occurrences[d].push(o);
     }
-    var current_moment = this.moment.clone().date(1).day(0);
-    var last_moment = this.moment.clone().endOf('month').day(6);
+    var current_moment = this.current_moment.clone().date(1).day(0);
+    var last_moment = this.current_moment.clone().endOf('month').day(6);
     var c = 0;
     var week = {days: []};
     this.calendar = {weeks: []};
@@ -105,7 +106,7 @@
       }
       var day = {
         moment: current_moment.clone(),
-        current: current_moment.month() == this.moment.month(),
+        current: current_moment.month() == this.current_moment.month(),
         occurrences: this.day_occurrences[current_moment.format("YYYY-M-D")],
       }
       week.days.push(day);
