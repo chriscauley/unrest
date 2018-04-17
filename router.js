@@ -86,7 +86,7 @@
       uR.pushState(href);
       uR.STALE_STATE = true;
       return;
-    } else if (uR.router.default_route) { uR.router.default_route(); }
+    } else if (uR.router.default_route) { uR.router.default_route(pathname,{}); }
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
@@ -135,6 +135,21 @@
     uR.route(el.href);
   }
 
+  var RouterMixin = {
+    init: function() {
+      if (uR.router._current_tagname == this.root.tagName && typeof this.route == "function") {
+        // this tag can be updated, so store it in uR.router
+        uR.router._current_tag = this;
+        this.on("unmount",function () {
+          // all done, remove this if still assigned to the router
+          if (uR.router._current_tagname == this.root.tagName) { uR.router._current_tagname = undefined }
+          if (uR.router._current_tag == this) { uR.router._current_tag = undefined }
+        });
+      }
+    }
+  }
+  window.riot && window.riot.mixin(RouterMixin);
+
   uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
   uR.config.MODAL_PREFIX = /^#!/;
   uR._routes = uR._routes || {};
@@ -146,7 +161,16 @@
       // window.popstate = function(event) { uR.route(window.location.href,event.state,false); };
     },
     add: function(routes) { uR.extend(uR._routes,routes); },
-    routeElement: (element_name) => (pathname,data) => uR.mountElement(element_name,data),
+    routeElement: function(element_name) {
+      return function(pathname,data) {
+        if (uR.router._current_tag && uR.router._current_tag.root.tagName == element_name.toUpperCase()) {
+          uR.router._current_tag.route(pathname,data);
+        } else {
+          uR.router._current_tagname = element_name.toUpperCase();
+          uR.mountElement(element_name,data);
+        }
+      }
+    },
     resolve: function(path) {
       for (var key in uR._routes) {
         var regexp = new RegExp(key);
