@@ -10,47 +10,58 @@ var babel = require('gulp-babel');
 
 var PROJECT_NAME = "unrest";
 
-var JS_FILES = [
-  "url-shim.js",
-  "unrest.js",
-  "css.js",
-  "static.js",
-  "storage.js",
-  "router.js",
-  "log.tag",
-  "lunchtime/lunchtime.js",
-  "auth.tag",
-  "dialog.tag",
-  "math.js",
-  "random.js",
+var JS_FILES = {
+  unrest: [
+    "url-shim.js",
+    "unrest.js",
+    "css.js",
+    "static.js",
+    "storage.js",
+    "router.js",
+    "log.tag",
+    "lunchtime/lunchtime.js",
+    "auth.tag",
+    "dialog.tag",
+    "math.js",
+    "random.js",
 
-  "form.tag",
-  "checkbox-input.tag",
-  "select-input.tag",
-  "pagination.tag",
-  //"radio-input.tag",
+    "form.tag",
+    "checkbox-input.tag",
+    "select-input.tag",
+    "pagination.tag",
+    //"radio-input.tag",
 
-  "tabs.tag",
-  "markdown.tag",
-  "multi-file.tag",
-  "ez-file.tag",
-  "contrib/nav.tag",
-  "db/object.js",
-  "db/models.js",
-  "db/fields/abstract.js",
-  "admin/index.js",
-];
+    "tabs.tag",
+    "markdown.tag",
+    "multi-file.tag",
+    "ez-file.tag",
+    "contrib/nav.tag",
+    "db/object.js",
+    "db/models.js",
+    "db/fields/abstract.js",
+    "admin/index.js",
+  ],
+  canvas: [
+    "canvas/index.js",
+  ],
+}
 
-gulp.task('build-js', function () {
-  return gulp.src(JS_FILES)
-    .pipe(riot())
-    .pipe(babel({ presets: ['es2015'] }))
-    .pipe(sourcemaps.init())
-    .pipe(concat(PROJECT_NAME + '-built.js'))
-    //.pipe(uglify({mangle: false, compress: false}))
-    .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest(".dist/"));
-});
+var build_tasks = ['build-css', 'build-token-js', 'build-token-css', 'build-simplemde'];
+for (var key in JS_FILES) { // #! let vs var for maria
+  (function(key) {
+    build_tasks.push("build-"+key);
+    gulp.task('build-'+key, function () {
+      return gulp.src(JS_FILES[key])
+        .pipe(sourcemaps.init())
+        .pipe(riot())
+        .pipe(babel({ presets: ['es2015'] }))
+        .pipe(concat(key + '-built.js'))
+      //.pipe(uglify({mangle: false, compress: false}))
+        .pipe(sourcemaps.write("."))
+        .pipe(gulp.dest(".dist/"));
+    });
+  })(key)
+}
 
 LESS_FILES = ["less/base.less"];
 
@@ -100,9 +111,10 @@ gulp.task('build-simplemde',function() {
     .pipe(gulp.dest(".dist/"))
 })
 
-var build_tasks = ['build-js', 'build-css', 'build-token-js', 'build-token-css', 'build-simplemde'];
 gulp.task('watch', build_tasks, function () {
-  gulp.watch(JS_FILES, ['build-js']);
+  for (var key in JS_FILES) {
+    gulp.watch(JS_FILES[key], ['build-'+key]);
+  }
   gulp.watch(["less/*.less","less/min/*.less","less/materialize/*.less","admin/*.less"], ['build-css']);
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);
