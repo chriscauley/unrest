@@ -106,10 +106,11 @@
 
   uR._configs = [];
   class Config extends Storage {
-    constructor(prefix) {
+    constructor(prefix,schema) {
       super(prefix);
       uR._configs.push(this);
       uR._configs[prefix] = this;
+      schema && this.setSchema(schema);
     }
     getDefault(key,_default,schema) {
       if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
@@ -127,7 +128,7 @@
       var out = super.get(key);
       var type = this._schema[key] && this._schema[key].type;
       if (type == "boolean") { return out == "true" }
-      if (type == "int") { return parseInt(out) }
+      if (type == "int" || type == "integer") { return parseInt(out) }
       if (type == "float") { return parseFloat(out) }
       return out;
     }
