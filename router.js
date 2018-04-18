@@ -86,7 +86,7 @@
       uR.pushState(href);
       uR.STALE_STATE = true;
       return;
-    } else if (uR.router.default_route) { uR.router.default_route(pathname,{}); }
+    } else if (uR.router.default_route) { uR.router.default_route(pathname,{matches: []}); }
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
