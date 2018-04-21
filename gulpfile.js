@@ -39,14 +39,16 @@ var JS_FILES = {
     "db/object.js",
     "db/models.js",
     "db/fields/abstract.js",
-    "admin/index.js",
   ],
   canvas: [
     "canvas/index.js",
   ],
+  admin: [
+    "contrib/admin/index.js"
+  ]
 }
 
-var build_tasks = ['build-css', 'build-token-js', 'build-token-css', 'build-simplemde'];
+var build_tasks = [ 'build-token-js', 'build-token-css', 'build-simplemde'];
 for (var key in JS_FILES) { // #! let vs var for maria
   (function(key) {
     build_tasks.push("build-"+key);
@@ -63,15 +65,22 @@ for (var key in JS_FILES) { // #! let vs var for maria
   })(key)
 }
 
-LESS_FILES = ["less/base.less"];
+LESS_FILES = {
+  unrest: ["less/base.less"],
+  admin: ["contrib/admin/base.less"],
+}
 
-gulp.task('build-css', function () {
-  return gulp.src(LESS_FILES)
-    .pipe(less({}))
-    .pipe(concat(PROJECT_NAME+'-built.css'))
-    .pipe(gulp.dest(".dist/"));
-});
-
+for (var key in LESS_FILES) {
+  (function(key) {
+    build_tasks.push("build-"+key+"-css");
+    gulp.task("build-"+key+"-css", function () {
+      return gulp.src(LESS_FILES[key])
+        .pipe(less({}))
+        .pipe(concat(key+'-built.css'))
+        .pipe(gulp.dest(".dist/"));
+    });
+  })(key);
+}
 
 var TOKEN_JS_FILES = [
   "token-input/zepto.js",
@@ -115,7 +124,11 @@ gulp.task('watch', build_tasks, function () {
   for (var key in JS_FILES) {
     gulp.watch(JS_FILES[key], ['build-'+key]);
   }
-  gulp.watch(["less/*.less","less/min/*.less","less/materialize/*.less","admin/*.less"], ['build-css']);
+  for (var key in LESS_FILES) {
+    var watch_files = LESS_FILES[key].map((name) => name.match(/.*\//)[0]);
+    console.log(watch_files);
+    gulp.watch(LESS_FILES[key], ['build-'+key+'-css']);
+  }
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);
   gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
