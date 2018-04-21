@@ -72,14 +72,16 @@
 
   this.on("before-mount",function() {
     this.calendar = {};
-    this.max_month = moment(new Date(this.opts.max_month));
-    this.min_month = moment(new Date(this.opts.min_month));
+    this.max_month = moment(new Date(this.opts.max_month || "4000-01-01"));
+    this.min_month = moment(new Date(this.opts.min_month || "1900-01-01"));
     this.occurrences = this.opts.occurrences || [];
     if (this.opts.date) { this.setFirstDate(this.opts.date); }
     else if (this.occurrences.length) { this.setFirstDate(this.occurrences[0].start) }
     else { this.setFirstDate(moment().format("YYYY-M-D")) }
   })
-
+  this.on("mount",function() {
+    this.update();
+  });
   this.on("update", function() {
     if (!this.first_date) { return; }
     this.day_occurrences = {};
