@@ -62,18 +62,18 @@
 
   this.setFirstDate = function(d) {
     this.first_date = d;
-    this.current_moment = moment(new Date(this.first_date)).startOf("month");
+    this.current_moment = moment(this.first_date,"YYYY-MM-DD").startOf("month");
     this.update();
-    this.prev_month = this.current_moment.clone().add(-1,"days");
-    this.next_month = this.current_moment.clone().add(1,"days");
+    this.prev_month = this.current_moment.clone().add(-1,"months");
+    this.next_month = this.current_moment.clone().add(1,"months");
     this.allow_prev_month = (this.min_month < this.current_moment);
     this.allow_next_month = (this.max_month > this.current_moment);
   }
 
   this.on("before-mount",function() {
     this.calendar = {};
-    this.max_month = moment(new Date(this.opts.max_month || "4000-01-01"));
-    this.min_month = moment(new Date(this.opts.min_month || "1900-01-01"));
+    this.max_month = moment(this.opts.max_month || "4000-01-01","YYYY-MM-DD");
+    this.min_month = moment(this.opts.min_month || "1900-01-01","YYYY-MM-DD");
     this.occurrences = this.opts.occurrences || [];
     if (this.opts.date) { this.setFirstDate(this.opts.date); }
     else if (this.occurrences.length) { this.setFirstDate(this.occurrences[0].start) }
@@ -87,9 +87,9 @@
     this.day_occurrences = {};
     for (var i=0;i<this.occurrences.length;i++) {
       var o = this.occurrences[i];
-      o.moment = moment(new Date(o.start));
-      if (o.end) { o.end_moment = moment(new Date(o.end)); }
-      var d = o.moment.format("YYYY-M-D");
+      o.moment = moment(o.start,'YYYY-MM-DD');
+      if (o.end) { o.end_moment = moment(o.end,'YYYY-MM-DD'); }
+      var d = o.moment.format("YYYY-MM-DD");
       this.day_occurrences[d] = this.day_occurrences[d] || [];
       this.day_occurrences[d].push(o);
     }
@@ -109,7 +109,7 @@
       var day = {
         moment: current_moment.clone(),
         current: current_moment.month() == this.current_moment.month(),
-        occurrences: this.day_occurrences[current_moment.format("YYYY-M-D")],
+        occurrences: this.day_occurrences[current_moment.format("YYYY-MM-DD")],
       }
       week.days.push(day);
       current_moment.add(1,'day')

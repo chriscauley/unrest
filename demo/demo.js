@@ -2,7 +2,6 @@ uR.ready(function() {
   uR.config.STATIC_URL = "/demo/";
   uR.config.default_tabs = true;
   uR.router.start();
-  uR.admin.start();
   uR.router.add({
     "#([^/]+)-demo": function(path,data) {
       uR.loadTemplate(data.matches[1]+"-demo");

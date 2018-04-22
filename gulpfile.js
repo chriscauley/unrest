@@ -43,6 +43,9 @@ var JS_FILES = {
   canvas: [
     "canvas/index.js",
   ],
+  controller: [
+    "contrib/controller.js"
+  ],
   admin: [
     "contrib/admin/index.js"
   ]
