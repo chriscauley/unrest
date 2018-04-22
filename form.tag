@@ -425,6 +425,7 @@
   }
 
   this.on("mount",function() {
+    uR.form.current = this;
     var _parent = this.parent || {};
     _parent.ur_form = this;
     _parent.opts = _parent.opts || {};

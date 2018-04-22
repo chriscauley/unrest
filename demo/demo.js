@@ -4,7 +4,7 @@ uR.ready(function() {
   uR.router.start();
   uR.router.add({
     "#([^/]+)-demo": function(path,data) {
-      uR.loadTemplate(data.matches[1]+"-demo");
+      uR.loadTemplate(data.matches[1]+"-demo",data);
       uR.newElement("script",{
         src: "tests/"+data.matches[1]+".js",
         parent: document.body,
