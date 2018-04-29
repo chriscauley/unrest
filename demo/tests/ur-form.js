@@ -9,6 +9,11 @@ function testForm() {
     .changeValue("#id_phone_number","541-908-0704")
     .checkResults("ur-form-demo ur-form")
     .checkResults(function getData() { return uR.form.current.getData() })
+    .changeValue("#id_first_name","")
+    .changeValue("#id_last_name","")
+    .changeValue("#id_email","")
+    .changeValue("#id_phone_number","")
+    .checkResults("ur-form-demo ur-form")
     .done("ur-form is great!")
 }
 

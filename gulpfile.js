@@ -129,7 +129,6 @@ gulp.task('watch', build_tasks, function () {
   }
   for (var key in LESS_FILES) {
     var watch_files = LESS_FILES[key].map((name) => name.match(/.*\//)[0]);
-    console.log(watch_files);
     gulp.watch(LESS_FILES[key], ['build-'+key+'-css']);
   }
 
