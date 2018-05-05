@@ -39,15 +39,13 @@ uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
       input_type: "select",
     })
     super(opts);
-    var self = this; //this.name = author
+    var field = this; //this.name = author
     var [fk_app,fk_model] = opts.to.split(".");
-    self.fk_model = uR.db.getModel(fk_app,fk_model); //Author
-    opts.related_name = opts.related_name || self.parent.constructor.name.toLowerCase()+"_set";
-    self.fk_model.prototype[opts.related_name] = { //Author.book_set
-      all: (opts={}) => {
-        opts[self.name] = self.value;
-        return self.parent.constructor.objects.filter(opts);
-      }
+    field.fk_model = uR.db.getModel(fk_app,fk_model); //Author
+    opts.related_name = opts.related_name || field.parent.constructor.name.toLowerCase()+"_set";
+    field.fk_model.prototype[opts.related_name] = function(opts={}) { //Author.book_set
+      opts[field.name] = this.pk; // this is an Author instance
+      return field.parent.constructor.objects.filter(opts);
     }
   }
   toJson(value) {
