@@ -11,6 +11,19 @@
     hdate_no_year: "MMM Do",
     htime_hour: "H? A",
     htime_minute: ":mm",
+    _seconds_math: {
+      second: 1,
+      seconds: 2,
+      minute: 60,
+      minutes: 2*60,
+      hour: 60*60,
+      hours: 2*60*60,
+      day: 24*60*60,
+      days: 2*24*60*60,
+      week: 7*24*60*60,
+      weeks: 2*7*24*60*60,
+      list: ['week','day','hour','minute','second'],
+    },
   };
 
   var Sl = String.lunch;
@@ -43,6 +56,23 @@
   String.prototype.range = function(format) {
     this.moment();
     return this.hdate()+ " - "+Sl.s2_cache[this].hdate();
+  }
+  String.prototype.htimedelta = function(format) {
+    if (this.indexOf("||") == -1) { return (this+"||"+moment().format()).htimedelta() }
+    var m = this.moment();
+    var seconds = (this.moment()-Sl.s2_cache[this].moment())/1000;
+    var abs = Math.abs(seconds);
+    var _sm = Sl._seconds_math; // going to be typing this a lot
+    var unit,value = abs;
+    for (var i=0;i<_sm.list.length;i++) {
+      unit = _sm.list[i];
+      if (abs > _sm[unit+'s']) { // eg. absolute value of seconds is more than 2 weeks worth of seconds
+        value = Math.floor(abs/_sm[unit]);
+        if (value>1) { unit += "s" }
+        break;
+      }
+    }
+    return (Math.sign(seconds)*value) + " " + unit;
   }
   String.prototype.htimerange = function(format) {
     this.moment();
