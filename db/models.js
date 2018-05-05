@@ -6,15 +6,36 @@
     }
   }
   class Model {
-    constructor(opts) {
-      opts = opts || {};
+    constructor(opts={}) {
+      opts.schema = opts.schema || uR.db.schema[this.constructor.name];
+      function cloneObject(obj) { // move int ur? switch to underscore? this probably doesn't need to be deep
+        var clone = {};
+        for(var i in obj) {
+          clone[i] = (obj[i] != null &&  typeof(obj[i])=="object")?cloneObject(obj[i]):clone[i] = obj[i];
+        }
+        return clone;
+      }
+      opts.schema = opts.schema.map(cloneObject);
+      if (opts.values_list) {
+        var [id,..._values] = opts.values_list;
+        for (var i in opts.schema) {
+          opts.schema[i].value = _values[i];
+        }
+      }
       this.options = opts;
       this.META = {
         app_label: this.constructor.app_label,
         db_table: this.constructor.db_table
-      };
+      }
       this.create_fields();
       this.objects = this.constructor.objects;
+      if (opts.values_list) {
+        this.pk = this[this.META.pk_field] = id;
+        if (this.objects._getPKs().indexOf(this.pk) == -1) {
+          this.objects._addPK(this.pk);
+          this.save();
+        }
+      }
     }
     getAdminExtra() {}
     __str() {
@@ -23,9 +44,7 @@
     create_fields() {
       var primary_key;
       this.META.fields = [];
-      for (var i=0;i<this.options.schema.length;i++) {
-        this.prepField(this.options.schema[i]);
-      }
+      this.options.schema.map(this.prepField,this);
       this.META.pk_field = this.META.pk_field || "id";
       if (!this[this.META.pk_field]) {
         this.prepField({
@@ -167,7 +186,7 @@
       if (!pks.length) { return 1 }
       return Math.max.apply(this,pks) + 1;
     }
-    _addPK(pk) {
+    _addPK(pk) { // #! TODO this should use a set
       var pks = this._getPKs();
       pks.push(pk)
       this.storage.set("INDEX",pks);
@@ -182,6 +201,7 @@
     Model: Model,
     ModelManager: ModelManager,
     models: {},
+    schema: {},
     apps: [],
     getApp: function(app_label) {
       if (!uR.db[app_label]) { throw uR.NotImplemented(`App "${app_label}" not found`) }
