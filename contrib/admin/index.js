@@ -97,7 +97,7 @@
     this.model = uR.db.getModel(app_label,model_name);
     this.thead = ["Object name"];
     this.tbody = this.model.objects.all().map(function(obj) {
-      return [`<a href="#!/admin/${app_label}/${model_name}/${obj.id}/">${obj.toString()}</a>`]
+      return [`<a href="#!/admin/${app_label}/${model_name}/${obj.id}/">${obj}</a>`]
     });
     this.update();
   })

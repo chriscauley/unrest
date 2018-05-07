@@ -13,16 +13,17 @@
     htime_minute: ":mm",
     _seconds_math: {
       second: 1,
-      seconds: 2,
       minute: 60,
-      minutes: 2*60,
       hour: 60*60,
-      hours: 2*60*60,
       day: 24*60*60,
-      days: 2*24*60*60,
       week: 7*24*60*60,
-      weeks: 2*7*24*60*60,
       list: ['week','day','hour','minute','second'],
+    },
+    clear: function() {
+      delete String.lunch.moment_cache;
+      delete String.lunch.s2_cache;
+      String.lunch.moment_cache = {};
+      String.lunch.s2_cache = {}
     },
   };
 
@@ -57,22 +58,30 @@
     this.moment();
     return this.hdate()+ " - "+Sl.s2_cache[this].hdate();
   }
-  String.prototype.htimedelta = function(format) {
+  String.prototype.htimedelta = function() {
     if (this.indexOf("||") == -1) { return (this+"||"+moment().format()).htimedelta() }
     var m = this.moment();
     var seconds = (this.moment()-Sl.s2_cache[this].moment())/1000;
     var abs = Math.abs(seconds);
     var _sm = Sl._seconds_math; // going to be typing this a lot
-    var unit,value = abs;
+    var unit_big,unit_small,value = abs;
+    var s=(seconds<0)?"-":"+"; // sign of timedelta
+    var v="",V; // value big and small, (eg [3,2] for "3 days and 2 hours", would return "3d2h")
+    var u="",U; // unit abbreviation big and small, (eg ["d","h"] for above example)
     for (var i=0;i<_sm.list.length;i++) {
-      unit = _sm.list[i];
-      if (abs > _sm[unit+'s']) { // eg. absolute value of seconds is more than 2 weeks worth of seconds
-        value = Math.floor(abs/_sm[unit]);
-        if (value>1) { unit += "s" }
+      unit_big = _sm.list[i];
+      if (abs > _sm[unit_big]) { // eg. absolute value of seconds is more than 1 month|week|day... worth of seconds
+        V = Math.floor(abs/_sm[unit_big]); // value/big_conversion_factor
+        U = unit_big[0];
+        unit_small = _sm.list[i+1];
+        if (unit_small) {
+          v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]); // remainder/small_conversion_factor
+          u = unit_small[0]
+        }
         break;
       }
     }
-    return (Math.sign(seconds)*value) + " " + unit;
+    return `${s}${V}${U}${v}${u}`; // sVUvu or "+3d2h" or "sign big_value big_unit small_value small_unit", ya dig?
   }
   String.prototype.htimerange = function(format) {
     this.moment();

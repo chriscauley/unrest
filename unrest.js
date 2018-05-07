@@ -366,7 +366,7 @@ var uR = (function() {
   };
   uR.unslugify = function(s) {
     if (typeof s != "string") { s = s.toString() }
-    return s.replace(/-_/," ").replace(/^(.)|\s(.)/g, ($1) => $1.toUpperCase())
+    return s.replace(/[-_]/g," ").replace(/^(.)|\s(.)/g, ($1) => $1.toUpperCase())
   }
   uR.reverseCamelCase = function(s) {
     if (typeof s == "function") { s = s.name }
