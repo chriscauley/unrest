@@ -70,13 +70,13 @@
     var u="",U; // unit abbreviation big and small, (eg ["d","h"] for above example)
     for (var i=0;i<_sm.list.length;i++) {
       unit_big = _sm.list[i];
-      if (abs > _sm[unit_big]) { // eg. absolute value of seconds is more than 1 month|week|day... worth of seconds
+      if (abs >= _sm[unit_big]) { // eg. absolute value of seconds is more than 1 month|week|day... worth of seconds
         V = Math.floor(abs/_sm[unit_big]); // value/big_conversion_factor
         U = unit_big[0];
         unit_small = _sm.list[i+1];
         if (unit_small) {
-          v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]); // remainder/small_conversion_factor
-          u = unit_small[0]
+          v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]) || ""; // remainder/small_conversion_factor
+          u = v && unit_small[0];
         }
         break;
       }
