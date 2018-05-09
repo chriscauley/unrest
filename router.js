@@ -20,6 +20,9 @@
       _t.push(mount_to + " " + name);
     });
     riot.mount(_t.join(","),options);
+    if (names.join(",").toUpperCase().indexOf(uR.router._current_tagname) == -1) {
+      uR.router._current_tag = uR.router._current_tagname = undefined
+    }
   }
 
   uR.alertElement = function alertElement(name,options) {
@@ -67,11 +70,8 @@
     uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
     var path_match = uR.router.resolve(pathname);
     var hash_match = new_url && uR.router.resolve(new_url.hash);
-    if (path_match) {
-      var data = { matches: path_match };
-      document.body.dataset.ur_path = pathname;
-      uR._routes[path_match.key](pathname,data);
-    } else if (hash_match) {
+
+    if (hash_match) {
       var data = {
         matches: hash_match,
         ur_modal: new_url.hash.match(uR.config.MODAL_PREFIX),
@@ -81,6 +81,11 @@
         }
       }
       uR._routes[hash_match.key](new_url.hash,data);
+    } else if (path_match) {
+      var data = { matches: path_match };
+      document.body.dataset.ur_path = pathname;
+      uR._routes[path_match.key](pathname,data);
+      if (uR.STALE_STATE) { window.location.hash = ""; }
     }
     if (path_match || hash_match) {
       uR.pushState(href);
