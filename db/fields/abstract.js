@@ -59,7 +59,7 @@ uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
   setValue(obj,value) {
     // sets value of the object to null or the instance of the object
     // #! TODO this should be a property using __defineGetter__
-    if (!(value instanceof this.fk_model)) {
+    if (value && !(value instanceof this.fk_model)) {
       value = null || this.fk_model.objects.get(value);
     }
     obj[this.name] = value;
