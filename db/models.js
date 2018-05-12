@@ -221,7 +221,7 @@
       var app = uR.db[app_label];
       (uR.db.apps.indexOf(app) == -1) && uR.db.apps.push(app);
       uR.forEach(models,function(model) {
-        app[model.name] = model;
+        uR.db.models[app.name+"."+model.name] = app[model.name] = model;
         model.prototype.toString = function() {
           return (this.id && this.__str()) || `Unsaved ${this.constructor.verbose_name }`;
         };
