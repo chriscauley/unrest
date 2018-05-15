@@ -32,6 +32,8 @@ uR.db.IntegerField = class IntegerField extends uR.db.BaseField {
 
 }
 
+uR.config.input_overrides.fk = "select-input";
+
 uR.db.ForeignKey = class ForeignKey extends uR.db.BaseField {
   constructor(opts) {
     uR.defaults(opts,{

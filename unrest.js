@@ -1,5 +1,5 @@
-var uR = (function() {
-  var uR = window.uR || {};
+(function() {
+  window.uR = window.uR || {};
   uR.timeIt = function(f,name) {
     name = name || f.name
     return function() {
@@ -8,9 +8,7 @@ var uR = (function() {
       console.log(name,"took",(new Date() - start)/1000);
     }
   }
-  uR.Ready = function Ready(isReady,_ready) {
-    isReady = isReady || function () { return false };
-    _ready = _ready || [];
+  uR.Ready = function Ready(isReady=()=>false,_ready=[]) {
     function log() {
       //console.log.apply(this,arguments);
     }
@@ -348,6 +346,7 @@ var uR = (function() {
     input_overrides: {
       boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
     },
+    name_overrides: {},
     404: 'four-oh-four',
     doPostAuth: function() {},
     text_validators: {},
