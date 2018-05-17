@@ -59,7 +59,7 @@
     return this.hdate()+ " - "+Sl.s2_cache[this].hdate();
   }
   String.prototype.htimedelta = function() {
-    if (this.indexOf("||") == -1) { return (this+"||"+moment().format()).htimedelta() }
+    if (this.indexOf("||") == -1) { return (moment().format()+"||"+this).htimedelta() }
     var m = this.moment();
     var seconds = (this.moment()-Sl.s2_cache[this].moment())/1000;
     var abs = Math.abs(seconds);
