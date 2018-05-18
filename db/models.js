@@ -31,10 +31,7 @@
       this.objects = this.constructor.objects;
       if (opts.values_list) {
         this.pk = this[this.META.pk_field] = id;
-        if (this.objects._getPKs().indexOf(this.pk) == -1) {
-          this.objects._addPK(this.pk);
-          this.save();
-        }
+        this.save();
       }
     }
     getAdminExtra() {}
@@ -85,12 +82,7 @@
       }
     }
     save() {
-      var is_new = !this.pk;
-      this.pk = this.pk || this.objects._getNextPK();
-      this[this.META.pk_field] = this.pk;
-      this.objects.storage.set(this.pk,this.toJson());
-      is_new && this.objects._addPK(this.pk);
-      return this;
+      return this.objects.save(this);
     }
     toJson() {
       var out = {};
@@ -100,13 +92,12 @@
       return out;
     }
     delete() {
-      this.objects.remove(this.objects.storage_key+this.pk);
+      this.objects.delete(this)
     }
   }
 
-  class ModelManager {
+  class BaseModelManager {
     constructor(model) {
-      var self = this;
       this.model = model;
       this.model.NotFound = this.NotFound = class NotFound extends QueryError {
         constructor(filters) {
@@ -123,6 +114,52 @@
         app_label: model.app_label,
         db_table: model.db_table,
       };
+    }
+    remove(pk) { throw "NotImplemented" }
+    all() { throw "NotImplemented" }
+    save(obj) { throw "NotImplemented" }
+    count() { throw "NotImplemented" }
+    clear() { throw "NotImplemented" }
+    _get(options) { throw "NotImplemented" }
+    get(options) {
+      if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
+      else {
+        var results = this.filter(options);
+        if (!results.length) { throw new this.NotFound(options) }
+        if (results.length > 1) { throw new this.MultipleObjectsReturned(options) }
+        return results[0];
+      }
+    }
+    getOrCreate(options) {
+      try {
+        return this.get(options);
+      } catch (e) {
+        if (e instanceof this.NotFound) { return this.create(options); }
+        throw e;
+      }
+    }
+    create(options) {
+      return new this.model(options,{save: true}).save();
+    }
+    filter(options) {
+      options = options || {};
+      var all = this.all();
+      for (var key in options) {
+        var value = options[key];
+        value = value && value.pk || value;
+        all = all.filter(function(obj) {
+          var obj_value = obj[key];
+          obj_value = obj_value && obj_value.pk || obj_value;
+          return obj_value == value;
+        });
+      }
+      return all;
+    }
+  }
+
+  class StorageModelManager extends BaseModelManager {
+    constructor(model) {
+      super(model)
       this.storage_key = this.META.app_label + "/" + this.META.db_table + "/";
       if (!uR.db[this.storage_key]) { uR.db[this.storage_key] = new uR.Storage(this.storage_key); }
       this.storage = uR.db[this.storage_key];
@@ -194,12 +231,23 @@
     clear() {
       this.storage.clear();
     }
+    save(obj) {
+      var is_new = !obj.pk || (this._getPKs.indexOf(obj.pk) == -1);
+      obj[obj.META.pk_field] = obj.pk = obj.pk || this._getNextPK();
+      this.storage.set(obj.pk,obj.toJson());
+      is_new && obj.objects._addPK(obj.pk);
+      return obj;
+    }
+    delete(obj) {
+      obj.remove(this.storage_key+obj.pk);
+    }
   }
 
   window.uR = window.uR || {};
   uR.db = {
     Model: Model,
-    ModelManager: ModelManager,
+    ModelManager: StorageModelManager,
+    BaseModelManager: BaseModelManager,
     models: {},
     schema: {},
     apps: [],
