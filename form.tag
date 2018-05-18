@@ -138,7 +138,7 @@
       this.valid = true;
       if (this.type == "datetime-local" && typeof this.value == "string") {
         // the HTML input type is very picky about the format, so use moment to coerce it
-        this.value = this.initial_value = moment(this.value).format("YYYY-MM-DDTHH:mm");
+        this.value = this.initial_value = this.value && moment(this.value).format("YYYY-MM-DDTHH:mm");
       }
       // verbose_name is useful for error messages, other generated text
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
@@ -185,7 +185,7 @@
       if (e.type == "keyup") { self.active = true; }
       this.value = e.value || (e.target && e.target.value) || ""; // e.value is a way to fake events
       if (this.type == "datetime-local") {
-        this.value = moment(this.value).format("YYYY-MM-DD HH:mm");
+        this.value = this.value && moment(this.value).format("YYYY-MM-DD HH:mm");
       }
       this.changed = this.last_value == this.value;
       this.last_value = this.value;
