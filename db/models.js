@@ -243,10 +243,36 @@
     }
   }
 
+  class MapModelManager extends BaseModelManager {
+    // Stores objects in navtive Map type.
+    // WARNING: Storage is non-persistent
+    constructor(model) {
+      super(model);
+      this.storage = new Map();
+    }
+    save(obj) {
+      if (!obj.pk) { throw "NotImplemented"; }
+      this.storage.set(obj.pk,obj);
+      return obj;
+    }
+    clear() { this.storage.clear() }
+    delete(obj) { this.storage.delete(obj.id) }
+    all() { return Array.from(this.storage.values()) }
+    conut() { return this.storage.size }
+    _get(pk) {
+      if (typeof pk != "number") { pk = parseInt(pk) }
+      var obj = this.storage.get(pk);
+      if (!obj) { throw new this.NotFound({pk: pk}) }
+      return obj
+    }
+  }
+
   window.uR = window.uR || {};
   uR.db = {
     Model: Model,
-    ModelManager: StorageModelManager,
+    ModelManager: StorageModelManager, // Override this to choose alternate storages
+    StorageModelManager: StorageModelManager,
+    MapModelManager: MapModelManager,
     BaseModelManager: BaseModelManager,
     models: {},
     schema: {},
