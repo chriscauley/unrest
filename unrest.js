@@ -355,6 +355,9 @@
     cancel_text: "Cancel",
     success_text: "Submit",
   })
+  uR.clone = function clone(obj) { // move int ur? switch to underscore? this probably doesn't need to be deep
+    return Object.assign({}, obj);
+  }
   uR._var = {};
   uR.alert = function(s) { console.log(s) };//alert(s); }; // placeholder for future alert function
   uR.schema = {fields: {},__initial: {}};

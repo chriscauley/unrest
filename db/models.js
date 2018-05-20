@@ -8,14 +8,7 @@
   class Model {
     constructor(opts={}) {
       opts.schema = opts.schema || uR.db.schema[this.constructor.name];
-      function cloneObject(obj) { // move int ur? switch to underscore? this probably doesn't need to be deep
-        var clone = {};
-        for(var i in obj) {
-          clone[i] = (obj[i] != null &&  typeof(obj[i])=="object")?cloneObject(obj[i]):clone[i] = obj[i];
-        }
-        return clone;
-      }
-      opts.schema = opts.schema.map(cloneObject);
+      opts.schema = opts.schema.map(uR.clone);
       if (opts.values_list) {
         var [id,..._values] = opts.values_list;
         for (var i in opts.schema) {
