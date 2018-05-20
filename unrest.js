@@ -153,14 +153,18 @@
     }
     // POST uses FormData, GET uses query string
     var form_data = new FormData(opts.form);
+    var _stringify = (v) =>(typeof v =="object")?JSON.stringify(v):v;
+    // ^^ objects need to be turned into strings rather than [Object object]
     if (method=="POST" && data) {
       for (var key in data) {
-        filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,data[key]);
+        filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,_stringify(data[key]));
       };
     }
     if (method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
-      for (key in data) { url += key + "=" + encodeURIComponent(data[key]) + "&" }
+      for (key in data) {
+        url += key + "=" + encodeURIComponent(_stringify(data[key])) + "&";
+      }
     }
 
     // create and send XHR
