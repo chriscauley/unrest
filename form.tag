@@ -46,6 +46,7 @@
     prepSchema() {
       var tag = this.form_tag;
       var _schema = tag.opts.schema || tag.parent && tag.parent.opts.schema || tag.parent.schema;
+      if (_schema instanceof Map) { _schema = Array.from(_schema.values()); }
       this.action = tag.opts.action;
       if (typeof _schema == "string") {
         this.schema_url = _schema;
@@ -84,21 +85,14 @@
         this.field_list.push(new cls(this,field));
         this.fields[field.name] = this.field_list[this.field_list.length-1];
       }.bind(this));
+      if (this.opts.post_render) {
+        this.opts.post_render(this);
+        this.needs_update = true;
+      }
       if (this._needs_update) {
         this.form_tag.update();
         this.form_tag.update();
       };
-      /*
-      this.update();
-      this.update();
-      if (this.fields.length && !opts.no_focus) {
-        setTimeout(function() {
-          var f = self.root.querySelector("input:not([type=hidden]),select,textarea");
-          f && f.focus();
-          (self.opts.post_focus || function() {})(self);
-        },0)
-        }
-      */
     }
     renderFields() {
       if (this._fields_rendered) { return }
@@ -427,6 +421,7 @@
   getData() {
     var data = {};
     uR.forEach(this.form.field_list,function(f) { data[f.name] = f.value || ""; });
+    this.opts.process_data && this.opts.process_data(data);
     return data;
   }
 
