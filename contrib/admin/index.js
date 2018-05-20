@@ -111,7 +111,7 @@
     </div>
     <div class={ theme.content }>
       <div id="form-extra"></div>
-      <ur-form></ur-form>
+      <ur-form process_data={ processData } schema={ obj.schema } method="POST" action={ action }></ur-form>
     </div>
   </div>
 
@@ -122,13 +122,18 @@
     var obj_id = this.opts.matches[3];
     this.app = uR.db.getApp(app_label);
     this.model = uR.db.getModel(app_label,model_name);
-    this.submit = function(form) {
-      uR.extend(self.obj,form.getData())
-      self.obj.save();
-    }
     if (obj_id == "new") { this.obj = new this.model() }
     else { this.obj = this.model.objects.get(obj_id); }
-    this.schema = this.obj.getSchema();
+    this.processData = (data) => this.obj.toJson(data);
+    if (this.obj.form_action) {
+      this.action = this.obj.form_action;
+      this.ajax_success = (data) => new this.model(data).save();
+    } else {
+      this.submit = function(form) {
+        uR.extend(self.obj,form.getData())
+        self.obj.save();
+      }
+    }
   })
   this.on("mount",function() {
     var extra = this.obj.getAdminExtra();
