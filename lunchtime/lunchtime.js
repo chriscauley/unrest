@@ -58,6 +58,11 @@
     this.moment();
     return this.hdate()+ " - "+Sl.s2_cache[this].hdate();
   }
+  String.prototype.timedelta = function() {
+    if (this.indexOf("||") == -1) { return (moment().format()+"||"+this).timedelta() }
+    var [s1,s2] = this.split("||");
+    return new Date(s1) - new Date(s2);
+  }
   String.prototype.htimedelta = function() {
     if (this.indexOf("||") == -1) { return (moment().format()+"||"+this).htimedelta() }
     var m = this.moment();
