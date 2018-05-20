@@ -7,25 +7,38 @@
   }
   class Model {
     constructor(opts={}) {
-      opts.schema = opts.schema || uR.db.schema[this.constructor.name];
-      opts.schema = opts.schema.map(uR.clone);
-      if (opts.values_list) {
-        var [id,..._values] = opts.values_list;
-        for (var i in opts.schema) {
-          opts.schema[i].value = _values[i];
-        }
-      }
-      this.options = opts;
       this.META = {
         app_label: this.constructor.app_label,
-        db_table: this.constructor.db_table
+        db_table: this.constructor.db_table,
+        model_name: this.constructor.name,
+        model_key: this.constructor.model_key,
       }
+      this.options = opts;
+      this.createSchema();
       this.create_fields();
       this.objects = this.constructor.objects;
-      if (opts.values_list) {
-        this.pk = this[this.META.pk_field] = id;
+      if (this._pk) {
+        this.pk = this[this.META.pk_field] = this._pk;
         this.save();
       }
+    }
+    createSchema() {
+      // returns a list of objects to be used by a <ur-form>
+      if (this.schema) { return this.schema; } // #! should be some kind of cached method
+      var _schema = uR.db.schema[this.META.model_key];
+      this.schema = new Map();
+      _schema.map(obj => this.schema.set(obj.name,uR.clone(obj)));
+      if (this.options.values_list) {
+        var [id,..._values] = this.options.values_list;
+        this._pk = id;
+        var iter = this.schema.values();
+        var self = this;
+        uR.forEach(_values,function(v,i) {
+          var field = iter.next().value;
+          field.value=v;
+        })
+      }
+      return this.schema;
     }
     getAdminExtra() {}
     __str() {
@@ -34,7 +47,7 @@
     create_fields() {
       var primary_key;
       this.META.fields = [];
-      this.options.schema.map(this.prepField,this);
+      this.schema.forEach(this.prepField,this);
       this.META.pk_field = this.META.pk_field || "id";
       if (!this[this.META.pk_field]) {
         this.prepField({
@@ -49,10 +62,11 @@
       path = "#!/"+['admin',this.META.app_label,this.constructor.name,this.id].join("/")+"/";
       uR.route(path);
     }
-    getSchema() {
-      var self = this;
-      return this.META.fields.filter(f => f.editable).map(field => field.toSchema(self[field.name]));
-    }
+    // #! this was used in admin, maybe also in other apps. Depracated in favor of this.schema and this.createSchema
+    // getSchema() {
+    //   var self = this;
+    //   return this.META.fields.filter(f => f.editable).map(field => field.toSchema(self[field.name]));
+    // }
     prepField(options) {
       if (typeof options == "string") {
         var name = options;
@@ -71,7 +85,7 @@
       field.setValue(this,field.value);
       if (field.primary_key) {
         this.META.pk_field = field.name
-        this.pk = this[this.META.pk_field];
+        this.pk = this[field.name];
       }
     }
     save() {
@@ -296,6 +310,7 @@
         app._models.push(model);
         model.app_label = app_label;
         model.db_table = "__db_"+model.name;
+        model.model_key = app_label+"."+model.name;
         model.objects = new uR.db.ModelManager(model);
       });
     },
