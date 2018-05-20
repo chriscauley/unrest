@@ -163,8 +163,10 @@
   uR.router = {
     start: function() {
       document.addEventListener('click', onClick);
+      uR.router.ready.start();
       // window.popstate = function(event) { uR.route(window.location.href,event.state,false); };
     },
+    ready: new uR.Ready(),
     add: function(routes) { uR.extend(uR._routes,routes); },
     routeElement: function(element_name) {
       return function(pathname,data) {

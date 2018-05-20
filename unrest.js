@@ -313,7 +313,7 @@
   uR.ready = new uR.Ready(undefined,uR._ready);
   window.onload = function() {
     uR.ready.start();
-    uR.route && uR.route(window.location.href);
+    uR.route && uR.router.ready(() => uR.route(window.location.href));
     // #! dummy route function. This is so everything can use uR.route without router.js
     uR.route = uR.route || function route(path,data) { window.location = path }
   }
