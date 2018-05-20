@@ -103,6 +103,35 @@
     }
   }
 
+  // Might be better as a uR.db.Field or a mixin
+  class DataModel extends Model {
+    constructor(opts={}) {
+      super(opts);
+      this.form_action = "/api/schema/"+this.META.model_key+"Form/";
+      if (this.pk) { this.form_action += this.pk+"/"; }
+    }
+    createSchema() {
+      // add data_fields to this.schema
+      super.createSchema();
+      this.data_fields = this.data_fields || [];
+      var data_values = this.schema.get("data").value || {};
+      this.schema.delete("data");
+      uR.forEach(this.data_fields,function(f) {
+        f.value = data_values[f.name];
+        this.schema.set(f.name,f);
+      },this);
+    }
+    toJson(out) {
+      var out = out || super.toJson();
+      out.data = {};
+      uR.forEach(this.data_fields,function(field) {
+        out.data[field.name] = out[field.name];
+        delete out[field.name];
+      },this)
+      return out;
+    }
+  }
+
   class BaseModelManager {
     constructor(model) {
       this.model = model;
@@ -277,6 +306,7 @@
   window.uR = window.uR || {};
   uR.db = {
     Model: Model,
+    DataModel: DataModel,
     ModelManager: StorageModelManager, // Override this to choose alternate storages
     StorageModelManager: StorageModelManager,
     MapModelManager: MapModelManager,
