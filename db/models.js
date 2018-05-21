@@ -58,9 +58,13 @@
         });
       }
     }
+    getAdminUrl() {
+      var url = this.constructor.admin_url;
+      if (this.pk) { url += this.pk+"/" }
+      return url;
+    }
     edit() {
-      path = "#!/"+['admin',this.META.app_label,this.constructor.name,this.id].join("/")+"/";
-      uR.route(path);
+      uR.route(this.getAdminUrl());
     }
     // #! this was used in admin, maybe also in other apps. Depracated in favor of this.schema and this.createSchema
     // getSchema() {
@@ -342,6 +346,8 @@
         model.db_table = "__db_"+model.name;
         model.model_key = app_label+"."+model.name;
         model.objects = new uR.db.ModelManager(model);
+        model.admin_url = "#!/admin/"+app_label+"/"+model.name+"/";
+        model.admin_new_url = model.admin_url+"new/";
       });
     },
   }
