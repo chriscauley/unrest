@@ -63,6 +63,8 @@
         }
         uR.css.right = "float-right";
         uR.css.left = "float-left";
+        uR.css.row = "columns";
+        [1,2,3,4,5,6,7,8,9,10,11,12].map((i) => uR.css['col'+i] = "column col-"+i);
       }
     })
   });
