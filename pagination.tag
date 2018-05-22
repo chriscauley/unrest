@@ -1,15 +1,12 @@
 <ur-pagination>
-  <div class="flex-row" each={ uR.pagination && uR.pagination.results }>
-    <div class="col1">
+  <div class={uR.css.row} each={ results }>
+    <div class={uR.css.col1}>
       <a href={ url } class="fa fa-link" if={ url }></a>
-      <a href={ ur_admin } class={ uR.icon.admin } if={ ur_admin }></a>
     </div>
-    <div class="col4" each={ field in fields }>{ field }</div>
+    <div class={uR.css.col4} each={ field in fields }>{ field }</div>
   </div>
 
-  this.on("update",function() {
-    uR.pagination && uR.forEach(uR.pagination.results,function(result) {
-      result.ur_admin = uR.config.form_prefix.replace("^#?","")+"/"+uR.form.current_form+"/"+result.id+"/";
-    });
+  this.on("before-mount",function() {
+    this.results = this.opts.results || (uR.pagination && uR.pagination.results) || [];
   });
 </ur-pagination>
