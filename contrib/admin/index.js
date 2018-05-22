@@ -111,7 +111,8 @@
     </div>
     <div class={ theme.content }>
       <div id="form-extra"></div>
-      <ur-form process_data={ processData } schema={ obj.schema } method="POST" action={ action }></ur-form>
+      <ur-form process_data={ processData } schema={ obj.schema } method="POST" action={ action }
+               post_render={ post_render }></ur-form>
     </div>
   </div>
 
@@ -125,6 +126,7 @@
     if (obj_id == "new") { this.obj = new this.model() }
     else { this.obj = this.model.objects.get(obj_id); }
     this.processData = (data) => this.obj.toJson(data);
+    this.post_render = function() { self.obj.adminPostRender && self.obj.adminPostRender() };
     if (this.obj.form_action) {
       this.action = this.obj.form_action;
       this.ajax_success = (data) => new this.model(data).save();

@@ -6,7 +6,6 @@
       _routes[uR.config.form_prefix + "/([\\w\\.]+[\\w]+)/(\\d+)?/?$"] = function(path,data) {
         var url = "/api/schema/"+data.matches[1]+"/"
         if (data.matches[2]) { url += data.matches[2]+"/"; }
-        uR.form.current_form = data.matches[1];
         data.schema = url+(location.search||"?ur_page=0");
         data.method = "POST"; // #! TODO this should be an option tied to python schema
         uR.mountElement("ur-form",data);
@@ -354,7 +353,7 @@
           <li class="{ level }" each={ messages }>{ body }</li>
         </ul>
       </form>
-      <ur-pagination></ur-pagination>
+      <div class="post-form"></div>
     </div>
   </div>
 
