@@ -7,9 +7,10 @@
     time: "Hmm",
     datetime: "",
 
+    at: " at ",
     hdate: "MMM Do, YYYY",
     hdate_no_year: "MMM Do",
-    htime_hour: "H? A",
+    htime_hour: "h? A",
     htime_minute: ":mm",
     _seconds_math: {
       second: 1,
@@ -118,10 +119,10 @@
   }
   String.prototype.htime = function htime() {
     var m  = this.moment();
-    return m.format('h? A').replace("?",m.minutes()?m.format(":mm"):"")
+    return m.format(Sl.htime_hour).replace("?",m.minutes()?m.format(":mm"):"")
   }
   String.prototype.hdatetime = function() {
-    return this.hdate() + " at " + this.htime();
+    return this.hdate() + Sl.at + this.htime();
   }
   String.prototype.itime = function() {
     return parseInt(this.time());
