@@ -7,6 +7,8 @@ var through = require('through2');
 var uglify = require('gulp-uglify');
 var util = require('gulp-util');
 var babel = require('gulp-babel');
+var ncp = require('ncp');
+var path = require("path");
 
 var PROJECT_NAME = "unrest";
 
@@ -51,7 +53,7 @@ var JS_FILES = {
   ]
 }
 
-var build_tasks = [ 'build-token-js', 'build-token-css', 'build-simplemde'];
+var build_tasks = [ 'build-token-js', 'build-token-css', 'build-simplemde', 'cp-static'];
 for (var key in JS_FILES) { // #! let vs var for maria
   (function(key) {
     build_tasks.push("build-"+key);
@@ -123,6 +125,23 @@ gulp.task('build-simplemde',function() {
     .pipe(gulp.dest(".dist/"))
 })
 
+var STATIC_DIRS = [
+  'lib',
+  'demo',
+]
+
+var STATIC_FILES = [
+  'favicon.ico',
+]
+
+gulp.task("cp-static",function() {
+  STATIC_DIRS.concat(STATIC_FILES).forEach(function(_dir) {
+    var source = path.join(__dirname,_dir);
+    var dest = path.join(__dirname, '.dist/',_dir);
+    ncp(source, dest)
+  });
+})
+
 gulp.task('watch', build_tasks, function () {
   for (var key in JS_FILES) {
     gulp.watch(JS_FILES[key], ['build-'+key]);
@@ -136,6 +155,7 @@ gulp.task('watch', build_tasks, function () {
   gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
   gulp.watch("token-input/token-input.tag", ['build-token-js']);
   gulp.watch("simplemde/simplemde.tag",["build-simplemde"]);
+  gulp.watch(STATIC_DIRS.map(d => d+"/**").concat(STATIC_FILES),['cp-static']);
 });
 
 gulp.task('default', build_tasks);
