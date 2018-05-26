@@ -16,7 +16,8 @@
   onBlur(e) { this.field.onBlur(e) }
   onChange(e) { this.field.onChange(e) }
   this.on("before-mount",function() {
-    this.opts.field.field_tag = this;
+    this.field = this.opts.field;
+    this.field.field_tag = this;
   });
 
   this.on("mount",function() {

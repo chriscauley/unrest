@@ -94,16 +94,7 @@
         this.form_tag.update();
       };
     }
-    renderFields() {
-      if (this._fields_rendered) { return }
-      for (var field of this.field_list) {
-        if (!field.field_tag) { return }
-      }
-      this._fields_rendered = true;
-      var targets = this.form_tag.root.querySelectorAll(".ur-input");
-      uR.forEach(this.field_list,function(field,i) {
-        targets[i].insertBefore(field.field_tag.root,targets[i].firstElementChild);
-      });
+    postMount() {
       this.opts.onload && this.opts.onload.bind(this)();
       this.active = true; // form can now show errors
     }
@@ -111,7 +102,7 @@
 
   uR.form.URInput = class URInput {
     constructor(form,options={}) {
-      this.tag_name = this.tag_name || "ur-input"; // can be overridden by sub-classes
+      this.tagname = this.tagname || "ur-input"; // can be overridden by sub-classes
       this.form = form;
       if (typeof options == "string") {
         var name = options;
@@ -137,6 +128,7 @@
         // the HTML input type is very picky about the format, so use moment to coerce it
         this.value = this.initial_value = this.value && moment(this.value).format("YYYY-MM-DDTHH:mm");
       }
+
       // verbose_name is useful for error messages, other generated text
       this.verbose_name = this.verbose_name || this.label || this.placeholder;
       if (!this.verbose_name) {
@@ -173,8 +165,6 @@
         }.bind(this));
       }
       this.className = this.name + " " + this.type + " " + uR.css.form.field;
-      var element = document.createElement(this.tagname);
-      riot.mount(element,{ field: this, form: this.form, is_ur_input: true });
     }
 
     onKeyUp(e) {
@@ -283,7 +273,8 @@
 
   var self = this;
   this.on("before-mount",function() {
-    this.opts.field.field_tag = this;
+    this.field = this.opts.field;
+    this.field.field_tag = this;
   });
   this.on("mount", function() {
     this._input = document.createElement(this.field.input_tagname);
@@ -332,12 +323,13 @@
       <div class="rendered_content"></div>
       <form autocomplete="off" onsubmit={ submit } name="form_element" class={ opts.form_class } method={ opts.method }>
         <yield from="pre-form"/>
-        <div each={ form && form.field_list || [] } class="{ className } { ur_empty: empty, invalid: !valid && show_error, active: activated || !empty } ur-input" data-field_id={ id }>
-          <div class="help_click" if={ help_click } onclick={ help_click.click } title={ help_click.title }>?</div>
-          <label for={ id } if={ label } class={ required: required } onclick={ labelClick }
-                 data-success={ data_success }>{ label }</label>
-          <div class={ uR.css.error }>{ data_error }</div>
-          <div class="help_text" if={ help_text }><i class="fa fa-question-circle-o"></i> { help_text }</div>
+        <div each={ _f, i in form && form.field_list || [] } class="{ _f.className } { ur_empty: _f.empty, invalid: !_f.valid && _f.show_error, active: _f.activated || !_f.empty } ur-input" data-field_id={ id }>
+          <div data-is={ _f.tagname } field={ _f } form={ form } is_ur_input={ true }></div>
+          <div class="help_click" if={ _f.help_click } onclick={ _f.help_click.click } title={ _f.help_click.title }>?</div>
+          <label for={ _f.id } if={ _f.label } class={ required: required } onclick={ _f.labelClick }
+                 data-success={ _f.data_success }>{ _f.label }</label>
+          <div class={ uR.css.error }>{ _f.data_error }</div>
+          <div class="help_text" if={ _f.help_text }><i class="fa fa-question-circle-o"></i> { _f.help_text }</div>
         </div>
         <div if={ non_field_error } class="non_field_error" data-field_id="non_field_error">
           <div class={ uR.css.error }>{ non_field_error }</div>
@@ -449,6 +441,7 @@
       this.root.querySelector("#submit_button").style.display = "none";
       (this.opts.autosubmit == "first") && this.onChange({},true);
     }
+    this.form.postMount();
   });
 
   onChange(e,force) {
@@ -467,7 +460,6 @@
 
   this.on("update",function() {
     if (this.root.querySelectorAll(".ur-input").length == 0) { return; }
-    this.form.renderFields();
     if (this._multipart) { this.form_element.enctype='multipart/form-data'; }
     this.valid = true;
     if (!this.form.field_list) { return }
