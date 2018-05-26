@@ -1,9 +1,9 @@
 <lunch-table>
-  <input name="input" value={ value } onchange={ sync } onkeyup={ sync }/>
+  <input ref="input" value={ current_value } onchange={ sync } onkeyup={ sync }/>
   <table>
-    <tr each={ rows }>
-      <th><span class="g">"{ value }"</span>.{ name }()</th>
-      <td>{ output && output() || parent.value[name]() }</td>
+    <tr each={ row,i in rows }>
+      <th><span class="g">"{ current_value }"</span>.{ row.name }()</th>
+      <td>{ output || current_value[row.name]() }</td>
     </tr>
   </table>
 
@@ -18,10 +18,11 @@
     { name: 'hdate' },
     { name: 'htime' },
     { name: 'hdatetime' },
+    { name: 'htimedelta' },
   ];
-  this.value = moment().format();
+  this.current_value = moment().format("YYYY-MM-DD HH:mm")
   sync(e) {
-    this.value = this.input.value;
+    this.current_value = this.refs.input.value;
   }
-
+setInterval(() => this.update(),1000);
 </lunch-table>

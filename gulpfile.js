@@ -21,7 +21,6 @@ var JS_FILES = {
     "storage.js",
     "router.js",
     "log.tag",
-    "lunchtime/lunchtime.js",
     "auth.tag",
     "dialog.tag",
     "math.js",
@@ -128,6 +127,7 @@ gulp.task('build-simplemde',function() {
 var STATIC_DIRS = [
   'lib',
   'demo',
+  'lunchtime',
 ]
 
 var STATIC_FILES = [
