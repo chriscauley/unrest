@@ -1,4 +1,9 @@
-ur-form {
+@ur-form: ~'ur-form, [data-is="ur-form"]';
+@ur-input: ~'ur-input, [data-is="ur-input"]';
+@checkbox-input: ~'checkbox-input, [data-is="checkbox-input"]';
+@select-input: ~'select-input, [data-is="select-input"]';
+
+@{ur-form} {
   display: flex;
   flex-wrap: wrap;
   opacity: 0; // set to one in javascript
@@ -10,7 +15,7 @@ ur-form {
   > div { width: 100%; }
 }
 
-ur-form .ur-input {
+@{ur-form} .ur-input {
   .error {
     color: red;
     //color: var(--red);
@@ -31,7 +36,7 @@ ur-form .ur-input {
   &.hidden { display: none; }
 }
 
-ur-form .ur-input.header {
+@{ur-form} .ur-input.header {
   min-height: 0;
   label {
     font-size: 1.5em;
@@ -46,7 +51,7 @@ ur-form .ur-input.header {
   + label { display: none; }
 }
 
-.ur-input checkbox-input {
+.ur-input @{checkbox-input} {
   [type=radio], [type=checkbox] {
     display: none;
     + label {
@@ -70,7 +75,7 @@ ur-form .ur-input.header {
   display: flex;
   flex-wrap: wrap;
   label { order: 0; flex-basis: 100%; }
-  ur-input, select-input, checkbox-input { order: 1;flex-basis: 100%; }
+  @{ur-input}, @{select-input}, @{checkbox-input} { order: 1;flex-basis: 100%; }
   .error {
     --red: red;
     order: 2;
@@ -78,7 +83,7 @@ ur-form .ur-input.header {
   }
 }
 
-.ur-input checkbox-input [type=checkbox] {
+.ur-input @{checkbox-input} [type=checkbox] {
   display: none;
   + label:before {
     border-radius: 1px;
@@ -102,7 +107,7 @@ ur-form .ur-input.header {
   }
 }
 
-.ur-input checkbox-input [type=radio] {
+.ur-input @{checkbox-input} [type=radio] {
   + label:before {
     content: '';
     border-radius: 50%;
@@ -118,4 +123,4 @@ ur-form .ur-input.header {
   }
 }
 
-#content > ur-form .card-content { display: flex; }
+#content > @{ur-form} .card-content { display: flex; }

@@ -57,8 +57,10 @@
   </div>
 
 <script>
-  var self = this;
-  this.opts.field.field_tag = this;
+  this.on("before-mount",function() {
+    var self = this;
+    this.opts.field.field_tag = this;
+  });
   onKeyUp(e) {
     this.field.onKeyUp(e)
   }

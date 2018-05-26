@@ -41,6 +41,7 @@
   }
   uR.auth.getLinks = uR.auth._getLinks;
   uR.auth.auth_regexp = /\/auth\//;
+  uR.auth.social_logins = [];
 
   uR.schema.auth = {
     login: [
@@ -73,7 +74,7 @@
 
   uR.auth.user = uR.storage.get("auth.user");
   uR.ready(function() {
-    riot.mount(uR.auth.tag_names);
+    riot.mount("auth-dropdown");
     !uR.config.no_auth && uR.auth.reset();
   });
   var _ready = [];
@@ -127,22 +128,21 @@
     self.unmount();
     uR.AUTH_SUCCESS = undefined;
   }
-  this.on("mount",function() {
+  this.on("before-mount",function() {
     if (uR.auth.user) { this.ajax_success({ user: uR.auth.user }); }
     this.next = uR.getQueryParameter("next");
-    this.slug = this.opts.slug || this.opts.matches[1];
+    this.slug = this.opts.slug || this.opts.matches && this.opts.matches[1];
     this.url = uR.urls.api[this.slug];
     this.schema = uR.schema.auth[this.slug];
+    this.urls = uR.urls.auth;
     this.title = {
       login: "Please Login to Continue",
       register: "Create an Account",
       'forgot-password': "Request Password Reset"
     }[this.slug];
-    this.update();
   });
   this.on("update", function() {
     // user logged in sometime after this was mounted!
-    this.urls = uR.urls.auth;
     if (window.location.pathname.match(uR.auth.auth_regexp)) {
       this.urls = {};
       for (var key in uR.urls.auth) { this.urls[key] = uR.urls.auth[key].replace("#",""); }

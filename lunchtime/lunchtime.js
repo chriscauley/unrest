@@ -18,6 +18,9 @@
       hour: 60*60,
       day: 24*60*60,
       week: 7*24*60*60,
+      no_second: 5*60, // don't show seconds if more than 5 minutes
+      no_minute: 2*60*60, // don't show minutes if more than 2 hours
+      no_hour: 2*24*60*60, // don't show hours if more than 2 days
       list: ['week','day','hour','minute','second'],
     },
     clear: function() {
@@ -26,6 +29,29 @@
       String.lunch.moment_cache = {};
       String.lunch.s2_cache = {}
     },
+    ms2hdelta: function(ms) {
+      var abs = Math.abs(ms)/1000; // absolute number of seconds
+      if (abs < 1) { return "0s"; }
+      var _sm = Sl._seconds_math; // going to be typing this a lot
+      var unit_big,unit_small,value = abs;
+      var s=(ms<0)?"-":"+"; // sign of timedelta
+      var v="",V; // value big and small, (eg [3,2] for "3 days and 2 hours", would return "3d2h")
+      var u="",U; // unit abbreviation big and small, (eg ["d","h"] for above example)
+      for (var i=0;i<_sm.list.length;i++) {
+        unit_big = _sm.list[i];
+        if (abs >= _sm[unit_big]) { // eg. absolute value of ms is more than 1 month|week|day... worth of ms
+          V = Math.floor(abs/_sm[unit_big]); // value/big_conversion_factor
+          U = unit_big[0];
+          unit_small = _sm.list[i+1];
+          if (unit_small && abs < _sm["no_"+unit_small]) {
+            v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]) || ""; // remainder/small_conversion_factor
+            u = v && unit_small[0];
+          }
+          break;
+        }
+      }
+      return `${s}${V}${U}${v}${u}`; // sVUvu or "+3d2h" or "sign big_value big_unit small_value small_unit", ya dig?
+    }
   };
 
   var Sl = String.lunch;
@@ -67,27 +93,7 @@
   String.prototype.htimedelta = function() {
     if (this.indexOf("||") == -1) { return (moment().format()+"||"+this).htimedelta() }
     var m = this.moment();
-    var seconds = (this.moment()-Sl.s2_cache[this].moment())/1000;
-    var abs = Math.abs(seconds);
-    var _sm = Sl._seconds_math; // going to be typing this a lot
-    var unit_big,unit_small,value = abs;
-    var s=(seconds<0)?"-":"+"; // sign of timedelta
-    var v="",V; // value big and small, (eg [3,2] for "3 days and 2 hours", would return "3d2h")
-    var u="",U; // unit abbreviation big and small, (eg ["d","h"] for above example)
-    for (var i=0;i<_sm.list.length;i++) {
-      unit_big = _sm.list[i];
-      if (abs >= _sm[unit_big]) { // eg. absolute value of seconds is more than 1 month|week|day... worth of seconds
-        V = Math.floor(abs/_sm[unit_big]); // value/big_conversion_factor
-        U = unit_big[0];
-        unit_small = _sm.list[i+1];
-        if (unit_small) {
-          v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]) || ""; // remainder/small_conversion_factor
-          u = v && unit_small[0];
-        }
-        break;
-      }
-    }
-    return `${s}${V}${U}${v}${u}`; // sVUvu or "+3d2h" or "sign big_value big_unit small_value small_unit", ya dig?
+    return Sl.ms2hdelta((this.moment()-Sl.s2_cache[this].moment()))
   }
   String.prototype.htimerange = function(format) {
     this.moment();
