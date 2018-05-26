@@ -31,7 +31,7 @@
       if (!this.opts.is_ur_input) { return }
       this.field = this.opts.field;
       this.on("mount",function() {
-        setTimeout(this.field.reset.bind(this.field),0);
+        setTimeout(()=> this.opts.field.reset(),0);
       });
     }
   });
@@ -60,6 +60,7 @@
           return;
         }
       }
+      if (!_schema) { throw "NotImplemented: ur-form cannot function without schema" }
       this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
       this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
 
@@ -95,6 +96,9 @@
     }
     renderFields() {
       if (this._fields_rendered) { return }
+      for (var field of this.field_list) {
+        if (!field.field_tag) { return }
+      }
       this._fields_rendered = true;
       var targets = this.form_tag.root.querySelectorAll(".ur-input");
       uR.forEach(this.field_list,function(field,i) {
