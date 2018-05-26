@@ -9,8 +9,8 @@
     <link rel="shortcut icon" href="favicon.ico"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="../uc/.dist/uc-built.css" />
-    <link rel="stylesheet" href="../.dist/unrest-built.css" />
+    <link rel="stylesheet" href="/uc/uc-built.css" />
+    <link rel="stylesheet" href="/unrest-built.css" />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -21,18 +21,18 @@
   </body>
   <script src="demo.tag" type="riot/tag"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/2.6.8/riot+compiler.min.js"></script>
-  <script src="../.dist/unrest-built.js"></script>
-  <script src="../uc/node_modules/object-hash/dist/object_hash.js"></script>
-  <script src="../uc/.dist/uc-built.js"></script>
-  <script src="../uc/lib/diff.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/riot/3.10.1/riot+compiler.min.js"></script>
+  <script src="/unrest-built.js"></script>
+  <script src="/lunchtime/lunchtime.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/object-hash@1.2.0/dist/object_hash.min.js"></script>
+  <script src="/uc/uc-built.js"></script>
   <script src="tests.js"></script>
   <style>
     body { color: black; }
   </style>
   <script>
     uR.config.logo = "../under-construction.gif";
-    uR.startRouter();
+    uR.router.start();
     uR.auth.reset = function() {};
     uR.auth_enabled = true;
     riot.mount("lunch-table");
