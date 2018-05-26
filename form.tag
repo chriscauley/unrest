@@ -257,7 +257,7 @@
 })();
 
 <image-input>
-  <img if={ initial_value } src={ initial_value } />
+  <img if={ initial_value } riot-src={ initial_value } />
   <input type="file" name="{ name }" onchange={ onChange }/>
   this.on("mount", function() {
     this.name = this.opts.parent._name;

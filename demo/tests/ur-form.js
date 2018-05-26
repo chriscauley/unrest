@@ -19,13 +19,13 @@ function testForm() {
     .changeValue("#id_phone_number","")
     .click("#id_colors__1")
     .click("#id_colors__2")
+    .changeValue("#id_favorite_color","")
     .then(function() {
       var e = document.querySelector("#id_radio_color__0");
       e.checked=false;
       e.dispatchEvent(new Event("change"));
       return true;
     })
-    .changeValue("#id_favorite_color","")
     .checkResults("ur-form-demo ur-form")
     .done("ur-form is great!")
 }
