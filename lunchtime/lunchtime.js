@@ -18,6 +18,9 @@
       hour: 60*60,
       day: 24*60*60,
       week: 7*24*60*60,
+      no_second: 5*60, // don't show seconds if more than 5 minutes
+      no_minute: 2*60*60, // don't show minutes if more than 2 hours
+      no_hour: 2*24*60*60, // don't show hours if more than 2 days
       list: ['week','day','hour','minute','second'],
     },
     clear: function() {
@@ -40,7 +43,7 @@
           V = Math.floor(abs/_sm[unit_big]); // value/big_conversion_factor
           U = unit_big[0];
           unit_small = _sm.list[i+1];
-          if (unit_small) {
+          if (unit_small && abs < _sm["no_"+unit_small]) {
             v = Math.floor((abs%_sm[unit_big])/_sm[unit_small]) || ""; // remainder/small_conversion_factor
             u = v && unit_small[0];
           }
