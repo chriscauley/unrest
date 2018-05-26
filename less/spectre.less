@@ -5,14 +5,14 @@ body[ur-theme=spectre] {
       flex-grow: 1;
       line-height: 36px;
     }
-    ur-input {
+    @{ur-input} {
       flex-basis: 60px;
       input { border: 0; padding: 0; }
     }
   }
-  ur-form [ur-mask] + .card {
+  @{ur-form} [ur-mask] + .card {
     .input-field {
-      label, ur-input {
+      label, @{ur-input} {
         position: static;
         display: flex;
         flex-basis: 50%;
