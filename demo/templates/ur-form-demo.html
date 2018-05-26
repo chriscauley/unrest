@@ -2,5 +2,16 @@
   <h1>ur-form</h1>
   <ur-form schema={ schema }></ur-form>
 
-  this.schema = ["first_name","last_name","email","phone_number"]
+<script>
+  var COLOR_CHOICES = ['red','yellow',['green','Green']]
+  this.schema = [
+    "first_name",
+    "last_name",
+    "email",
+    "phone_number",
+    { name: "colors", type: 'checkbox', choices: COLOR_CHOICES },
+    { name: "favorite_color", type: 'select', choices: COLOR_CHOICES },
+    { name: "radio_color", type: 'radio', choices: COLOR_CHOICES },
+  ]
+</script>
 </ur-form-demo>
