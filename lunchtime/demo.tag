@@ -5,6 +5,10 @@
       <th><span class="g">"{ current_value }"</span>.{ row.name }()</th>
       <td>{ output || current_value[row.name]() }</td>
     </tr>
+    <tr>
+      <th class="g">&lt;div data-taregt_time=\{ "{current_value}".unixtime() }&gt;</th>
+      <td><div data-target_time={ current_value.unixtime() }></div></td>
+    </tr>
   </table>
 
   <style>
@@ -20,7 +24,7 @@
     { name: 'hdatetime' },
     { name: 'htimedelta' },
   ];
-  this.current_value = moment().format("YYYY-MM-DD HH:mm")
+  this.current_value = moment().format("YYYY-MM-DD HH:mm:ss")
   sync(e) {
     this.current_value = this.refs.input.value;
   }
