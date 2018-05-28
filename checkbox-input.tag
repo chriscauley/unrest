@@ -14,7 +14,7 @@
           id: this.id+"__"+0,
           value: "true",
         }];
-        this.field_tag.root.classList.add("no-label");
+        this.className += " no-label";
       }
     }
     reset() {
@@ -50,10 +50,10 @@
 })();
 
 <checkbox-input>
-  <div each={ field.choices } class="choice">
-    <input type={ parent.field.type } id={ id } value={ value } onchange={ onKeyUp } onBlur={ onKeyUp }
-           name={ parent.field.name } />
-    <label for={ id }>{ label }</label>
+  <div each={ _c, i in field.choices } class="choice">
+    <input type={ field.type } id={ _c.id } value={ _c.value } onchange={ onKeyUp } onBlur={ onKeyUp }
+           name={ field.name } />
+    <label for={ _c.id }>{ _c.label }</label>
   </div>
 
 <script>
