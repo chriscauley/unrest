@@ -157,6 +157,7 @@
     // ^^ objects need to be turned into strings rather than [Object object]
     if (method=="POST" && data) {
       for (var key in data) {
+        if (data[key] == undefined) { continue }
         filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,_stringify(data[key]));
       };
     }
