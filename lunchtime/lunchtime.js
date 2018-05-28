@@ -143,12 +143,12 @@
     // var count = 0 // #! TODO Revisit how frequently this is called... could become a performance issue
     for (var e of elements) {
       var target = e.dataset.target_time;
-      if (e.textContent && tt_cache[target] && tt_cache[target] > now) { return }
+      if (e.textContent && tt_cache[target] && tt_cache[target] > now) { continue }
       //count ++; // #! ibid
       delta_ms = now-target;
       e.textContent = String.lunch.ms2hdelta(delta_ms);
       tt_cache[target] = now;
-      if (delta_ms < 3600000) { return } // less than an hour needs immediate update
+      if (delta_ms < 3600000) { continue } // less than an hour needs immediate update
       tt_cache[target] += 60000; // update in a minute
     };
     //console.log(count) #! ibid
@@ -156,6 +156,7 @@
   Sl.watchTimers = function() {
     clearInterval(target_time_interval);
     _watch()
+    tt_cache = {};
     target_time_interval = setInterval(_watch,1000);
   }
   Sl.stopTimers = function() { clearInterval(target_time_interval); }
