@@ -28,7 +28,6 @@
     }
     createSchema() {
       // returns a list of objects to be used by a <ur-form>
-      if (this.schema) { return this.schema; } // #! should be some kind of cached method
       var _schema = uR.db.schema[this.META.model_key];
       this.schema = new Map();
       _schema.map(obj => this.schema.set(obj.name,uR.clone(obj)));
@@ -116,14 +115,17 @@
     constructor(opts={}) {
       super(opts);
     }
+    createDataFields() {
+      this.data_fields = [];
+    }
     createSchema() {
-      // add data_fields to this.schema
+      // add this.data_fields to this.schema
       super.createSchema();
-      this.data_fields = this.data_fields || [];
-      var data_values = this.schema.get("data").value || {};
+      this.createDataFields();
+      this.data_values = this.schema.has("data") && this.schema.get("data").value || {};
       this.schema.delete("data");
       uR.forEach(this.data_fields,function(f) {
-        f.value = data_values[f.name];
+        f.value = f.value || this.data_values[f.name];
         this.schema.set(f.name,f);
       },this);
     }
