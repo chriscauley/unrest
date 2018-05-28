@@ -5,22 +5,27 @@ body[ur-theme=spectre] {
       flex-grow: 1;
       line-height: 36px;
     }
-    @{ur-input} {
+    ur-input,
+    [data-is="ur-input"] {
       flex-basis: 60px;
       input { border: 0; padding: 0; }
     }
   }
-  @{ur-form} [ur-mask] + .card {
-    .input-field {
-      label, @{ur-input} {
-        position: static;
-        display: flex;
-        flex-basis: 50%;
+  ur-form,
+  [data-is="ur-form"] {
+    [ur-mask] + .card {
+      .input-field {
+        label,
+        ur-input,
+        [data-is='ur-input']{
+          position: static;
+          display: flex;
+          flex-basis: 50%;
+        }
       }
     }
   }
 }
-
 .modal.active [ur-mask] ~ .modal-container { z-index: 100001; }
 .modal-container {
   padding-bottom: 0.8rem;
