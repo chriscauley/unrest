@@ -17,6 +17,10 @@
       this.createSchema();
       this.create_fields();
       this.objects = this.constructor.objects;
+      if (this.options._is_api) {
+        this.form_action = "/api/schema/"+this.META.model_key+"Form/";
+        if (this.pk) { this.form_action += this.pk+"/"; }
+      }
       if (this._pk) {
         this.pk = this[this.META.pk_field] = this._pk;
         this.save();
@@ -111,8 +115,6 @@
   class DataModel extends Model {
     constructor(opts={}) {
       super(opts);
-      this.form_action = "/api/schema/"+this.META.model_key+"Form/";
-      if (this.pk) { this.form_action += this.pk+"/"; }
     }
     createSchema() {
       // add data_fields to this.schema
