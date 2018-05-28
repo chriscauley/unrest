@@ -60,7 +60,7 @@
     password_reset: "#/auth/forgot-password/",
   }
   uR.urls.api = uR.urls.api || {};
-  uR.urls.api.login = "/auth/login_ajax/";
+  uR.urls.api.login = "/api/login/";
   uR.urls.api.register = "/api/register/"; // #! TODO
   uR.urls.api['password-reset'] = "/api/password-reset/"; // #! TODO
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
