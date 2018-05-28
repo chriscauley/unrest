@@ -78,7 +78,10 @@
         var override = uR.config.input_overrides[field.type] || uR.config.name_overrides[field.name];
         if (typeof override == "function") { override = override(); } // #! TODO: should this take in field and modify it?
         if (typeof override == "string") { field.tagname = override; }
-        else { uR.defaults(field,override); }
+        else {
+          uR.defaults(field,override);
+          field.type = override && override.type || field.type;
+        }
         field.tagname = field.tagname || "ur-input";
         field._field_index = this.field_list.length;
         var cls = uR.form.fields[field.tagname] || uR.form.fields["ur-input"];

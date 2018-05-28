@@ -349,7 +349,7 @@
     loading_attribute: 'fade',
     tag_templates: [],
     input_overrides: {
-      boolean: function() { return { tagname: 'select-input', choices: [[uR.FALSE,"No"],["true","Yes"]] } },
+      boolean: function() { return { tagname: 'checkbox-input', type: "checkbox" } },
     },
     name_overrides: {},
     404: 'four-oh-four',
