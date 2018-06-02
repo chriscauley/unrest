@@ -45,7 +45,7 @@
 
     set(key,value) {
       // store stringified json in localstorage
-      if (!value && value !== 0) { this.remove(key); return; }
+      if (!value && value !== 0) { value = undefined; } // null causes issues
       this._setItem(key,JSON.stringify(value))
       this.times[key] = new Date().valueOf();
       (this.keys.indexOf(key)==-1)?this.keys.push(key):undefined;
@@ -54,6 +54,7 @@
     has(key) { return this.keys.indexOf(key) != -1 }
 
     remove(key) {
+      // note, removing a key will revert to default (if present), not undefined
       this._removeItem(key);
       this.keys = this.keys.filter((k) => k != key );
       delete this.times[key];
