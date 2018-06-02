@@ -140,6 +140,14 @@
 
     setSchema(schema) {
       var self = this;
+      // #! TODO: detect type and set to int/bool/char. Maybe if value is object extend object
+      if (!Array.isArray(schema)) {// assume it's name/value object
+        var obj = schema;
+        schema = [];
+        for (var key in obj) {
+          schema.push({ name: key, value: obj[key] })
+        }
+      }
       uR.forEach(schema,function(s) {
         if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
         self.getDefault(s.name,s._default || s.value,s);
