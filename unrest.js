@@ -337,13 +337,14 @@
   };
 
   uR.defaults(uR, {
-    icon: (i) => "fa fa-"+i,
+    icon: (i) => uR._icons[i] || "fa fa-"+i,
     onBlur: function() {},
     config: {},
     data: {},
     getRootElement: function() {
       return document.querySelector("#ur_root") || uR.newElement("div",{ id: "ur_root", parent: document.body });
-    }
+    },
+    _icons: {},
   })
   uR.defaults(uR.config,{
     loading_attribute: 'fade',
