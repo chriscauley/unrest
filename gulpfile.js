@@ -147,8 +147,8 @@ gulp.task('watch', build_tasks, function () {
     gulp.watch(JS_FILES[key], ['build-'+key]);
   }
   for (var key in LESS_FILES) {
-    var watch_files = LESS_FILES[key].map((name) => name.match(/.*\//)[0]);
-    gulp.watch(LESS_FILES[key], ['build-'+key+'-css']);
+    var watch_files = LESS_FILES[key].map((name) => name.match(/.*\//)[0]+"*");
+    gulp.watch(watch_files, ['build-'+key+'-css']);
   }
 
   gulp.watch("token-input/token-input.less", ['build-token-css']);

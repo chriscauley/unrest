@@ -302,7 +302,7 @@
     clear() { this.storage.clear() }
     delete(obj) { this.storage.delete(obj.id) }
     all() { return Array.from(this.storage.values()) }
-    conut() { return this.storage.size }
+    count() { return this.storage.size }
     _get(pk) {
       if (typeof pk != "number") { pk = parseInt(pk) }
       var obj = this.storage.get(pk);
