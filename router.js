@@ -62,7 +62,7 @@
 
   uR.pushState = uR.debounce(pushState,100);
 
-  uR.route = function route(href,data) {
+  uR.route = function route(href,data={}) {
     var new_url = new URL(href,href.match("://")?undefined:window.location.origin);
     var old_url = new URL(window.location.href);
     var pathname = (new_url.pathname || href).replace(window.location.origin,"");
@@ -72,17 +72,17 @@
     var hash_match = new_url && uR.router.resolve(new_url.hash);
 
     if (hash_match) {
-      var data = {
+      _.extend(data,{
         matches: hash_match,
         ur_modal: new_url.hash.match(uR.config.MODAL_PREFIX),
         cancel: function() {
           window.location.hash = "";
           this.unmount && this.unmount();
         }
-      }
+      })
       uR._routes[hash_match.key](new_url.hash,data);
     } else if (path_match) {
-      var data = { matches: path_match };
+      _.extend(data,{ matches: path_match });
       document.body.dataset.ur_path = pathname;
       uR._routes[path_match.key](pathname,data);
       if (uR.STALE_STATE) { window.location.hash = ""; }
@@ -178,6 +178,7 @@
             uR.router._current_tag.root.tagName == tagName &&
             typeof uR.router._current_tag.route == "function") {
           uR.router._current_tag.route(pathname,data);
+          uR.router._current_tag.update();
         } else {
           uR.router._current_tagname = tagName;
           uR.mountElement(element_name,data);
