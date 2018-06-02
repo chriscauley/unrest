@@ -142,6 +142,9 @@
 
   var RouterMixin = {
     init: function() {
+      if (this.opts.on) {
+        for (var key in this.opts.on) { this.on(key,this.opts.on[key]) }
+      }
       if (uR.router._current_tagname == this.__.tagName.toUpperCase()) {
         // this tag can be updated, so store it in uR.router
         uR.router._current_tag = this;
