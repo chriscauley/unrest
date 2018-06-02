@@ -33,6 +33,7 @@
       this.valid = true;
       this.value = [];
       this.last_value = this.last_value || [];
+      if (!Array.isArray(this.last_value)) { this.last_value = [this.last_value] }
       uR.forEach(this.field_tag.root.querySelectorAll("[name="+this.name+"]"),function(input) {
         this.changed = this.changed || ((this.last_value.indexOf(input.value) != -1) !== input.checked);
         if (input.checked) { this.value.push(input.value); }
