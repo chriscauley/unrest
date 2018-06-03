@@ -4,6 +4,7 @@
   "description": "A framework for building forms using riot.js",
   "main": "gulpfile.js",
   "scripts": {
+    "build": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
