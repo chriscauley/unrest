@@ -91,7 +91,11 @@
       uR.pushState(href);
       uR.STALE_STATE = true;
       return;
-    } else if (uR.router.default_route) { uR.router.default_route(pathname,{matches: []}); }
+    } else if (uR.router.default_route) {
+      _.extend(data,{matches: []});
+      uR.router.default_route(pathname,data);
+      return;
+    }
     // uR.config.do404();
 
     // #! TODO The following is used for django pages + back button
@@ -142,9 +146,7 @@
 
   var RouterMixin = {
     init: function() {
-      if (this.opts.on) {
-        for (var key in this.opts.on) { this.on(key,this.opts.on[key]) }
-      }
+      uR.router._onOne(this,this.opts); // should probably be in a more generic mixin
       if (uR.router._current_tagname == this.__.tagName.toUpperCase()) {
         // this tag can be updated, so store it in uR.router
         uR.router._current_tag = this;
@@ -154,6 +156,10 @@
           if (uR.router._current_tag == this) { uR.router._current_tag = undefined }
         });
       }
+
+      // update after routing. this.one is used to make the update happen after all other route listener functions
+      this.on("route",() => this.isMounted && this.one("route",() => this.update()));
+      this.on("mount",() => this.trigger("route"));
     }
   }
   window.riot && window.riot.mixin(RouterMixin);
@@ -164,6 +170,11 @@
   uR._on_routes = [];
   uR.onRoute = function(f) { uR._on_routes.push(f) }
   uR.router = {
+    _onOne(tag,opts) {
+      // useful for passing in lifecycle events as options for riot tags
+      for (var key in opts.on || {}) { tag.on(key,opts.on[key]) }
+      for (var key in opts.one || {}) { tag.on(key,opts.one[key]) }
+    },
     start: function() {
       document.addEventListener('click', onClick);
       uR.router.ready.start();
@@ -174,11 +185,11 @@
     routeElement: function(element_name) {
       return function(pathname,data) {
         var tagName = element_name.toUpperCase();
-        if (uR.router._current_tag &&
-            uR.router._current_tag.root.tagName == tagName &&
-            typeof uR.router._current_tag.route == "function") {
-          uR.router._current_tag.route(pathname,data);
-          uR.router._current_tag.update();
+        var _current = uR.router._current_tag;
+        if (_current && _current.root.tagName == tagName) {
+          // reuse _current_tag since it matches the desired route
+          uR.router._onOne(_current,data);
+          _current.trigger("route",data);
         } else {
           uR.router._current_tagname = tagName;
           uR.mountElement(element_name,data);
