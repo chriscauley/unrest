@@ -21,6 +21,7 @@
 
 (function() {
   uR.__logs = [];
+  uR.TrueDate = window.Date; // because under-construction uses timeShift.js to override date
   uR.Log = function(opts) {
     opts = opts || {};
     function mount_then_update() {
@@ -37,7 +38,7 @@
       var set_line = (typeof args[0] == 'number')?args.shift():undefined;
       args = log._prepArguments(args);
       args.ts = log._getTimeStamp();
-      log.last_log = new Date();
+      log.last_log = new uR.TrueDate();
       if (set_line === undefined) {
         log._logs.push(args);
       } else {
@@ -56,7 +57,7 @@
     log._name = opts.name || ("logger "+Math.random());
     log._getTimeStamp = function _getTimeStamp() {
       if (!log.last_log) { return "START" }
-      var ts = (new Date().valueOf() - log.last_log.valueOf());
+      var ts = (new uR.TrueDate().valueOf() - log.last_log.valueOf());
       if (ts > 1e5) { return "+"+(ts/1000).toFixed(0)+"s" }
       else if (ts > 1000) { return "+"+(ts/1000).toFixed(1)+"s" }
       else if (ts > 100) { return "+"+(ts/1000).toFixed(2)+"s" }
