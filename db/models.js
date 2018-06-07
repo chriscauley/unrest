@@ -125,6 +125,7 @@
       this.data_values = this.schema.has("data") && this.schema.get("data").value || {};
       this.schema.delete("data");
       uR.forEach(this.data_fields,function(f) {
+        f.name = f.name || uR.slugify(f.label); // #! TODO: this should use uR.form.prepSchema in some capacity
         f.value = f.value || this.data_values[f.name];
         this.schema.set(f.name,f);
       },this);
@@ -349,6 +350,7 @@
         model.app_label = app_label;
         model.db_table = "__db_"+model.name;
         model.model_key = app_label+"."+model.name;
+        uR.db[model.model_key] = model;
         model.objects = new uR.db.ModelManager(model);
         model.admin_url = "#!/admin/"+app_label+"/"+model.name+"/";
         model.admin_new_url = model.admin_url+"new/";
