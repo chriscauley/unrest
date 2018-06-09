@@ -43,6 +43,7 @@ uR.ready(function() {
 
   show() {
     this.root.classList.remove("hidden");
+    if (this.opts.loadContent) { this.opts.loadContent(this); delete this.opts.loadContent }
     if (this.opts.href && !this.loaded) {
       return this.ajax({
         url: this.opts.href,
