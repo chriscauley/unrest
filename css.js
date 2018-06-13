@@ -31,9 +31,13 @@
     admin: {
       open_icon: 'fa fa-pencil-square-o',
     },
-    tabs: {
-      root: "default",
-    }
+    ur_tabs: "default",
+    // #! TODO: bootstrap tabs is just nav, maybe nav and hnav would be better than tabs vs navs
+    tabs: { // spectre
+      root: "tab tab-block",
+      item: "tab-item",
+      active: "active",
+    },
   }
   uR._var = {};
 

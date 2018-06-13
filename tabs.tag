@@ -2,7 +2,7 @@ uR.mount_tabs = true;
 uR.ready(function() {
   if (uR._mount_tabs) { riot.mount("ur-tabs"); }
 });
-<ur-tabs>
+<ur-tabs class={uR.css.ur_tabs}>
   <div class="tab-wrapper { theme.outer }">
     <div class="tab-anchors">
       <a onclick={ parent.showTab } each={ tab,i in tabs } title={ tab.title } class={ active: i == this.active }> { tab.title }</a>
@@ -27,12 +27,10 @@ uR.ready(function() {
     uR.forEach(this.tabs,function(tab,i) { tab.index = i; });
     this.active = 0;
     if (this.opts.className) { this.root.className = this.opts.className }
-    this.root.classList.add(uR.css.tabs.root);
     this.update();
-    window.ut = this;
   });
   this.on("update",function() {
-    uR.forEach(this.tabs || [], function(tab) { tab.update && tab.update(); });
+    this.tabs.forEach(t=>t.update())
   });
 </ur-tabs>
 
@@ -58,7 +56,9 @@ uR.ready(function() {
   }
 
   this.on("mount",function() {
-    if (this.opts.innerHTML) { this.root.innerHTML = this.opts.innerHTML; }
+    var innerHTML = this.opts.innerHTML;
+    if (innerHTML) { this.root.innerHTML = innerHTML; }
+    this.update();
   });
 
   this.on("update",function() {
