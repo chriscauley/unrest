@@ -13,7 +13,7 @@
   </div>
 
   this.on("before-mount",function() {
-    this.results = this.opts.results || (uR.pagination && uR.pagination.results) || [];
+    this.results = this.opts.results || []; // || (uR.pagination && uR.pagination.results) || [];
     this.results.map((result) =>{
       for (var fi=0;fi<result.fields.length;fi++) {
         var field = result.fields[fi];

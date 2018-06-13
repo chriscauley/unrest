@@ -1,5 +1,6 @@
 (function() {
   window.uR = window.uR || {};
+  uR.TrueDate = window.Date; // because under-construction uses timeShift.js to override date
   uR.timeIt = function(f,name) {
     name = name || f.name
     return function() {
@@ -8,6 +9,15 @@
       console.log(name,"took",(new Date() - start)/1000);
     }
   }
+
+  uR.t = function t() {
+    var now = new uR.TrueDate().valueOf();
+    console.log('uR.t +',(now-uR.t._last)+" ms",...arguments);
+    uR.t._last = now;
+  }
+  uR.t._last = new Date().valueOf();
+
+
   uR.Ready = function Ready(isReady=()=>false,_ready=[]) {
     function log() {
       //console.log.apply(this,arguments);
@@ -33,6 +43,10 @@
       window.airbrake && window.airbrake.log("unrest starting");
       isReady = function() { return true };
       ready();
+    }
+    ready.stop = function() {
+      window.airbrake && window.airbrake.log("unrest stopping");
+      isReady = function() { return false };
     }
     return ready;
   }
