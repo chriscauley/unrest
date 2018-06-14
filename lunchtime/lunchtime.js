@@ -138,7 +138,7 @@
     var target = e.dataset.target_time;
     if (e.textContent && tt_cache[target] && tt_cache[target] > now) { return }
     //count ++; // #! ibid
-    delta_ms = now-target;
+    var delta_ms = now-target;
     e.textContent = String.lunch.ms2hdelta(delta_ms);
     tt_cache[target] = now;
     if (delta_ms < 3600000) { return } // less than an hour needs immediate update
