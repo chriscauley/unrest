@@ -36,11 +36,22 @@ var JS_FILES = {
   ]
 }
 
+JS_FILES.unrest_full = [];
+
+for (var key of ['unrest','canvas','controller','admin','lunchtime']){
+  JS_FILES.unrest_full = JS_FILES.unrest_full.concat(JS_FILES[key])
+}
+
 var build_tasks = [ 'build-token-js', 'build-token-css', 'build-simplemde', 'cp-static'];
 for (var key in JS_FILES) { // #! let vs var for maria
   (function(key) {
     build_tasks.push("build-"+key);
     gulp.task('build-'+key, function () {
+      if (key == "vendor") {
+        return gulp.src(JS_FILES[key])
+          .pipe(concat(key + '-built.js'))
+          .pipe(gulp.dest(".dist/"));
+      }
       return gulp.src(JS_FILES[key])
         .pipe(sourcemaps.init())
         .pipe(riot())

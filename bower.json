@@ -20,6 +20,6 @@
   ],
   "homepage": "https://github.com/chriscauley/unrest",
   "dependencies": {
-    "riot": "~2.3.12"
+    "riot": "3.10.1"
   }
 }
