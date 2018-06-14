@@ -13,6 +13,7 @@ var path = require("path");
 var PROJECT_NAME = "unrest";
 
 var JS_FILES = {
+  vendor: ["src/vendor/*.js"],
   unrest: [
     "src/js/*.js",
     "src/js/*.tag",
@@ -33,7 +34,18 @@ var JS_FILES = {
   ],
   lunchtime: [
     "lunchtime/lunchtime.js",
-  ]
+  ],
+
+  // older files I may use again someday
+  'token-input': [
+    "token-input/zepto.js", // #!TODO: remove zepto dependency
+    "token-input/zepto-extra.js",
+    "token-input/data.js",
+    "token-input/jquery.tokeninput.js",
+    "token-input/token-input.tag"
+  ],
+
+  simplemde: ["simplemde/simplemde.tag"],
 }
 
 JS_FILES.unrest_full = [];
@@ -42,12 +54,12 @@ for (var key of ['unrest','canvas','controller','admin','lunchtime']){
   JS_FILES.unrest_full = JS_FILES.unrest_full.concat(JS_FILES[key])
 }
 
-var build_tasks = [ 'build-token-js', 'build-token-css', 'build-simplemde', 'cp-static'];
+var build_tasks = [ 'cp-static'];
 for (var key in JS_FILES) { // #! let vs var for maria
   (function(key) {
     build_tasks.push("build-"+key);
     gulp.task('build-'+key, function () {
-      if (key == "vendor") {
+      if (key == "vendor") { // vendor files are already minified and babel-ifiied
         return gulp.src(JS_FILES[key])
           .pipe(concat(key + '-built.js'))
           .pipe(gulp.dest(".dist/"));
@@ -67,7 +79,12 @@ for (var key in JS_FILES) { // #! let vs var for maria
 LESS_FILES = {
   unrest: ["less/base.less"],
   admin: ["contrib/admin/base.less"],
+
+  // older files I may use again someday
+  token: ["token-input/token-input.less"],
 }
+
+LESS_FILES.unrest_full = LESS_FILES.unrest.concat(LESS_FILES.admin);
 
 for (var key in LESS_FILES) {
   (function(key) {
@@ -81,56 +98,15 @@ for (var key in LESS_FILES) {
   })(key);
 }
 
-var TOKEN_JS_FILES = [
-  "token-input/zepto.js",
-  "token-input/zepto-extra.js",
-  "token-input/data.js",
-  "token-input/jquery.tokeninput.js",
-  ".dist/_token-tag.js",
-];
-
-gulp.task('build-token-js', ['build-token-tag'], function () {
-  return gulp.src(TOKEN_JS_FILES)
-    .pipe(sourcemaps.init())
-    .pipe(concat('token-built.js'))
-    .pipe(sourcemaps.write("."))
-    .pipe(gulp.dest(".dist/"));
-});
-
-gulp.task('build-token-tag', function() {
-  return gulp.src("token-input/token-input.tag")
-    .pipe(riot())
-    .pipe(concat("_token-tag.js"))
-    .pipe(gulp.dest(".dist"));
-});
-
-gulp.task('build-token-css', function () {
-  return gulp.src("token-input/token-input.less")
-    .pipe(less({}))
-    .pipe(concat('token-built.css'))
-    .pipe(gulp.dest(".dist/"));
-});
-
-gulp.task('build-simplemde',function() {
-  return gulp.src(["simplemde/simplemde.tag"])
-    .pipe(riot())
-    .pipe(babel({ presets: ['es2015'] }))
-    .pipe(concat('simplemde-built.js'))
-    .pipe(gulp.dest(".dist/"))
-})
-
-var STATIC_DIRS = [
+var STATIC_FILES = [
   'lib',
   'demo',
   'lunchtime',
-]
-
-var STATIC_FILES = [
   'favicon.ico',
 ]
 
 gulp.task("cp-static",function() {
-  STATIC_DIRS.concat(STATIC_FILES).forEach(function(_dir) {
+  STATIC_FILES.forEach(function(_dir) {
     var source = path.join(__dirname,_dir);
     var dest = path.join(__dirname, '.dist/',_dir);
     ncp(source, dest)
@@ -145,12 +121,7 @@ gulp.task('watch', build_tasks, function () {
     var watch_files = LESS_FILES[key].map((name) => name.match(/.*\//)[0]+"*");
     gulp.watch(watch_files, ['build-'+key+'-css']);
   }
-
-  gulp.watch("token-input/token-input.less", ['build-token-css']);
-  gulp.watch("token-input/jquery.tokeninput.js", ['build-token-js']);
-  gulp.watch("token-input/token-input.tag", ['build-token-js']);
-  gulp.watch("simplemde/simplemde.tag",["build-simplemde"]);
-  gulp.watch(STATIC_DIRS.map(d => d+"/**").concat(STATIC_FILES),['cp-static']);
+  gulp.watch(STATIC_FILES.map(d => d+"/**"),['cp-static']);
 });
 
 gulp.task('default', build_tasks);
