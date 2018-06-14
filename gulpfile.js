@@ -14,32 +14,13 @@ var PROJECT_NAME = "unrest";
 
 var JS_FILES = {
   unrest: [
-    "url-shim.js",
-    "unrest.js",
-    "css.js",
-    "static.js",
-    "storage.js",
-    "router.js",
-    "log.tag",
-    "auth.tag",
-    "dialog.tag",
-    "math.js",
-    "random.js",
-
-    "form.tag",
-    "checkbox-input.tag",
-    "select-input.tag",
-    "pagination.tag",
-    //"radio-input.tag",
-
-    "tabs.tag",
-    "markdown.tag",
-    "multi-file.tag",
-    "ez-file.tag",
+    "src/js/*.js",
+    "src/js/*.tag",
+    "src/js/form/*js",
+    "src/js/form/*.tag",
+    "src/js/db/*.js",
+    "src/js/db/fields/*.js",
     "contrib/nav.tag",
-    "db/object.js",
-    "db/models.js",
-    "db/fields/abstract.js",
   ],
   canvas: [
     "canvas/index.js",
@@ -49,6 +30,9 @@ var JS_FILES = {
   ],
   admin: [
     "contrib/admin/index.js"
+  ],
+  lunchtime: [
+    "lunchtime/lunchtime.js",
   ]
 }
 

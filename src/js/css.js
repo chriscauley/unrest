@@ -1,3 +1,4 @@
+window.uR = window.uR || {};
 (function() {
   uR.css = {
     modal: {
