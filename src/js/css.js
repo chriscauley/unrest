@@ -56,6 +56,8 @@ window.uR = window.uR || {};
           success: "btn btn-success",
           cancel: "btn btn-error",
           warning: "btn bg-warning",
+          group: "btn-group",
+          group_block: "btn-group btn-group-block",
         };
         uR.css.modal = {
           root: "modal active",

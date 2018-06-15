@@ -24,6 +24,9 @@ body[ur-theme=spectre] {
         }
       }
     }
+    /* border appears when vield is invalid */
+    .ur-input:not(.invalid) .error { border: 0; }
+
   }
 }
 .modal.active [ur-mask] ~ .modal-container { z-index: 100001; }
