@@ -100,8 +100,8 @@
 
     // #! TODO The following is used for django pages + back button
     // We're not in the single page app, reload if necessary
-    if (uR.STALE_STATE) {
-      window.location = href;
+    if (uR.STALE_STATE || new_url.href != old_url.href) {
+      window.location = new_url.href;
     }
     uR.STALE_STATE = true;
   }
@@ -146,6 +146,10 @@
 
   var RouterMixin = {
     init: function() {
+      if (this.opts.opts) { // should probably be in a more generic mixin
+        _.extend(this.opts,this.opts.opts);
+        delete this.opts.opts;
+      }
       uR.router._onOne(this,this.opts); // should probably be in a more generic mixin
       if (uR.router._current_tagname == this.__.tagName.toUpperCase()) {
         // this tag can be updated, so store it in uR.router
