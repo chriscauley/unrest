@@ -104,6 +104,8 @@
       window.location = new_url.href;
     }
     uR.STALE_STATE = true;
+    data.one && data.one.route && data.one.route();
+    data.on && data.on.route && data.on.route();
   }
 
   function onClick(e) {
