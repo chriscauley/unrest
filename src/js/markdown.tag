@@ -22,7 +22,11 @@
       });
       return
     }
-    this.root.innerHTML = markdown.toHTML(this.content.replace("&amp;","&"));
+    if (!markdown) {
+      this.root.innerHTML = 'No markdown library, we recommend https://cdnjs.cloudflare.com/ajax/libs/markdown.js/0.5.0/markdown.min.js'
+    } else {
+      this.root.innerHTML = markdown.toHTML(this.content.replace("&amp;","&"));
+    }
   });
   setContent(content) {
     this.content = content;
