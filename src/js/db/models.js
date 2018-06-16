@@ -28,9 +28,9 @@
     }
     createSchema() {
       // returns a list of objects to be used by a <ur-form>
-      var _schema = uR.db.schema[this.META.model_key];
+      var _schema = this.options.schema || uR.db.schema[this.META.model_key];
       this.schema = new Map();
-      _schema.map(obj => this.schema.set(obj.name,uR.clone(obj)));
+      _schema.map(obj => this.schema.set(obj.name,uR.form.prepField(obj)));
       if (this.options.values_list) {
         var [id,..._values] = this.options.values_list;
         this._pk = id;

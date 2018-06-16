@@ -1,5 +1,10 @@
 (function() {
-  uR.form = { };
+  uR.form = {
+    prepField(field) {
+      if (typeof field == "string") { field = { name: field } }
+      return uR.clone(field);
+    },
+  }
   uR.ready(function() {
     if (uR.config.form_prefix != undefined) {
       var _routes = {};
@@ -66,12 +71,7 @@
 
       tag.form_title = this.opts.form_title || _schema.form_title;
       tag.rendered_content = _schema.rendered_content;
-      this.schema = _schema.map(function(field) {
-        if (typeof field == "string") { field = { name: field } }
-        var f = {};
-        for (var k in field) { f[k] = field[k] }
-        return f;
-      });
+      this.schema = _schema.map(uR.form.prepField);
       this.field_list = [];
       this.fields = {};
       uR.forEach(this.schema, function(field,i) {
