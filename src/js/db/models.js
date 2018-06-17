@@ -188,17 +188,24 @@
     }
     filter(options) {
       options = options || {};
-      var all = this.all();
+      var results = this.all();
       for (var key in options) {
         var value = options[key];
         value = value && value.pk || value;
-        all = all.filter(function(obj) {
-          var obj_value = obj[key];
-          obj_value = obj_value && obj_value.pk || obj_value;
-          return obj_value == value;
+        results = results.filter(function(obj) {
+          if (key.indexOf("__") == -1) {
+            var obj_value = obj[key];
+            obj_value = obj_value && obj_value.pk || obj_value;
+            return obj_value == value;
+          }
+          var [key2,mod] = key.split("__");
+          if (mod == "gte") { return obj[key2] >= value }
+          if (mod == "gt") { return obj[key2] > value }
+          if (mod == "lte") { return obj[key2] <= value }
+          if (mod == "lt") { return obj[key2] < value }
         });
       }
-      return all;
+      return results;
     }
   }
 
