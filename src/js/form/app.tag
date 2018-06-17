@@ -23,7 +23,9 @@
   uR.form.parseChoices = function(choices) {
     // #! TODO This should eventually accomodate groupings as well like:
     // choices = [["group_name",[choice1,choice2,choice3]...],group2,group3]
+    if (typeof choices == "function") { choices = choices() }
     return choices.map(function(c) {
+      if (typeof(c) == "undefined") { return ["","None"] }
       if (typeof(c) == "string") { return [c,c]}
       return c;
     });
