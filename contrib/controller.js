@@ -26,6 +26,7 @@ uR.controller.Controller = class Controller {
     var actions = ['mouseover','mouseout','mousemove',
                    'mouseclick','mouseup','mousedown',
                    'mousewheel'];
+    target.focus();
     for (let action of actions) {
       this.parent[action] && target.addEventListener(action,(e) => this.parent[action](e));
     }
