@@ -32,6 +32,7 @@ uR.controller.Controller = class Controller {
       self.parent[action] && target.addEventListener(action,function (e) {
         e._key = self.code2key[e.keyCode];
         self.parent[action](e);
+        e.preventDefault();
       });
     });
     var letters = 'abcdefghijklmnopqrstuvwxyz';
