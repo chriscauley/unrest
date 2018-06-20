@@ -22,6 +22,7 @@ uR.controller.Controller = class Controller {
   bindKeys() {
     var self = this;
     var target = this.target || document;
+    if (!target.tabIndex || target.tabIndex == "-1") { target.tabIndex = "0" }
     var actions = ['mouseover','mouseout','mousemove',
                    'mouseclick','mouseup','mousedown',
                    'mousewheel'];
@@ -32,7 +33,6 @@ uR.controller.Controller = class Controller {
       self.parent[action] && target.addEventListener(action,function (e) {
         e._key = self.code2key[e.keyCode];
         self.parent[action](e);
-        e.preventDefault();
       });
     });
     var letters = 'abcdefghijklmnopqrstuvwxyz';
