@@ -284,7 +284,7 @@
       this.storage.clear();
     }
     save(obj) {
-      var is_new = !obj.pk || (this._getPKs.indexOf(obj.pk) == -1);
+      var is_new = !obj.pk || (this._getPKs().indexOf(obj.pk) == -1);
       obj[obj.META.pk_field] = obj.pk = obj.pk || this._getNextPK();
       this.storage.set(obj.pk,obj.toJson());
       is_new && obj.objects._addPK(obj.pk);
