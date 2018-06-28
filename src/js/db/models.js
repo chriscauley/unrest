@@ -291,7 +291,7 @@
       return obj;
     }
     delete(obj) {
-      obj.remove(this.storage_key+obj.pk);
+      this.remove(obj.pk);
     }
   }
 
