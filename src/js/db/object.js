@@ -13,3 +13,5 @@ uR.Object = class Object {
     uR.forEach(array,func);
   }
 }
+
+uR.RandomObject = uR.RandomMixin(uR.Object)

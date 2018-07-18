@@ -1,38 +1,44 @@
 // This provides a wrapper around Math.random for a few common functions, as well as an interface to tap into a seeded RNG in order to run unit tests on anything using randomness.
 
-uR.random = Math.random;
-uR.randint = function(lo,hi) {
-  if (hi === undefined) { hi=lo; lo = 0; }
-  return Math.floor(uR.random()*(hi-lo+1) + lo);
-}
-uR.random.choice = function(array) { return array[uR.randint(array.length-1)] }
-uR.random.analyze = function(func,n) {
-  // useful for checking distribution on a function that uses random.
-  n = n || 1000000;
-  var out = {},r;
-  while (n--) {
-    r = func();
-    out[r] = (out[r] || 0) + 1;
+// PRNG borrowed from https://gist.github.com/blixt/f17b47c62508be59987b
+uR.Random = function Random(seed) {
+  var _seed;
+
+  // https://stackoverflow.com/a/7616484
+  if (typeof seed == "string") { // convert string to integer
+    var res = 0, len = seed.length;
+    for (var i = 0; i < len; i++) {
+      res = res * 31 + seed.charCodeAt(i);
+      res = res & res;
+    }
+    console.log(seed,res)
+    seed = res
   }
-  return out;
-}
-uR.random._seed = function(seed) {
-  if (!uR.rng) { console.warn("no random number generator installed"); return; }
-  uR._active_rng = uR.rng.create(seed);
-  var random = uR._active_rng.random;
-  random.choice = uR.random.choice;
-  random.randint = uR.random.randint;
-  random.analyze = uR.random.analyze;
-  random._seed = function() { console.warn("Seed already set. Ignoring new seed") };
-  uR.random = random;
+
+  const random = () => (random.raw() - 1) / 2147483646; // 0-1
+  random.int = (min,max) => {
+    // min-max or 0-min if no max
+    return (max === undefined)?random.int(0,min):Math.floor(random()*(max-min)+min);
+  }
+  random.raw = raw = () => _seed = _seed * 16807 % 2147483647; // 0-2147483647
+  random.choice = (array) => array[random.int(array.length)]
+  random.reset = () =>  {
+    _seed = seed % 2147483647;
+    if (_seed <= 0) _seed += 2147483646;
+  }
+  random.reset();
+  if (isNaN(_seed)) {
+    random.raw = () => Math.floor(Math.random()*2147483647)
+  }
+  return random
 }
 
-uR.random.shuffle = function shuffle(a) {
-  var j, x, i;
-  for (i = a.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1));
-    x = a[i];
-    a[i] = a[j];
-    a[j] = x;
+uR.RandomMixin = superclass => class Random extends superclass {
+  // creates a method this.random which is a PRNG based on opts._SEED or opts.parent.random
+  constructor(opts={}) {
+    super(opts)
+    this._SEED = opts._SEED || opts.parent && opts.parent.random && opts.parent.random.raw();
+    this.random = new uR.Random(this._SEED);
+    console.log("seeded",this.constructor.name,this._SEED)
   }
 }
