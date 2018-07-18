@@ -1,12 +1,12 @@
 (function() {
   window.uR = window.uR || {};
   uR.TrueDate = window.Date; // because under-construction uses timeShift.js to override date
-  uR.timeIt = function(f,name) {
-    name = name || f.name
+  uR.timeIt = function(f,this_argument) {
+    this_argument && f.bind(this_argument);
     return function() {
       var start = new Date();
       f.apply(this,arguments);
-      console.log(name,"took",(new Date() - start)/1000);
+      console.log(f.name,"took",(new Date() - start)/1000);
     }
   }
 
