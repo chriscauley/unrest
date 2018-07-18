@@ -79,15 +79,15 @@ uR.canvas.CanvasObject = class CanvasObject extends uR.Object {
   mousewheel(e) {
     var target = e.target;
     e.preventDefault();
-    target.scrollX = uR.math.between(0,target.scrollX+e.deltaX,target.x_max-target.width);
-    target.scrollY = uR.math.between(0,target.scrollY+e.deltaY,target.y_max-target.height);
+    target.scrollX = Math.floor(uR.math.between(0,target.scrollX+e.deltaX,target.x_max-target.width));
+    target.scrollY = Math.floor(uR.math.between(0,target.scrollY+e.deltaY,target.y_max-target.height));
     target.dirty = true;
     target.tick();
   }
   mousemove(e) {
     var target = e.target;
-    target.imgX = Math.ceil(e.offsetX+target.scrollX);
-    target.imgY = Math.ceil(e.offsetY+target.scrollY);
+    target.imgX = e.offsetX+target.scrollX;
+    target.imgY = e.offsetY+target.scrollY;
     target.mouseX = e.offsetX;
     target.mouseY = e.offsetY;
   }
