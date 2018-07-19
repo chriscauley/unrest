@@ -35,14 +35,14 @@ uR.Random = function Random(seed) {
     // min-max or 0-min if no max
     return (max === undefined)?random.int(0,min):Math.floor(random()*(max-min)+min);
   }
-  random.raw = raw = () => _seed = _seed * 16807 % 2147483647; // 0-2147483647
+  random.raw = raw = () => _seed = _seed * 16807 % 2147483647; // 0-2147483646
   random.choice = (array) => array[random.int(array.length)]
   random.reset = () =>  {
     _seed = seed % 2147483647;
     if (_seed <= 0) _seed += 2147483646;
   }
   random.reset();
-  if (isNaN(_seed)) {
+  if (isNaN(_seed)) { // seed was neither string or number... pick a truely random seed
     random.raw = () => Math.floor(Math.random()*2147483647)
   }
   random.getNextSeed = () => {
@@ -69,9 +69,8 @@ uR.RandomMixin = superclass => class Random extends superclass {
   // creates a method this.random which is a PRNG based on opts._SEED or opts.parent.random
   constructor(opts={}) {
     super(opts)
-    this._SEED = opts._SEED;
+    this._SEED = opts._SEED || opts.seed;
     if (opts._prng) { this._SEED = opts._prng.random.getNextSeed() }
     this.random = new uR.Random(this._SEED);
-    console.log("seeded",this.constructor.name,this._SEED)
   }
 }
