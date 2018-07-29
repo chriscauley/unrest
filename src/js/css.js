@@ -48,6 +48,7 @@ window.uR = window.uR || {};
       document.body.setAttribute("ur-theme",theme)
       if (theme == "spectre") {
         uR.css.default.content = "card-body";
+        uR.css.default.header = "card-header";
         uR.css.form.field = "form-group";
         uR.css.form.input = "form-input";
         uR.css.btn = {
