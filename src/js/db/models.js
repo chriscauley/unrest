@@ -44,6 +44,15 @@
       return this.schema;
     }
     getAdminExtra() {}
+    getAdminSchema() {
+      const exclude = this.exclude || [];
+      const schema = Array.from(this.schema.values()).map(s => _.clone(s))
+            .filter(s => exclude.indexOf(s.name) == -1);
+      schema.map((s) => {
+        s.value = this[s.name];
+      })
+      return schema
+    }
     __str() {
       return this.constructor.verbose_name + " #" + this.id;
     }
