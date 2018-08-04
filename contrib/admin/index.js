@@ -135,6 +135,8 @@
       this.submit = function(form) {
         uR.extend(self.obj,form.getData())
         self.obj.save();
+        // #! TODO: need to remove the Saved! when the form is changed
+        form.messages = [{ level: 'success', body: "Saved!" }]
       }
     }
   })
