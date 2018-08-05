@@ -1,7 +1,6 @@
 function testForm() {
   this.do("ur-form tests")
-    .setHash("#ur-form-demo")
-    .wait("#id_first_name")
+    .route("#ur-form-demo")
     .checkResults("ur-form-demo ur-form")
     .changeValue("#id_first_name","Testy")
     .changeValue("#id_last_name","Larou")
