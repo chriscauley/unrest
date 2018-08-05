@@ -1,7 +1,6 @@
 function testTabs() {
   this.do("testing basic tabs functionality")
-    .wait("[href='#tabs-demo']")
-    .click()
+    .route("#tabs-demo")
     .wait("#content ur-tabs")
     .checkResults()
     .done("tabs have not changed")
