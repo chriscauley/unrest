@@ -56,20 +56,6 @@
   }
 })();
 
-<image-input>
-  <img if={ initial_value } riot-src={ initial_value } />
-  <input type="file" name="{ name }" onchange={ onChange }/>
-  this.on("mount", function() {
-    this.name = this.opts.parent._name;
-    this.update();
-  });
-  onChange(e) {
-    var files = e.target.files;
-    this.opts.form.onChange(e);
-  }
-
-</image-input>
-
 <ur-form>
   <div class={ theme.outer }>
     <div class={ theme.header } if={ form_title }><h3>{ form_title }</div>
@@ -249,31 +235,3 @@
     uR.storage.set(this.form.action,new_data);
   }.bind(this),1000);
 </ur-form>
-
-<ur-formset>
-  <ur-form each={ form,i in forms } suffix={ "_"+i } success_text="Add">
-    <div class="message font-20" if={ next }>
-      <b>{ name }</b> has been successfully added!<br /> Add more children or click <b>Next</b> to continue.
-    </div>
-  </ur-form>
-  <button class={ uR.css.btn.primary } disabled={ !valid }>Next</button>
-  var self = this;
-  this.forms = [];
-  this.on("mount",function() {
-    this.forms.push({schema:this.opts.schema});
-    this.update();
-  });
-  submit (element) {
-    var form_data = {}
-    for (var key in element.inputs) { form_data[key] = element.inputs[key].value }
-    uR.ajax({
-      method: "POST",
-      url: this.form.action,
-      data: form_data,
-      target: element.root,
-      self: element,
-      loading_attribute: "mask",
-      success: function(data) { element.name = form_data.name; self.update();}
-    });
-  }
-</ur-formset>
