@@ -47,57 +47,7 @@
       this.form_tag = ur_form;
       this.opts = ur_form.opts;
       this.messages = [];
-      this.prepSchema();
-    }
-    prepSchema() {
-      var tag = this.form_tag;
-      var _schema = tag.opts.schema || tag.parent && tag.parent.opts.schema || tag.parent.schema;
-      if (_schema instanceof Map) { _schema = Array.from(_schema.values()); }
-      this.action = tag.opts.action;
-      if (typeof _schema == "string") {
-        this.schema_url = _schema;
-        this.action = this.action || this.schema_url;
-        if (uR.schema[this.schema_url]) {
-          _schema = uR.schema[this.schema_url];
-        } else {
-          var url = _schema;
-          uR.getSchema(url,this.prepSchema.bind(this));
-          this._needs_update = true;
-          _schema = [];
-          return;
-        }
-      }
-      if (!_schema) { throw "NotImplemented: ur-form cannot function without schema" }
-      this.empty_initial = uR.schema.__initial[this.schema_url] || this.form_tag.opts.initial || {};
-      this.initial = uR.storage.get(this.form_tag.action) || this.empty_initial || {};
-
-      tag.form_title = this.opts.form_title || _schema.form_title;
-      tag.rendered_content = _schema.rendered_content;
-      this.schema = _schema.map(uR.form.prepField);
-      this.field_list = [];
-      this.fields = {};
-      uR.forEach(this.schema, function(field,i) {
-        var override = uR.config.input_overrides[field.type] || uR.config.name_overrides[field.name];
-        if (typeof override == "function") { override = override(); } // #! TODO: should this take in field and modify it?
-        if (typeof override == "string") { field.tagname = override; }
-        else {
-          uR.defaults(field,override);
-          field.type = override && override.type || field.type;
-        }
-        field.tagname = field.tagname || "ur-input";
-        field._field_index = this.field_list.length;
-        var cls = uR.form.fields[field.tagname] || uR.form.fields["ur-input"];
-        this.field_list.push(new cls(this,field));
-        this.fields[field.name] = this.field_list[this.field_list.length-1];
-      }.bind(this));
-      if (this.opts.post_render) {
-        this.opts.post_render(this);
-        this.needs_update = true;
-      }
-      if (this._needs_update) {
-        this.form_tag.update();
-        this.form_tag.update();
-      };
+      uR.schema.prepSchema(this);
     }
     postMount() {
       this.opts.onload && this.opts.onload.bind(this)();
@@ -106,45 +56,12 @@
   }
 
   uR.form.URInput = class URInput {
-    constructor(form,options={}) {
-      this.tagname = this.tagname || "ur-input"; // can be overridden by sub-classes
-      this.form = form;
-      if (typeof options == "string") {
-        var name = options;
-        if (uR.schema.fields[options]) {
-          options = uR.schema.fields[options];
-          options.name = name;
-        } else {
-          options = { name: name, type: 'text' }
-        }
-      }
-      for (var k in options) { this[k] = options[k]; }
-      this.required = this.required == undefined || this.required; // defaults to true!
+    constructor(form,opts={}) {
+      opts.tagname = opts.tagname || "ur-input"; // can be overridden by sub-classes
+      opts.form = form;
+      _.extend(this,uR.schema.prepFieldOptions(opts))
 
-      this.name = this.name || this.type;
-      if (typeof(this.name) == "object") { // can't remember when this is used
-        console.warn("look at me!")
-        this.name = (typeof(this.name) == "object")?this.name[0]:this.name;
-      }
-      if (this.value === false) { this.value = uR.FALSE }
-      this.value = this.initial_value = this.value || (this.form.initial || {})[this.name];
       this.valid = true;
-      if (this.type == "datetime-local" && typeof this.value == "string") {
-        // the HTML input type is very picky about the format, so use moment to coerce it
-        this.value = this.initial_value = this.value && moment(this.value).format("YYYY-MM-DDTHH:mm");
-      }
-
-      // verbose_name is useful for error messages, other generated text
-      this.verbose_name = this.verbose_name || this.label || this.placeholder;
-      if (!this.verbose_name) {
-        var replace = function(s){return s.charAt(0).toUpperCase() + s.substr(1).toLowerCase();};
-        this.verbose_name = (this.name || "").replace(/[-_]/g," ").replace(/\w\S*/g, replace);
-      }
-      this.label = this.label || this.verbose_name;
-      this.id = this.id || "id_" + this.name + this.form.form_tag.suffix;
-      this.input_tagname = options.input_tagname || ((this.type == "textarea")?this.type:"input");
-      this.input_type = this.type || "text";
-
       // if there's a validator, use type=text to ignore browser default
       if (uR.config.text_validators[this.name]) {
         this.validate = uR.config.text_validators[this.name];
@@ -157,19 +74,6 @@
       //this.validate = (this.bounce)?uR.debounce(this.validate.bind(f),this.bounce):this.validate;
       this.keyUp = this.keyUp || function() {};
       this.keyUp = (this.bounce)?uR.debounce(this.keyUp.bind(f),this.bounce):this.keyUp;
-
-      if (this.choices) {
-        this.choices_map = {};
-        this.choices = uR.form.parseChoices(this.choices).map(function(choice_tuple,index) {
-          this.choices_map[choice_tuple[0]] = choice_tuple[1];
-          return {
-            label: choice_tuple[1],
-            id: this.id+"__"+index,
-            value: uR.slugify(choice_tuple[0]),
-          }
-        }.bind(this));
-      }
-      this.className = this.name + " " + this.type + " " + uR.css.form.field;
     }
 
     onKeyUp(e) {
