@@ -27,6 +27,8 @@
     return wrapped;
   }
   uR.auth.setUser = function setUser(user) {
+    if (!user && !uR.auth.user) { return } // already logged out
+    if (uR.auth.user && user && uR.auth.user.id == user.id) { return } // already logged in
     uR.storage.set('auth.user',user || null); // JSON.stringify hates undefined
     uR.auth.user = user;
     uR.auth.postAuth();
@@ -63,12 +65,15 @@
   uR.urls.api.login = "/api/login/";
   uR.urls.api.register = "/api/register/"; // #! TODO
   uR.urls.api['password-reset'] = "/api/password-reset/"; // #! TODO
+  uR.urls.api = "/accounts/logout/"
+  uR.urls.post_logout_redirect = "/"
   uR.auth.tag_names = 'auth-dropdown,auth-modal';
   uR.router.add({
     "[?#]?/auth/(login|register|forgot-password)/": function(path,data) { uR.alertElement("auth-modal",data); },
     "[?#]?/auth/logout/": function(path,data) {
       uR.auth.setUser(null);
-      uR.route("/accounts/logout/");
+      uR.ajax({ url: uR.urls.api.logout });
+      uR.route(uR.urls.post_logout_redirect);
     },
   });
 
@@ -125,8 +130,8 @@
       if (path.match(uR.auth.auth_regexp)) { path = "/"; } // avoid circular redirect!
       uR.route(path);
     })(data,request);
+    delete uR.AUTH_SUCCESS;
     self.unmount();
-    uR.AUTH_SUCCESS = undefined;
   }
   this.on("before-mount",function() {
     if (uR.auth.user) { this.ajax_success({ user: uR.auth.user }); }
