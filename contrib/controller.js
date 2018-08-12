@@ -12,6 +12,8 @@ uR.controller.Controller = class Controller {
           40: 'down',
           32: 'space',
           16: 'shift',
+          90: 'z',
+          88: 'x',
         },
         parent: uR.REQUIRED,
         is_keyboard: true,
