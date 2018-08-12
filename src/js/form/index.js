@@ -72,7 +72,7 @@
           <div class="help_text" if={ _f.help_text }><i class="fa fa-question-circle-o"></i> { _f.help_text }</div>
         </div>
         <div if={ non_field_error } class="non_field_error" data-field_id="non_field_error">
-          <div class={ uR.css.error }>{ non_field_error }</div>
+          <div each={ e in non_field_error } class={ uR.css.error }>{ e }</div>
           <p if={ uR.config.support_email } style="text-align: center;">
             If you need assistance contact
             <a href="mailto:{ uR.config.support_email }">{ uR.config.support_email }</a>
