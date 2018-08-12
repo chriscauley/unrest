@@ -7,6 +7,7 @@
       this.default_expire_ms = 10*60*1000; // ten minutes
       this.defaults = {}; // table with default values
       this._schema = {};
+      this.__CACHE = {};
       if (!this.test_supported()) {
         console.warn("Storage not supported, falling back to dummy storage");
         this.FAKE_STORAGE = {};
@@ -20,8 +21,15 @@
     }
 
     _(key) { return this.PREFIX + key; }
-    _getItem(key) { return localStorage.getItem(this._(key)); }
-    _setItem(key,value) { return localStorage.setItem(this._(key),value); }
+    _getItem(key) {
+      if (this.__CACHE[key] === undefined) {
+        this.__CACHE[key] = localStorage.getItem(this._(key));
+      }
+      return this.__CACHE[key]
+    }
+    _setItem(key,value) {
+      localStorage.setItem(this._(key),this.__CACHE[key] = value);
+    }
     _removeItem(key) { return localStorage.removeItem(this._(key)); }
     _hasOwnProperty(key) { return localStorage.hasOwnProperty(this._(key)) }
 
