@@ -1,8 +1,11 @@
 (function() {
   class QueryError extends Error {
     constructor(message,model,filters) {
-      console.error(model.name,filters);
-      super(message);
+      super({
+        message: message,
+        models: model,
+        filter: filters,
+      });
     }
   }
   class Model {
@@ -152,6 +155,7 @@
 
   class BaseModelManager {
     constructor(model) {
+      this.__CACHE = {}
       this.model = model;
       this.model.NotFound = this.NotFound = class NotFound extends QueryError {
         constructor(filters) {
@@ -184,10 +188,14 @@
         return results[0];
       }
     }
-    getOrCreate(options) {
+    getOrCreate(options,defaults={}) {
+      if (typeof options == "number" || typeof options == "string") {
+        options = { pk: options }
+      }
       try {
         return this.get(options);
       } catch (e) {
+        options = uR.defaults(options,defaults)
         if (e instanceof this.NotFound) { return this.create(options); }
         throw e;
       }
@@ -234,7 +242,8 @@
     _get(pk) {
       if (typeof pk != "number") { pk = parseInt(pk) }
       if (this._getPKs().indexOf(pk) == -1) { throw new this.NotFound({pk: pk}) }
-      return new this.model(this.storage.get(pk));
+      if (!this.__CACHE[pk]) { this.__CACHE[pk] = new this.model(this.storage.get(pk)) }
+      return this.__CACHE[pk]
     }
     get(options) {
       if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
@@ -297,7 +306,7 @@
       obj[obj.META.pk_field] = obj.pk = obj.pk || this._getNextPK();
       this.storage.set(obj.pk,obj.toJson());
       is_new && obj.objects._addPK(obj.pk);
-      return obj;
+      return this.__CACHE[obj.pk] = obj
     }
     delete(obj) {
       this.remove(obj.pk);
