@@ -5,6 +5,7 @@ var PROJECT_NAME = "unrest";
 var JS_FILES = {
   vendor: ["src/vendor/*.js"],
   unrest: [
+    "src/js/index.js",
     "src/js/*.js",
     "src/js/*.tag",
     "src/js/form/*js",
@@ -57,4 +58,5 @@ ezGulp({
   js: JS_FILES,
   less: LESS_FILES,
   static: STATIC_FILES,
+  DEST: ".dist/"
 })
