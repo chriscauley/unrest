@@ -11,7 +11,6 @@
     // #! TODO: Everythin on tag should be moved to AjaxMixin
     var form = opts.form || {};
     var method = (opts.method || form.method || "GET").toUpperCase();
-    var data = opts.data;
     var target = opts.target || opts.form;  // default to body?
     var url = opts.url || form.action || '.';
     window.airbrake && window.airbrake.log("AJAX: "+url);
@@ -42,14 +41,14 @@
     }
 
     // create form_data from data or form
-    if (!data && opts.form) {
-      data = {};
+    if (!opts.data && opts.form) {
+      opts.data = {};
       uR.forEach(opts.form.elements,function(element) {
         if (element.type == "file") {
-          data[element.name] = element.files[0];
+          opts.data[element.name] = element.files[0];
           filenames[element.name] = element.files[0].name;
         } else {
-          data[element.name] = element.value;
+          opts.data[element.name] = element.value;
         }
       });
     }
@@ -57,16 +56,16 @@
     var form_data = new FormData(opts.form);
     var _stringify = (v) =>(typeof v =="object")?JSON.stringify(v):v;
     // ^^ objects need to be turned into strings rather than [Object object]
-    if (method=="POST" && data) {
-      for (var key in data) {
-        if (data[key] == undefined) { continue }
-        filenames[key]?form_data.append(key,data[key],filenames[key]):form_data.append(key,_stringify(data[key]));
+    if (method=="POST" && opts.data) {
+      for (var key in opts.data) {
+        if (opts.data[key] == undefined) { continue }
+        filenames[key]?form_data.append(key,opts.data[key],filenames[key]):form_data.append(key,_stringify(opts.data[key]));
       };
     }
     if (method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
-      for (key in data) {
-        url += key + "=" + encodeURIComponent(_stringify(data[key])) + "&";
+      for (key in opts.data) {
+        url += key + "=" + encodeURIComponent(_stringify(opts.data[key])) + "&";
       }
     }
 
@@ -90,12 +89,17 @@
         return uR.auth.loginRequired(function() { uR.ajax(opts); })();
       }
       if (target) { target.removeAttribute('data-loading'); }
-      var errors = data.errors || {};
-      if (data.error) { errors = { non_field_error: data.error }; }
-      var non_field_error = errors.non_field_error || errors.__all__; // __all__ is django default syntax
+
+      const errors = data.errors || {};
+      errors.non_field_error = _.find(
+        data.error, // generic "error" for the entire form
+        errors.__all__, // __all__ is django default syntax
+        errors.non_field_error, // my prefered syntax
+      )
       if (isEmpty(errors) && request.status != 200) {
-        non_field_error = opts.default_error || "An unknown error has occurred";
+        errors.non_field_error = opts.default_error || "An unknown error has occurred";
       }
+
       if (tag && tag.form && tag.form.field_list) {
         uR.forEach(tag.form.field_list,function(field,i) {
           field.data_error = errors[field.name];
@@ -106,12 +110,12 @@
           field.show_error = true;
         });
       }
-      if (non_field_error) {
+      if (errors.non_field_error) {
         // if there's no form and no error function in opts, alert as a fallback
         if (tag) {
-          tag.non_field_error = non_field_error;
-          if (data.html_errors && ~data.html_errors.indexOf("non_field_error")) { tag.non_field_html_error = true; }
-        } else if (!opts.error) { uR.alert(non_field_error); }
+          tag.non_field_error = errors.non_field_error;
+          tag.non_field_html_error = (data.html_errors || []).indexOf("non_field_error") != -1
+        } else if (!opts.error) { uR.alert(errors.non_field_error); }
       }
       var complete = (request.status == 200 && isEmpty(errors));
       (complete?success:error)(data,request);
@@ -122,10 +126,11 @@
         tag.messages = data.messages || [];
         tag.update();
       }
-      uR.postAjax && uR.postAjax.bind(request)(request);
+      uR.postAjax && uR.postAjax.call(this,request);
       if (data.ur_route_to) { uR.route(data.ur_route_to); }
     };
-    request.send((headers['Content-Type'] == 'application/json')?JSON.stringify(data):form_data);
+    const is_json = headers['Content-Type'] == 'application/json'
+    request.send(is_json?JSON.stringify(opts.data):form_data);
   }
 
   var AjaxMixin = {
