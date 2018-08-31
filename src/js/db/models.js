@@ -201,7 +201,7 @@
       }
     }
     create(options) {
-      return new this.model(options,{save: true}).save();
+      return new this.model(options).save();
     }
     filter(options) {
       options = options || {};
@@ -254,17 +254,19 @@
         return results[0];
       }
     }
-    getOrCreate(options) {
+    getOrCreate(options,defaults={}) {
+      if (typeof options == "number" || typeof options == "string") {
+        options = { pk: options }
+      }
       try {
         return this.get(options);
       } catch (e) {
+        options = uR.defaults(options,defaults)
         if (e instanceof this.NotFound) { return this.create(options); }
         throw e;
       }
     }
-    create(options) {
-      return new this.model(options,{save: true}).save();
-    }
+    create(options) { return new this.model(options).save() }
     filter(options) {
       options = options || {};
       var all = this.all();
