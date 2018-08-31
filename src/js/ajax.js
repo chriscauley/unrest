@@ -9,20 +9,15 @@
     // note: !!form is always true, opts.form can be undefined (falsey)
     // but form.some_property will always be false if there is no form!
     // #! TODO: Everythin on tag should be moved to AjaxMixin
-    var form = opts.form || {};
-    var method = (opts.method || form.method || "GET").toUpperCase();
+    opts.method = (opts.method || (opts.form || {}).method || "GET").toUpperCase();
     var target = opts.target || opts.form;  // default to body?
-    var url = opts.url || form.action || '.';
+    var url = opts.url || (opts.form || {}).action || '.';
     window.airbrake && window.airbrake.log("AJAX: "+url);
     var that = opts.that;
     if (that) {
       console.warn('"that" has been depracated in favor of "tag".');
     }
     var tag = that || opts.tag;
-    var loading_attribute = opts.loading_attribute || (tag && tag.loading_attribute) || uR.config.loading_attribute;
-    var success_attribute = opts.success_attribute || "";
-    var success_reset = opts.success_reset || false;
-    var success = (opts.success || function(data,request) {}).bind(tag);
     var error = (opts.error || function(data,request) {}).bind(tag);
     var filenames = opts.filenames || {};
     if (tag) {
@@ -36,6 +31,11 @@
 
     // mark as loading
     if (target) {
+      const loading_attribute = _.find([
+        opts.loading_attribute,
+        (tag && tag.loading_attribute),
+        uR.config.loading_attribute,
+      ])
       target.removeAttribute("data-success");
       target.setAttribute("data-loading",loading_attribute);
     }
@@ -56,13 +56,13 @@
     var form_data = new FormData(opts.form);
     var _stringify = (v) =>(typeof v =="object")?JSON.stringify(v):v;
     // ^^ objects need to be turned into strings rather than [Object object]
-    if (method=="POST" && opts.data) {
+    if (opts.method=="POST" && opts.data) {
       for (var key in opts.data) {
         if (opts.data[key] == undefined) { continue }
         filenames[key]?form_data.append(key,opts.data[key],filenames[key]):form_data.append(key,_stringify(opts.data[key]));
       };
     }
-    if (method != "POST") {
+    if (opts.method != "POST") {
       url += (url.indexOf("?") == -1)?"?":"&";
       for (key in opts.data) {
         url += key + "=" + encodeURIComponent(_stringify(opts.data[key])) + "&";
@@ -71,13 +71,13 @@
 
     // create and send XHR
     var request = new XMLHttpRequest();
-    request.open(method, url , true);
+    request.open(opts.method, url , true);
     var headers = uR.defaults(opts.headers || {}, {
       "X-Requested-With": "XMLHttpRequest",
     })
     for (var key in headers) { request.setRequestHeader(key,headers[key]); }
 
-    if ("POSTDELETE".indexOf(method) != -1 && uR.cookie.get("csrftoken")) {
+    if (["POST","DELETE"].indexOf(opts.method) != -1 && uR.cookie.get("csrftoken")) {
       request.setRequestHeader("X-CSRFToken",uR.cookie.get("csrftoken"));
     }
     request.onload = function(){
@@ -118,9 +118,11 @@
         } else if (!opts.error) { uR.alert(errors.non_field_error); }
       }
       var complete = (request.status == 200 && isEmpty(errors));
-      (complete?success:error)(data,request);
+      (complete?opts.success:opts.error).call(that || tag,data,request);
       uR.pagination = data.ur_pagination || uR.pagination;
-      if (target && complete && !data.messages) { target.setAttribute("data-success",success_attribute) }
+      if (target && complete && !data.messages) {
+        target.setAttribute("data-success",opts.success_attribute || "")
+      }
       if (tag) {
         tag._ajax_busy = false;
         tag.messages = data.messages || [];
