@@ -82,8 +82,8 @@
 
     onChange(e) {
       if (this.form.active) { this.show_error = true; }
+      this.onKeyUp(e); // triggers validation, etc
       this.form.form_tag && this.form.form_tag.onChange && this.form.form_tag.onChange(e,this);
-      this.onKeyUp(e);
     }
     reset() {
       this.show_error = false;

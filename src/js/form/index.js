@@ -155,7 +155,7 @@
 
   getData() {
     var data = {};
-    uR.forEach(this.form.field_list,function(f) { data[f.name] = f.value || ""; });
+    uR.forEach(this.form.field_list,(f) => { data[f.name] = f.value || ""; });
     this.opts.process_data && this.opts.process_data(data);
     return data;
   }
