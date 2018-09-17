@@ -10,17 +10,11 @@
 </head>
 <body>
   <div id="wrapper" class="d-flex">
-    <div class="sidebar">
-      <h1 class="logo">unrest</h1>
-      <ul class="nav">
-        <li class="nav-item"><a href="#ur-form-demo">Form</a></li>
-        <li class="nav-item"><a href="#tabs-demo">Tabs</a></li>
-        <li class="nav-item"><a href="#markdown-demo">Markdown</a></li>
-        <li class="nav-item"><a href="#calendar-demo">Calendar</a></li>
-        <li class="nav-item"><a href="#calculator-demo">Calculator</a></li>
-        <li class="nav-item"><a href="#uc-demo">Testing</a></li>
-      </ul>
-    </div>
+    <ur-nav>
+      <yield to="logo">
+        <h1 class="logo">unrest</h1>
+      </yield>
+    </ur-nav>
     <div class="container"><div id="content"></div></div>
   </div>
   <div id="alert-div"></div>

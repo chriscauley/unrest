@@ -39,6 +39,11 @@ window.uR = window.uR || {};
       item: "tab-item",
       active: "active",
     },
+    nav: {
+      outer: "sidebar",
+      list: "nav",
+      item: "nav-item",
+    }
   }
   uR._var = {};
 

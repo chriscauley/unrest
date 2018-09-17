@@ -49,7 +49,7 @@ LESS_FILES.unrest_full = LESS_FILES.unrest.concat(LESS_FILES.admin);
 
 var STATIC_FILES = [
   'lib',
-  'demo',
+  'demo/',
   'lunchtime',
   'favicon.ico',
 ]

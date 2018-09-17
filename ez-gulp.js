@@ -111,7 +111,7 @@ module.exports = function(opts) {
         .pipe(gulp.dest(opts.DEST));
     });
     build_tasks.push('build-mustache');
-    watch_tasks.push('build-mustache')
+    watch_tasks.push('build-mustache');
   }
   gulp.task('watch', build_tasks, function () {
     for (var key in opts.js) {
