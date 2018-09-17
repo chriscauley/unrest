@@ -25,7 +25,7 @@ uR.Random = function Random(seed) {
       res = res * 31 + seed.charCodeAt(i);
       res = res & res;
     }
-    seed = res
+    seed = res;
   }
 
   // #! TODO see _analyzeRandom
@@ -34,21 +34,21 @@ uR.Random = function Random(seed) {
   random.int = (min,max) => {
     // min-max or 0-min if no max
     return (max === undefined)?random.int(0,min):Math.floor(random()*(max-min)+min);
-  }
+  };
   random.raw = raw = () => _seed = _seed * 16807 % 2147483647; // 0-2147483646
-  random.choice = (array) => array[random.int(array.length)]
+  random.choice = (array) => array[random.int(array.length)];
   random.reset = () =>  {
     _seed = seed % 2147483647;
     if (_seed <= 0) _seed += 2147483646;
-  }
+  };
   random.reset();
   if (isNaN(_seed)) { // seed was neither string or number... pick a truely random seed
-    random.raw = () => Math.floor(Math.random()*2147483647)
+    random.raw = () => Math.floor(Math.random()*2147483647);
   }
   random.seed = seed;
   random.getNextSeed = () => {
     return random.raw()%8191;// 2^13-1...because why not?
-  }
+  };
   random.shuffle = (array) => {
     var i = array.length, temp, i_rand;
     // While there remain elements to shuffle...
@@ -62,21 +62,21 @@ uR.Random = function Random(seed) {
       array[i_rand] = temp;
     }
     return array;
-  }
+  };
   /* #! TODO
      for some reason the first draw off of random.choice seems to always be the first
      element of the array for the first roll of random. I can't figure it out and so
      I really need some serious stats on this... but not today */
   random();
-  return random
-}
+  return random;
+};
 
 uR.RandomMixin = superclass => class Random extends superclass {
   // creates a method this.random which is a PRNG based on opts._SEED or opts.parent.random
   constructor(opts={}) {
-    super(opts)
+    super(opts);
     this._SEED = opts._SEED || opts.seed;
-    if (opts._prng) { this._SEED = opts._prng.random.getNextSeed() }
+    if (opts._prng) { this._SEED = opts._prng.random.getNextSeed(); }
     this.random = new uR.Random(this._SEED);
   }
-}
+};

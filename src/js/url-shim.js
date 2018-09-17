@@ -1,6 +1,6 @@
 // https://jsfiddle.net/warpech/8dyx615f/
 (function loadURLShim() {
-  var airbrake = window.airbrake || {log: function(e) { console.error(e) } };
+  var airbrake = window.airbrake || {log: function(e) { console.error(e); } };
   try {
     new URL(window.location.href,window.location.origin);
     new URL(window.location.href,undefined);
@@ -17,7 +17,7 @@
     var a = iframe.contentWindow.document.querySelector('a');
     document.body.removeChild(iframe);
     return a;
-  }
+  };
 })();
 // ie11 polyfill
 if (!String.prototype.startsWith) {

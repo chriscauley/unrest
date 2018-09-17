@@ -11,10 +11,10 @@
       if (!this.test_supported()) {
         console.warn("Storage not supported, falling back to dummy storage");
         this.FAKE_STORAGE = {};
-        this.set = function(key,value) { this.FAKE_STORAGE[key] = value; }
-        this.get = function(key) { return this.FAKE_STORAGE[key]; }
-        this.has = function(key) { this.FAKE_STORAGE.hasOwnProperty(key); }
-        this.remove = function(key) { delete this.FAKE_STORAGE[key]; }
+        this.set = function(key,value) { this.FAKE_STORAGE[key] = value; };
+        this.get = function(key) { return this.FAKE_STORAGE[key]; };
+        this.has = function(key) { this.FAKE_STORAGE.hasOwnProperty(key); };
+        this.remove = function(key) { delete this.FAKE_STORAGE[key]; };
       }
       this.times = this.get(this.META+"times") || {};
       this.keys = this.get(this.META+"keys") || [];
@@ -25,41 +25,41 @@
       if (this.__CACHE[key] === undefined) {
         this.__CACHE[key] = localStorage.getItem(this._(key));
       }
-      return this.__CACHE[key]
+      return this.__CACHE[key];
     }
     _setItem(key,value) {
       localStorage.setItem(this._(key),this.__CACHE[key] = value);
     }
     _removeItem(key) { return localStorage.removeItem(this._(key)); }
-    _hasOwnProperty(key) { return localStorage.hasOwnProperty(this._(key)) }
+    _hasOwnProperty(key) { return localStorage.hasOwnProperty(this._(key)); }
 
     get(key) {
       // pull a json from local storage or get an object from the defaults dict
       var value;
       if (this._hasOwnProperty(key)) {
         try { value = JSON.parse(this._getItem(key)); }
-        catch(e) { } // we only allow JSON here, so parse errors can be ignored
+        catch(e) { console.warn(`Item "${key}" in uR.Storage was not JSON`,value); }
       } else if (this.defaults.hasOwnProperty(key)) {
         value = this.defaults[key];
       }
-      return value
+      return value;
     }
 
     update(data) {
       for (var key in data) {
-        if (data.hasOwnProperty(key)) { this.set(key,data[key]) }
+        if (data.hasOwnProperty(key)) { this.set(key,data[key]); }
       }
     }
 
     set(key,value) {
       // store stringified json in localstorage
-      if (!value && value !== 0) { value = undefined; } // null causes issues
-      this._setItem(key,JSON.stringify(value))
+      if (!value && value !== 0 && value !== "") { return this.remove(key) }
+      this._setItem(key,JSON.stringify(value));
       this.times[key] = new Date().valueOf();
       (this.keys.indexOf(key)==-1)?this.keys.push(key):undefined;
       this._save();
     }
-    has(key) { return this.keys.indexOf(key) != -1 }
+    has(key) { return this.keys.indexOf(key) != -1; }
 
     remove(key) {
       // note, removing a key will revert to default (if present), not undefined
@@ -85,7 +85,7 @@
         localStorage.setItem('test', '1');
         localStorage.removeItem('test');
         return true;
-      } catch(e) { }
+      } catch(e) { console.warn("No local storage found. Falling back."); }
     }
 
     // below this is the api for the timebomb remote data store, which isn't used anywhere yet.
@@ -101,7 +101,7 @@
     }
     remote(url,callback) {
       var stored = this.get(url);
-      if (stored && !this.isExpired(url)) { callback(stored); return }
+      if (stored && !this.isExpired(url)) { callback(stored); return; }
       uR.ajax({
         url: url,
         success: function(data) {
@@ -122,7 +122,7 @@
       schema && this.setSchema(schema);
     }
     getDefault(key,_default,schema) {
-      if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default } }
+      if (!schema || typeof schema == "string") { schema = { type: schema, _default:_default }; }
       if (schema && !this._schema[key]) {
         this._schema[key] = schema || {};
         this._schema[key].name = key;
@@ -136,9 +136,9 @@
     get(key) {
       var out = super.get(key);
       var type = this._schema[key] && this._schema[key].type;
-      if (type == "boolean") { return out == "true" }
-      if (type == "int" || type == "integer") { return parseInt(out) }
-      if (type == "float") { return parseFloat(out) }
+      if (type == "boolean") { return out == "true"; }
+      if (type == "int" || type == "integer") { return parseInt(out); }
+      if (type == "float") { return parseFloat(out); }
       return out;
     }
     getSchema(keys) {
@@ -153,23 +153,23 @@
         var obj = schema;
         schema = [];
         for (var key in obj) {
-          schema.push({ name: key, value: obj[key] })
+          schema.push({ name: key, value: obj[key] });
         }
       }
       uR.forEach(schema,function(s) {
         if (s.type == "color" && tinycolor) { s.initial = tinycolor(s.initial).toHexString(); }
         self.getDefault(s.name,s._default || s.value,s);
-      })
-      return this.getSchema();;
+      });
+      return this.getSchema();
     }
 
     _getSchemaKeys(keys) {
       var out = [];
       for (var key in this._schema) {
-        if (keys && keys.indexOf(key) == -1) { continue }
-        this._schema.hasOwnProperty(key) && out.push(key)
+        if (keys && keys.indexOf(key) == -1) { continue; }
+        this._schema.hasOwnProperty(key) && out.push(key);
       }
-      return out
+      return out;
     }
     getData(keys) {
       var out = {};
@@ -188,13 +188,13 @@
         },
         autosubmit: true,
         onUnmount: function() {
-          tag_opts && tag_opts.cancel && tag_opts.cancel()
-          dirty && window.location.reload()
+          tag_opts && tag_opts.cancel && tag_opts.cancel();
+          dirty && window.location.reload();
         },
-      }
+      };
       uR.forEach(opts.schema,(s)=> {
-          s._default = s.value;
-          s.value = self.get(s.name);
+        s._default = s.value;
+        s.value = self.get(s.name);
       });
       uR.alertElement("ur-form",opts);
     }    

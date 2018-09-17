@@ -4,7 +4,7 @@
     if (options.ur_modal) {
       options.mount_to = options.mount_to || uR.config.mount_alerts_to;
     }
-    var mount_to = options.mount_to || uR.config.mount_to
+    var mount_to = options.mount_to || uR.config.mount_to;
     var target = document.querySelector(mount_to);
     var children = target.childNodes;
     var i = target.childNodes.length;
@@ -21,15 +21,15 @@
     });
     riot.mount(_t.join(","),options);
     if (names.join(",").toUpperCase().indexOf(uR.router._current_tagname) == -1) {
-      uR.router._current_tag = uR.router._current_tagname = undefined
+      uR.router._current_tag = uR.router._current_tagname = undefined;
     }
-  }
+  };
 
   uR.alertElement = function alertElement(name,options) {
     options = options || {};
     if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = true; }
     uR.mountElement(name,options);
-  }
+  };
 
   uR.newElement = function newElement(tagName,attrs,options) {
     var element = document.createElement(tagName);
@@ -44,17 +44,17 @@
     for (var attr in attrs) { element[attr] = attrs[attr]; }
     if (options) { riot.mount(element,options); }
     return element;
-  }
+  };
 
   uR.loadTemplate = function loadTemplate(template_name,data) {
-    template_name = template_name.match(/[^\/].+[^\/]/)[0].replace(/\//g,"-");
+    template_name = template_name.match(/[^/].+[^/]/)[0].replace(/\//g,"-");
     riot.compile(
       uR.static("templates/"+template_name+".html"),
       function() { uR.router.routeElement(template_name)(template_name,data); }
     );
-  }
+  };
 
-  function pushState(path,data) {
+  function pushState(path,_data) {
     if (window.location.pathname == path) { return; }
     // #! TODO the empty string here is the page title. Need some sort of lookup table
     history.replaceState({path:path},"" || document.title,path);
@@ -67,7 +67,7 @@
     var old_url = new URL(window.location.href);
     var pathname = (new_url.pathname || href).replace(window.location.origin,"");
 
-    uR.forEach(uR._on_routes,function(f) {f(pathname,data)});
+    uR.forEach(uR._on_routes,function(f) {f(pathname,data);});
     var path_match = uR.router.resolve(pathname);
     var hash_match = new_url && uR.router.resolve(new_url.hash);
 
@@ -79,7 +79,7 @@
           window.location.hash = "";
           this.unmount && this.unmount();
         }
-      })
+      });
       uR._routes[hash_match.key](new_url.hash,data);
     } else if (path_match) {
       _.extend(data,{ matches: path_match });
@@ -106,7 +106,7 @@
     uR.STALE_STATE = true;
     data.one && data.one.route && data.one.route();
     data.on && data.on.route && data.on.route();
-  }
+  };
 
   function onClick(e) {
     // Borrowed heavily from riot
@@ -115,14 +115,14 @@
       e.which != 1 // not left click
         || e.metaKey || e.ctrlKey || e.shiftKey // or meta keys
         || e.defaultPrevented // or default prevented
-    ) return
+    ) return;
 
     var el = e.target, loc = (window.history.location || window.location);
     if (el && el.nodeName) {
       var selector = el.nodeName;
       if (el.id) { "#"+el.id; }
       if (el.className) { selector += "." + el.className; }
-      if (el.name) { selector += "[name="+el.name+"]" }
+      if (el.name) { selector += "[name="+el.name+"]"; }
       window.airbrake && window.airbrake.log("clicked: " + selector);
     }
     while (el && el.nodeName != 'A') el = el.parentNode;
@@ -132,8 +132,8 @@
         || el.hasAttribute('download') // has download attr
         || !el.hasAttribute('href') // has no href attr
         || el.target && el.target != '_self' // another window or frame
-        || el.href.indexOf(loc.href.match(/^.+?\/\/+[^\/]+/)[0]) == -1 // cross origin
-    ) return
+        || el.href.indexOf(loc.href.match(/^.+?\/\/+[^/]+/)[0]) == -1 // cross origin
+    ) return;
 
     /*if (el.href != loc.href && (
       el.href.split('#')[0] == loc.href.split('#')[0] // internal jump
@@ -158,8 +158,8 @@
         uR.router._current_tag = this;
         this.on("unmount",function () {
           // all done, remove this if still assigned to the router
-          if (uR.router._current_tagname == this.root.tagName) { uR.router._current_tagname = undefined }
-          if (uR.router._current_tag == this) { uR.router._current_tag = undefined }
+          if (uR.router._current_tagname == this.root.tagName) { uR.router._current_tagname = undefined; }
+          if (uR.router._current_tag == this) { uR.router._current_tag = undefined; }
         });
       }
 
@@ -167,23 +167,23 @@
       this.on("route",() => this.isMounted && this.one("route",() => this.update()));
       this.on("mount",() => this.trigger("route"));
     }
-  }
+  };
   window.riot && window.riot.mixin(RouterMixin);
 
-  uR.config.do404 = function() { uR.mountElement("four-oh-four"); }
+  uR.config.do404 = function() { uR.mountElement("four-oh-four"); };
   uR.config.MODAL_PREFIX = /^#!/;
   uR._routes = uR._routes || {};
   uR._on_routes = [];
-  uR.onRoute = function(f) { uR._on_routes.push(f) }
+  uR.onRoute = function(f) { uR._on_routes.push(f); };
   uR.router = {
     _onOne(tag,opts) {
       // useful for passing in lifecycle events as options for riot tags
-      for (var key in opts.on || {}) { tag.on(key,opts.on[key]) }
-      for (var key in opts.one || {}) { tag.on(key,opts.one[key]) }
+      for (let key in opts.on || {}) { tag.on(key,opts.on[key]); }
+      for (let key in opts.one || {}) { tag.on(key,opts.one[key]); }
     },
     start: function() {
       document.addEventListener('click', onClick);
-      window.addEventListener('hashchange', () => uR.route(new URL(e.newURL).hash))
+      window.addEventListener('hashchange', () => uR.route(new URL(e.newURL).hash));
       uR.router.ready.start();
       // window.popstate = function(event) { uR.route(window.location.href,event.state,false); };
     },
@@ -201,14 +201,14 @@
           uR.router._current_tagname = tagName;
           uR.mountElement(element_name,data);
         }
-      }
+      };
     },
     resolve: function(path) {
       for (var key in uR._routes) {
         var regexp = new RegExp(key);
-        var match = path.match(regexp)
+        var match = path.match(regexp);
         if (match) {
-          match.key = key
+          match.key = key;
           return match;
         }
       }

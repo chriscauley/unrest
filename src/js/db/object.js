@@ -1,5 +1,5 @@
 uR.Object = class Object {
-  constructor(opts) {
+  constructor(_opts) {
     this._id = this.constructor.name+Math.random();
   }
   defaults(opts,_defaults) {
@@ -12,6 +12,6 @@ uR.Object = class Object {
     func = func.bind(this);
     uR.forEach(array,func);
   }
-}
+};
 
-uR.RandomObject = uR.RandomMixin(uR.Object)
+uR.RandomObject = uR.RandomMixin(uR.Object);

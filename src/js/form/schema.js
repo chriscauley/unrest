@@ -18,7 +18,7 @@ uR.schema.prepSchema = (form) => {
       return;
     }
   }
-  if (!_schema) { throw "NotImplemented: ur-form cannot function without schema" }
+  if (!_schema) { throw "NotImplemented: ur-form cannot function without schema"; }
   form.empty_initial = uR.schema.__initial[form.schema_url] || form.form_tag.opts.initial || {};
   form.initial = uR.storage.get(form.form_tag.action) || form.empty_initial || {};
 
@@ -27,7 +27,7 @@ uR.schema.prepSchema = (form) => {
   form.schema = _schema.map(uR.form.prepField);
   form.field_list = [];
   form.fields = {};
-  uR.forEach(form.schema, function(field,i) {
+  uR.forEach(form.schema, function(field) {
     var override = uR.config.input_overrides[field.type] || uR.config.name_overrides[field.name];
     // #! TODO: should this take in field and modify it?
     if (typeof override == "function") { override = override(); }
@@ -49,8 +49,8 @@ uR.schema.prepSchema = (form) => {
   if (form._needs_update) {
     form.form_tag.update();
     form.form_tag.update();
-  };
-}
+  }
+};
 
 uR.schema.prepFieldOptions = (opts) => {
   if (typeof opts == "string") {
@@ -59,17 +59,17 @@ uR.schema.prepFieldOptions = (opts) => {
       opts = uR.schema.fields[opts];
       opts.name = name;
     } else {
-      opts = { name: name, type: 'text' }
+      opts = { name: name, type: 'text' };
     }
   }
   opts.required = opts.required == undefined || opts.required; // defaults to true!
   opts.name = opts.name || opts.type;
   if (typeof(opts.name) == "object") { // can't remember when this is used
-    console.warn("look at me!")
+    console.warn("look at me!");
     opts.name = (typeof(opts.name) == "object")?opts.name[0]:opts.name;
   }
 
-  if (opts.value === false) { opts.value = uR.FALSE }
+  if (opts.value === false) { opts.value = uR.FALSE; }
   opts.value = opts.initial_value = opts.value || (opts.form.initial || {})[opts.name];
   if (opts.type == "datetime-local" && typeof opts.value == "string") {
     // the HTML input type is very picky about the format, so use moment to coerce it
@@ -86,7 +86,7 @@ uR.schema.prepFieldOptions = (opts) => {
 
   opts.label = opts.label || opts.verbose_name;
   if (!opts.id) {
-    opts.id = "id_" + opts.name + (opts.form && opts.form.form_tag.suffix || "")
+    opts.id = "id_" + opts.name + (opts.form && opts.form.form_tag.suffix || "");
   }
 
   // input_tagname and input_type are used in generating the <input>
@@ -102,8 +102,8 @@ uR.schema.prepFieldOptions = (opts) => {
         label: choice_tuple[1],
         id: opts.id+"__"+index,
         value: uR.slugify(choice_tuple[0]),
-      }
-    })
+      };
+    });
   }
-  return opts
-}
+  return opts;
+};

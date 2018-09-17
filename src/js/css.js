@@ -44,13 +44,13 @@ window.uR = window.uR || {};
       list: "nav",
       item: "nav-item",
     }
-  }
+  };
   uR._var = {};
 
   uR.forEach(document.styleSheets, function (ss) {
     uR.forEach(['materialize','spectre','bootstrap'],function(theme) {
-      if (!ss.href || ss.href.indexOf(theme) == -1) { return }
-      document.body.setAttribute("ur-theme",theme)
+      if (!ss.href || ss.href.indexOf(theme) == -1) { return; }
+      document.body.setAttribute("ur-theme",theme);
       if (theme == "spectre") {
         uR.css.default.content = "card-body";
         uR.css.default.header = "card-header";
@@ -73,12 +73,12 @@ window.uR = window.uR || {};
           content: "modal-body",
           footer: "modal-footer",
           header_title: "modal-title h4",
-        }
+        };
         uR.css.right = "float-right";
         uR.css.left = "float-left";
         uR.css.row = "columns";
         [1,2,3,4,5,6,7,8,9,10,11,12].map((i) => uR.css['col'+i] = "column col-"+i);
       }
-    })
+    });
   });
 })();

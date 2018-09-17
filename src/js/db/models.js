@@ -15,7 +15,7 @@
         db_table: this.constructor.db_table,
         model_name: this.constructor.name,
         model_key: this.constructor.model_key,
-      }
+      };
       this.options = opts;
       this.createSchema();
       this.create_fields();
@@ -31,18 +31,17 @@
     }
     createSchema() {
       // returns a list of objects to be used by a <ur-form>
-      var _schema = this.options.schema || uR.db.schema[this.META.model_key];
+      const _schema = this.options.schema || uR.db.schema[this.META.model_key];
       this.schema = new Map();
       _schema.map(obj => this.schema.set(obj.name,uR.form.prepField(obj)));
       if (this.options.values_list) {
-        var [id,..._values] = this.options.values_list;
+        const [id,..._values] = this.options.values_list;
         this._pk = id;
-        var iter = this.schema.values();
-        var self = this;
-        uR.forEach(_values,function(v,i) {
-          var field = iter.next().value;
-          field.value=v;
-        })
+        const iter = this.schema.values();
+        uR.forEach(_values,v => {
+          const field = iter.next().value;
+          field.value = v;
+        });
       }
       return this.schema;
     }
@@ -50,17 +49,16 @@
     getAdminSchema() {
       const exclude = this.exclude || [];
       const schema = Array.from(this.schema.values()).map(s => _.clone(s))
-            .filter(s => exclude.indexOf(s.name) == -1);
+        .filter(s => exclude.indexOf(s.name) == -1);
       schema.map((s) => {
         s.value = this[s.name];
-      })
-      return schema
+      });
+      return schema;
     }
     __str() {
       return this.constructor.verbose_name + " #" + this.id;
     }
     create_fields() {
-      var primary_key;
       this.META.fields = [];
       this.schema.forEach(this.prepField,this);
       this.META.pk_field = this.META.pk_field || "id";
@@ -75,7 +73,7 @@
     }
     getAdminUrl() {
       var url = this.constructor.admin_url;
-      if (this.pk) { url += this.pk+"/" }
+      if (this.pk) { url += this.pk+"/"; }
       return url;
     }
     edit() {
@@ -93,17 +91,17 @@
           options = uR.schema.fields[options];
           options.name = name;
         } else {
-          options = { name: name, type: 'text' }
+          options = { name: name, type: 'text' };
         }
       }
       var field_class = options.field_class || uR.db.fields_map[options.type] || uR.db.CharField;
       options.parent = this;
       var field = new field_class(options);
-      if (this[field.name]) { throw "Field cannot have name that already exists on parent model" }
+      if (this[field.name]) { throw "Field cannot have name that already exists on parent model"; }
       this.META.fields.push(field);
       field.setValue(this,field.value);
       if (field.primary_key) {
-        this.META.pk_field = field.name
+        this.META.pk_field = field.name;
         this.pk = this[field.name];
       }
     }
@@ -118,7 +116,7 @@
       return out;
     }
     delete() {
-      this.objects.delete(this)
+      this.objects.delete(this);
     }
   }
 
@@ -143,25 +141,25 @@
       },this);
     }
     toJson(out) {
-      var out = out || super.toJson();
+      out = out || super.toJson();
       out.data = {};
       uR.forEach(this.data_fields,function(field) {
         out.data[field.name] = out[field.name];
         delete out[field.name];
-      },this)
+      },this);
       return out;
     }
   }
 
   class BaseModelManager {
     constructor(model) {
-      this.__CACHE = {}
+      this.__CACHE = {};
       this.model = model;
       this.model.NotFound = this.NotFound = class NotFound extends QueryError {
         constructor(filters) {
-          super(model.name + " not found",model,filters)
+          super(model.name + " not found",model,filters);
         }
-      }
+      };
       class MultipleObjectsReturned extends QueryError {
         constructor(filters) {
           super("Get query for " + model.name + " returned multiple objects",model,filters);
@@ -173,29 +171,29 @@
         db_table: model.db_table,
       };
     }
-    remove(pk) { throw "NotImplemented" }
-    all() { throw "NotImplemented" }
-    save(obj) { throw "NotImplemented" }
-    count() { throw "NotImplemented" }
-    clear() { throw "NotImplemented" }
-    _get(options) { throw "NotImplemented" }
+    remove(_pk) { throw "NotImplemented"; }
+    all() { throw "NotImplemented"; }
+    save(_obj) { throw "NotImplemented"; }
+    count() { throw "NotImplemented"; }
+    clear() { throw "NotImplemented"; }
+    _get(_options) { throw "NotImplemented"; }
     get(options) {
       if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
       else {
         var results = this.filter(options);
-        if (!results.length) { throw new this.NotFound(options) }
-        if (results.length > 1) { throw new this.MultipleObjectsReturned(options) }
+        if (!results.length) { throw new this.NotFound(options); }
+        if (results.length > 1) { throw new this.MultipleObjectsReturned(options); }
         return results[0];
       }
     }
     getOrCreate(options,defaults={}) {
       if (typeof options == "number" || typeof options == "string") {
-        options = { pk: options }
+        options = { pk: options };
       }
       try {
         return this.get(options);
       } catch (e) {
-        options = uR.defaults(options,defaults)
+        options = uR.defaults(options,defaults);
         if (e instanceof this.NotFound) { return this.create(options); }
         throw e;
       }
@@ -216,10 +214,10 @@
             return obj_value == value;
           }
           var [key2,mod] = key.split("__");
-          if (mod == "gte") { return obj[key2] >= value }
-          if (mod == "gt") { return obj[key2] > value }
-          if (mod == "lte") { return obj[key2] <= value }
-          if (mod == "lt") { return obj[key2] < value }
+          if (mod == "gte") { return obj[key2] >= value; }
+          if (mod == "gt") { return obj[key2] > value; }
+          if (mod == "lte") { return obj[key2] <= value; }
+          if (mod == "lt") { return obj[key2] < value; }
         });
       }
       return results;
@@ -228,7 +226,7 @@
 
   class StorageModelManager extends BaseModelManager {
     constructor(model) {
-      super(model)
+      super(model);
       this.storage_key = this.META.app_label + "/" + this.META.db_table + "/";
       if (!uR.db[this.storage_key]) { uR.db[this.storage_key] = new uR.Storage(this.storage_key); }
       this.storage = uR.db[this.storage_key];
@@ -240,33 +238,33 @@
       this.storage.set("INDEX",pks);
     }
     _get(pk) {
-      if (typeof pk != "number") { pk = parseInt(pk) }
-      if (this._getPKs().indexOf(pk) == -1) { throw new this.NotFound({pk: pk}) }
-      if (!this.__CACHE[pk]) { this.__CACHE[pk] = new this.model(this.storage.get(pk)) }
-      return this.__CACHE[pk]
+      if (typeof pk != "number") { pk = parseInt(pk); }
+      if (this._getPKs().indexOf(pk) == -1) { throw new this.NotFound({pk: pk}); }
+      if (!this.__CACHE[pk]) { this.__CACHE[pk] = new this.model(this.storage.get(pk)); }
+      return this.__CACHE[pk];
     }
     get(options) {
       if (typeof options == 'number' || typeof options == "string") { return this._get(options); }
       else {
         var results = this.filter(options);
-        if (!results.length) { throw new this.NotFound(options) }
-        if (results.length > 1) { throw new this.MultipleObjectsReturned(options) }
+        if (!results.length) { throw new this.NotFound(options); }
+        if (results.length > 1) { throw new this.MultipleObjectsReturned(options); }
         return results[0];
       }
     }
     getOrCreate(options,defaults={}) {
       if (typeof options == "number" || typeof options == "string") {
-        options = { pk: options }
+        options = { pk: options };
       }
       try {
         return this.get(options);
       } catch (e) {
-        options = uR.defaults(options,defaults)
+        options = uR.defaults(options,defaults);
         if (e instanceof this.NotFound) { return this.create(options); }
         throw e;
       }
     }
-    create(options) { return new this.model(options).save() }
+    create(options) { return new this.model(options).save(); }
     filter(options) {
       options = options || {};
       var all = this.all();
@@ -292,12 +290,12 @@
     }
     _getNextPK() {
       var pks = this._getPKs();
-      if (!pks.length) { return 1 }
+      if (!pks.length) { return 1; }
       return Math.max.apply(this,pks) + 1;
     }
     _addPK(pk) { // #! TODO this should use a set
       var pks = this._getPKs();
-      pks.push(pk)
+      pks.push(pk);
       this.storage.set("INDEX",pks);
     }
     clear() {
@@ -308,7 +306,7 @@
       obj[obj.META.pk_field] = obj.pk = obj.pk || this._getNextPK();
       this.storage.set(obj.pk,obj.toJson());
       is_new && obj.objects._addPK(obj.pk);
-      return this.__CACHE[obj.pk] = obj
+      return this.__CACHE[obj.pk] = obj;
     }
     delete(obj) {
       this.remove(obj.pk);
@@ -327,15 +325,15 @@
       this.storage.set(obj.pk,obj);
       return obj;
     }
-    clear() { this.storage.clear() }
-    delete(obj) { this.storage.delete(obj.id) }
-    all() { return Array.from(this.storage.values()) }
-    count() { return this.storage.size }
+    clear() { this.storage.clear(); }
+    delete(obj) { this.storage.delete(obj.id); }
+    all() { return Array.from(this.storage.values()); }
+    count() { return this.storage.size; }
     _get(pk) {
-      if (typeof pk != "number") { pk = parseInt(pk) }
+      if (typeof pk != "number") { pk = parseInt(pk); }
       var obj = this.storage.get(pk);
-      if (!obj) { throw new this.NotFound({pk: pk}) }
-      return obj
+      if (!obj) { throw new this.NotFound({pk: pk}); }
+      return obj;
     }
   }
 
@@ -351,12 +349,12 @@
     schema: {},
     apps: [],
     getApp: function(app_label) {
-      if (!uR.db[app_label]) { throw uR.NotImplemented(`App "${app_label}" not found`) }
+      if (!uR.db[app_label]) { throw uR.NotImplemented(`App "${app_label}" not found`); }
       return uR.db[app_label];
     },
     getModel: function(app_label, model_name) {
       var app = uR.db.getApp(app_label);
-      if (!app[model_name]) { throw uR.NotImplemented(`Model "${model_name}" not found in app "${app_label}"`) }
+      if (!app[model_name]) { throw uR.NotImplemented(`Model "${model_name}" not found in app "${app_label}"`); }
       return app[model_name];
     },
     register: function(app_label, models) {
@@ -383,5 +381,5 @@
         model.admin_new_url = model.admin_url+"new/";
       });
     },
-  }
-})()
+  };
+})();
