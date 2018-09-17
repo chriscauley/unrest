@@ -1,7 +1,6 @@
 function testCalendar() {
   this.do("testing calendar")
-    .wait("[href='#calendar-demo']")
-    .click()
+    .route("#calendar-demo")
     .wait("#content calendar")
     .checkResults()
     .done("calendar has not changed")

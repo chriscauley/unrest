@@ -2,18 +2,11 @@
   <h1>Calendar</h1>
   <calendar date="2016-6-1">
     <div each="{ o,i in day.occurrences }">
-      <div onclick="{ o.select }">
-        { o.name }
-        <div if="{ o.end }">{ o.moment.format("h:mm a") } - { o.end_moment.format("h:mm a") }</div>
-      </div>
-      <modal if="{ o.active }" cancel="{ o.cancel }" class="absolute">
-        <h2>{ o.name }</h2>
-        { o.moment.format("dddd MMMM Do, YYYY") }
-        <div>{ o.moment.format("h:mm a") } - { o.end_moment.format("h:mm a"); }</div>
-      </modal>
+      <div onclick="{ o.select }">{ o.name }</div>
     </div>
   </calendar>
 
+  uR.time_format = "h:mm a";
   this.on("mount",function() {
     this.ajax({
       url:"holidays.json",
@@ -21,7 +14,7 @@
         var dates = [];
         for (var date in data.holidays) { dates.push(date) }
         this.tags.calendar.occurrences = [
-          { 'start': '2016-6-20 7:00 pm', 'name': 'My birthday party', 'end': '2016-6-20 9:00 pm' }
+          { 'start': '2016-6-20 7:00 pm', 'name': 'Birthday party', 'end': '2016-6-20 9:00 pm' }
         ];
         for (var i=0;i<dates.length;i++) {
           var d = dates[i];

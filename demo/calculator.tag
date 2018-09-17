@@ -2,7 +2,7 @@
   <div class="display bg-secondary">
   <div class="ans">{ ans }</div>
     <div class="input">{ input }</div>
-    <div class="output" if={ output !== undefined } title={ output }>{ output }</div>
+    <div class="output" if={ output !== undefined } title={ output }>{ display_output }</div>
   </div>
   <div class="buttons">
     <div each={ group,i in button_groups } class={ group.className }>
@@ -21,7 +21,7 @@ this.on("before-mount",function() {
   this.button_groups = [];
   this.addButtonGroup({
     name: "numbers",
-    buttons: "7894561230.=",
+    buttons: "7894561230.C",
   });
   this.addButtonGroup({
     name: "arithmatic",
@@ -34,7 +34,6 @@ this.on("before-mount",function() {
     "+": ".*/+-",
     "-": ".+-",
     ".": ".*/+-",
-    "=": ".*/+-",
   }
   this.concatenation_keys = "0123456789+-*/."; // keys that can be added to a string for eval
 });
@@ -61,21 +60,31 @@ addButtonGroup(opts) {
 }
 click(e) {
   var key = e.item.button.key;
-  for (var i=0;i<2;i++) {
-    var last = this.current_command[this.current_command.length-1];
-    if (last && this.replaces[key] && this.replaces[key].indexOf(last) != -1) {
-      this.current_command.pop();
+  if (e.item.button.key == "C") {
+    this.current_command = []
+  } else {
+    for (var i=0;i<2;i++) {
+      var last = this.current_command[this.current_command.length-1];
+      if (last && this.replaces[key] && this.replaces[key].indexOf(last) != -1) {
+        this.current_command.pop();
+      }
     }
+    if (this.concatenation_keys.indexOf(key) != -1) { this.current_command.push(key); }
   }
-  if (this.concatenation_keys.indexOf(key) != -1) { this.current_command.push(key); }
   this.input = this.current_command.join("");
+  if ("1234567890".indexOf(key) == -1) { return }
   try {
     this.output = eval(this.input.replace("ans",this.current_command.ans));
   } catch (e) { this.debug && console.warn(e); }
-  if (key == "=" && this.input != this.output) {
+  // used to have an "=", but it was poorly implement so I replaced it with "C"
+  /*if (key == "=" && this.input != this.output) {
     this.current_command = ['ans'];
     this.current_command.ans = this.output;
-                        this.ans = this.output;
+    this.ans = this.output;
+  }*/
+  this.display_output = this.output
+   if (this.output.toString().length>5) {
+    this.display_output = this.output.toExponential(3)
   }
 }
 </script>
@@ -89,7 +98,7 @@ click(e) {
   flex-wrap: wrap;
   line-height: 1em;
   height: 3em;
-  padding: 5px;
+  padding: 5px 20px;
   justify-content: space-between;
 }
 :scope .display .ans {
@@ -103,9 +112,10 @@ click(e) {
 :scope .display .ans:empty:before { content: ""; }
 :scope .display .output {
   overflow: hidden;
+  text-align: right;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 66px;
+  width: 100px;
 }
 :scope .display .output:before { content: " = "; }
 :scope .buttons { display: flex; }

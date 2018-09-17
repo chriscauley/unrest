@@ -1,8 +1,8 @@
 <calendar>
   <div class="top" if={ current_moment }>
-    <a class={ disabled: !allow_prev_month } onclick={ showPrevMonth }>&laquo; { prev_month.format("MMMM") }</a>
-    <div class="title">{ current_moment.format("MMMM YYYY") }</div>
-    <a class={ disabled: !allow_next_month } onclick={ showNextMonth }>{ next_month.format("MMMM") } &raquo;</a>
+    <a class={ disabled: !allow_prev_month } onclick={ showPrevMonth }>&laquo; { prev_month }</a>
+    <div class="title">{ current_month }</div>
+    <a class={ disabled: !allow_next_month } onclick={ showNextMonth }>{ next_month } &raquo;</a>
   </div>
   <div class="week" each={ week,i in calendar.weeks }>
     <div class="day { current: day.current, desktop: !day.occurrences }" each={ day, i in week.days }>
@@ -64,8 +64,9 @@
     this.first_date = d;
     this.current_moment = moment(this.first_date,"YYYY-MM-DD").startOf("month");
     this.update();
-    this.prev_month = this.current_moment.clone().add(-1,"months");
-    this.next_month = this.current_moment.clone().add(1,"months");
+    this.current_month = this.current_moment.format("MMMM");
+    this.prev_month = this.current_moment.clone().add(-1,"months").format("MMMM");
+    this.next_month = this.current_moment.clone().add(1,"months").format("MMMM");
     this.allow_prev_month = (this.min_month < this.current_moment);
     this.allow_next_month = (this.max_month > this.current_moment);
   }
