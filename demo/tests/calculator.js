@@ -1,9 +1,10 @@
 function testBtns(name,keys_array) {
-  function f(){
+  function f() {
+    this.do(`Testing ${name} buttons`)
+      .route("#calculator-demo")
     for (let keys of keys_array) {
       for (let key of keys) { this.click(`[data-key="${key}"]`); }
-      this.checkResults("calculator .display .input");
-      this.checkResults("calculator .display .output");
+      this.checkResults("calculator .display");
     }
   }
   f._name = name;

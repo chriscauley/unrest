@@ -4,6 +4,7 @@ var PROJECT_NAME = "unrest";
 
 var JS_FILES = {
   vendor: ["src/vendor/*.js"],
+  "demo/tests": ["demo/tests/*.js"],
   unrest: [
     "src/js/index.js",
     "src/js/*.js",

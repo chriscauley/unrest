@@ -20,13 +20,6 @@ uR.ready(function() {
     "#([^/]+)-demo": function(path,data) {
       const name = data.matches[1]
       uR.loadTemplate(name+"-demo",data)
-      if (!document.getElementById(name+"__tests")) {
-        uR.newElement("script",{
-          id: name+"__tests",
-          src: "tests/"+name+".js",
-          parent: document.body,
-        })
-      }
     },
   });
 })
