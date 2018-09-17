@@ -183,6 +183,7 @@
     },
     start: function() {
       document.addEventListener('click', onClick);
+      window.addEventListener('hashchange', () => uR.route(new URL(e.newURL).hash))
       uR.router.ready.start();
       // window.popstate = function(event) { uR.route(window.location.href,event.state,false); };
     },
