@@ -1,6 +1,7 @@
 (function() {
   function isEmpty(obj) {
-    for (var key in obj) { return false; }
+    console.log(obj)
+    if (Object.values(obj).filter(v=> v !== undefined).length) { return false }
     return true;
   }
 
@@ -117,7 +118,7 @@
           tag.non_field_html_error = (data.html_errors || []).indexOf("non_field_error") != -1
         } else if (!opts.error) { uR.alert(errors.non_field_error); }
       }
-      var complete = (request.status == 200 && isEmpty(errors));
+      const complete = isEmpty(errors);
       (complete?opts.success:opts.error).call(that || tag,data,request);
       uR.pagination = data.ur_pagination || uR.pagination;
       if (target && complete && !data.messages) {
