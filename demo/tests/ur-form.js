@@ -1,7 +1,13 @@
+_.extend(u$,{
+  'first_name': '#id_first_name',
+})
+
 function testForm() {
-  this.do("ur-form tests")
+  this.do("Capture Empty Form")
     .route("#ur-form-demo")
     .checkResults("ur-form-demo ur-form")
+
+  this.do("Capture filled, valid form")
     .changeValue("#id_first_name","Testy")
     .changeValue("#id_last_name","Larou")
     .changeValue("#id_email","testy@example.com")
@@ -12,6 +18,8 @@ function testForm() {
     .click("#id_radio_color__0")
     .checkResults("ur-form-demo ur-form")
     .checkResults(function getData() { return uR.form.current.getData() })
+
+  this.do("Clear form again")
     .changeValue("#id_first_name","")
     .changeValue("#id_last_name","")
     .changeValue("#id_email","")
@@ -19,14 +27,13 @@ function testForm() {
     .click("#id_colors__1")
     .click("#id_colors__2")
     .changeValue("#id_favorite_color","")
-    .then(function() {
+    .then(function uncheckColor() {
       var e = document.querySelector("#id_radio_color__0");
       e.checked=false;
       e.dispatchEvent(new Event("change"));
       return true;
     })
     .checkResults("ur-form-demo ur-form")
-    .done("ur-form is great!")
 }
 
 konsole.addCommands(testForm)
