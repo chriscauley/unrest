@@ -9,6 +9,7 @@ var JS_FILES = {
     "src/js/index.js",
     "src/js/*.js",
     "src/js/*.tag",
+    "src/js/form/index.js",
     "src/js/form/*js",
     "src/js/form/*.tag",
     "src/js/db/*.js",

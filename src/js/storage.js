@@ -53,7 +53,7 @@
 
     set(key,value) {
       // store stringified json in localstorage
-      if (!value && value !== 0 && value !== "") { return this.remove(key) }
+      if (!value && value !== 0 && value !== "") { return this.remove(key); }
       this._setItem(key,JSON.stringify(value));
       this.times[key] = new Date().valueOf();
       (this.keys.indexOf(key)==-1)?this.keys.push(key):undefined;
