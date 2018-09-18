@@ -9,7 +9,6 @@ function testMarkdown() {
     .click(".tab-anchors [title=Result]")
     .wait("ur-tab[title=Result]")
     .checkResults()
-    .done("markdown has not changed")
 }
 
 konsole.addCommands(testMarkdown);

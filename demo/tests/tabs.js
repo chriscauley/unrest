@@ -3,7 +3,6 @@ function testTabs() {
     .route("#tabs-demo")
     .wait("#content ur-tabs")
     .checkResults()
-    .done("tabs have not changed")
 }
 
 konsole.addCommands(testTabs)

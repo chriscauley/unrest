@@ -3,7 +3,6 @@ function testCalendar() {
     .route("#calendar-demo")
     .wait("#content calendar")
     .checkResults()
-    .done("calendar has not changed")
 }
 
 konsole.addCommands(testCalendar)
