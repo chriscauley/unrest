@@ -1,8 +1,8 @@
-var ezGulp = require("./ez-gulp");
+const ezGulp = require("./ez-gulp");
 
-var PROJECT_NAME = "unrest";
+const PROJECT_NAME = "unrest";
 
-var JS_FILES = {
+const JS_FILES = {
   vendor: ["src/vendor/*.js"],
   "demo/tests": ["demo/tests/*.js"],
   unrest: [
@@ -30,12 +30,11 @@ var JS_FILES = {
     "token-input/jquery.tokeninput.js",
     "token-input/token-input.tag"
   ],
-
 }
 
 JS_FILES.unrest_full = [];
 
-for (var key of ['unrest','canvas','controller','admin','lunchtime']){
+for (let key of ['unrest','canvas','controller','admin','lunchtime']){
   JS_FILES.unrest_full = JS_FILES.unrest_full.concat(JS_FILES[key])
 }
 
@@ -49,7 +48,7 @@ LESS_FILES = {
 
 LESS_FILES.unrest_full = LESS_FILES.unrest.concat(LESS_FILES.admin);
 
-var STATIC_FILES = [
+const STATIC_FILES = [
   'lib',
   'demo/',
   'lunchtime',

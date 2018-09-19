@@ -1,25 +1,27 @@
-var riot = require('gulp-riot');
-var gulp = require('gulp');
-var concat = require("gulp-concat");
-var less = require('gulp-less');
-var sourcemaps = require("gulp-sourcemaps");
-var through = require('through2');
-var uglify = require('gulp-uglify');
-var util = require('gulp-util');
-var babel = require('gulp-babel');
-var ncp = require('ncp');
-var path = require("path");
-var rev = require('gulp-rev');
-var clean = require('gulp-clean');
-var execSync = require('child_process').execSync;
+const riot = require('gulp-riot');
+const gulp = require('gulp');
+const concat = require("gulp-concat");
+const less = require('gulp-less');
+const sourcemaps = require("gulp-sourcemaps");
+const through = require('through2');
+const uglify = require('gulp-uglify');
+const util = require('gulp-util');
+const babel = require('gulp-babel');
+const ncp = require('ncp');
+const path = require("path");
+const rev = require('gulp-rev');
+const clean = require('gulp-clean');
+const execSync = require('child_process').execSync;
+const fs = require("fs");
+const crypto = require('crypto');
 
 module.exports = function(opts) {
   opts.js = opts.js || {}; // javascript and riot files
   opts.less = opts.less || {}; // css and less
   opts.static = opts.static || []; // files to be directly copied over
   opts.mustache = opts.mustache || []; // mustache templates to be processed
-  var build_tasks = ['cp-static'];
-  var results = [];
+  const build_tasks = ['cp-static','git-version'];
+  const results = [];
   for (let key in opts.js) {
     results.push(key + '-built.js');
     build_tasks.push("build-"+key);
@@ -66,7 +68,7 @@ module.exports = function(opts) {
     }
     opts.static.forEach(function(file_or_directory) {
       let source = path.join(__dirname,file_or_directory);
-      var dest = path.join(DEST,file_or_directory.replace(/src\//,''));
+      let dest = path.join(DEST,file_or_directory.replace(/src\//,''));
       ncp(source, dest);
     });
     (opts.renames || []).forEach((r) => {
@@ -82,16 +84,30 @@ module.exports = function(opts) {
       .pipe(gulp.dest(opts.DEST))
   })
   build_tasks.push('build-revision');
-  const watch_tasks = ['build-revision']
+  const watch_tasks = ['build-revision','git-version']
+
+  const getGit = () => {
+    const md5sum = crypto.createHash('md5');
+    const dirty = execSync("git diff").toString().trim();
+    return {
+      git_hash: execSync("git rev-parse HEAD").toString().trim().slice(0,7),
+      dirty: dirty && md5sum.update(dirty).digest('hex').slice(0,7),
+    }
+  }
+
+  gulp.task("git-version",() => {
+    !fs.existsSync(opts.DEST) && fs.mkdirSync(opts.DEST)
+    const data = getGit();
+    fs.writeFileSync(path.join(opts.DEST,'git-version.js'),JSON.stringify(data))
+  })
 
   if (opts.mustache.length) {
-    const fs = require("fs");
     const mustache = require("gulp-mustache");
 
     gulp.task("build-mustache",build_tasks.slice(),function() {
-      var manifest = JSON.parse(fs.readFileSync(path.join(opts.DEST,"rev-manifest.json")));
+      const manifest = JSON.parse(fs.readFileSync(path.join(opts.DEST,"rev-manifest.json")));
       const _package = JSON.parse(fs.readFileSync("package.json"));
-      for (var key in manifest) {
+      for (let key in manifest) {
         manifest[key.replace("-","").replace(".","")] = manifest[key]
       }
       return gulp.src(opts.mustache)
@@ -100,9 +116,8 @@ module.exports = function(opts) {
           DEBUG: opts.environment == "development",
           package: JSON.stringify({
             version: _package.version,
-            git_hash: execSync("git rev-parse HEAD").toString().trim(),
-            dirty: !! execSync("git diff").toString(),
             environment: opts.environment,
+            ...getGit(),
           }),
         }))
         .pipe(gulp.dest(opts.DEST));
@@ -112,14 +127,14 @@ module.exports = function(opts) {
   }
 
   gulp.task('watch', ['default'], function() {
-    for (var key in opts.js) {
+    for (let key in opts.js) {
       gulp.watch(opts.js[key], ['build-'+key].concat(watch_tasks))
     }
-    for (var key in opts.less) {
-      var watch_files = opts.less[key].map((name) => name.match(/.*\//)[0]+"*");
+    for (let key in opts.less) {
+      let watch_files = opts.less[key].map((name) => name.match(/.*\//)[0]+"*");
       gulp.watch(watch_files, ['build-'+key+'-css'].concat(watch_tasks))
     }
-    gulp.watch(opts.static.map(d => d.replace(/\/$/,"/**")),['cp-static']);
+    gulp.watch(opts.static.map(d => d.replace(/\/$/,"/**")),['cp-static','git-version']);
   });
 
   gulp.task('default', build_tasks)
