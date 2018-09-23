@@ -46,6 +46,7 @@ uR.Random = function Random(seed) {
     random.raw = () => Math.floor(Math.random()*2147483647);
   }
   random.seed = seed;
+  random.getSeed = () => _seed
   random.getNextSeed = () => {
     return random.raw()%8191;// 2^13-1...because why not?
   };
@@ -63,11 +64,6 @@ uR.Random = function Random(seed) {
     }
     return array;
   };
-  /* #! TODO
-     for some reason the first draw off of random.choice seems to always be the first
-     element of the array for the first roll of random. I can't figure it out and so
-     I really need some serious stats on this... but not today */
-  random();
   return random;
 };
 
