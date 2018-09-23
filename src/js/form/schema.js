@@ -70,7 +70,8 @@ uR.schema.prepFieldOptions = (opts) => {
   }
 
   if (opts.value === false) { opts.value = uR.FALSE; }
-  opts.value = opts.initial_value = opts.value || (opts.form.initial || {})[opts.name];
+  if (opts.value === undefined && opts.form.initial) { opts.value = opts.form.initial[opts.name]; }
+  opts.initial_value = opts.value
   if (opts.type == "datetime-local" && typeof opts.value == "string") {
     // the HTML input type is very picky about the format, so use moment to coerce it
     // empty string remains empty string

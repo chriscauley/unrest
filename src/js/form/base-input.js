@@ -23,7 +23,10 @@
     onKeyUp(e) {
       if (this.no_validation) { return; }
       if (e.type == "keyup") { self.active = true; }
-      this.value = e.value || (e.target && e.target.value) || ""; // e.value is a way to fake events
+      this.value = e.value // e.value is a way to fake events
+      if (this.value === undefined) {
+        this.value = (e.target && e.target.value) || "";
+      }
       if (this.type == "datetime-local") {
         this.value = this.value && moment(this.value).format("YYYY-MM-DD HH:mm");
       }
@@ -89,7 +92,10 @@
     }
     reset() {
       this.show_error = false;
-      this.value = this.initial_value || "";
+      this.value = this.initial_value;
+      if (this.value === undefined) {
+        this.value = "";
+      }
       var target;
       if (this.field_tag && this.input_tagname) {
         target = this.field_tag.root.querySelector(this.input_tagname);

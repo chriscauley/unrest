@@ -75,7 +75,7 @@
         success: this.ajax_success,
         success_attribute: this.opts.success_attribute,
         error: this.ajax_error,
-        tag: self
+        tag: self,
       });
     }
   }
@@ -83,15 +83,15 @@
   clear() {
     this.initial = this.empty_initial;
     uR.storage.set(this.form.action,null); // nuke stored half finished form
-    uR.forEach(this.form.field_list, function(field) {
-      field.initial_value = self.initial[field.name];
+    this.form.field_list.forEach( field => {
+      field.initial_value = this.initial[field.name];
       field.child && field.child.clear && field.child.clear();
       field.reset();
     })
     this.messages = [];
-    self.active = false;
-    setTimeout(function() {
-      var f = self.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
+    this.active = false;
+    setTimeout(() => {
+      var f = this.root.querySelector("input:not([type=hidden]),select,textarea"); f && f.focus();
     },0)
   }
 

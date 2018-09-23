@@ -130,14 +130,12 @@
         this._schema[key] = schema || {};
         this._schema[key].name = key;
       }
-      if (_default && ! this.defaults[key]) {
-        this.defaults[key] = _default;
-        !this.has(key) && this.set(key,_default);
-      }
-      return this.get(key) || _default;
+      this.defaults[key] = _default;
+      !this.has(key) && this.set(key,_default);
     }
     get(key) {
       var out = super.get(key);
+      if (out === undefined) { out = this.defaults[key] }
       var type = this._schema[key] && this._schema[key].type;
       if (type == "boolean") { return out == "true"; }
       if (type == "int" || type == "integer") { return parseInt(out); }
