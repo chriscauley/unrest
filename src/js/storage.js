@@ -38,7 +38,10 @@
       var value;
       if (this._hasOwnProperty(key)) {
         try { value = JSON.parse(this._getItem(key)); }
-        catch(e) { console.warn(`Item "${key}" in uR.Storage was not JSON`,value); }
+        catch(e) {
+          console.warn(`Item "${key}" in uR.Storage was not JSON`,value);
+          if (!value) { console.log("removing"); this.remove(key) }
+        }
       } else if (this.defaults.hasOwnProperty(key)) {
         value = this.defaults[key];
       }
