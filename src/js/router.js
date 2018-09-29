@@ -4,17 +4,17 @@
     if (options.ur_modal) {
       options.mount_to = options.mount_to || uR.config.mount_alerts_to;
     }
-    var mount_to = options.mount_to || uR.config.mount_to;
-    var target = document.querySelector(mount_to);
-    var children = target.childNodes;
-    var i = target.childNodes.length;
+    const mount_to = options.mount_to || uR.config.mount_to;
+    const target = document.querySelector(mount_to);
+    const children = target.childNodes;
+    let i = target.childNodes.length;
     while (i--) { target.removeChild(children[i]); }
 
     if (typeof names == "string") { names = [names]; }
-    var _t = [];
-    uR.forEach(names,function(name) {
+    const _t = [];
+    names.forEach((name) => {
       name = name.replace(/\//g,''); // Some tags pass in tag name for path like /hello-world/
-      var element = document.createElement(name);
+      const element = document.createElement(name);
       if (options.innerHTML) { element.innerHTML = options.innerHTML; }
       target.appendChild(element);
       _t.push(mount_to + " " + name);
@@ -25,14 +25,13 @@
     }
   };
 
-  uR.alertElement = function alertElement(name,options) {
-    options = options || {};
-    if (!options.hasOwnProperty("ur_modal")) { options.ur_modal = true; }
+  uR.alertElement = function alertElement(name,options={}) {
+    uR.defaults(options,{ ur_modal: true })
     uR.mountElement(name,options);
   };
 
   uR.newElement = function newElement(tagName,attrs,options) {
-    var element = document.createElement(tagName);
+    const element = document.createElement(tagName);
     if (attrs.parent) {
       attrs.parent.appendChild(element);
       delete attrs.parent;
@@ -41,16 +40,16 @@
     element.innerHTML = attrs.innerHTML || "";
     delete attrs.innerHTML;
 
-    for (var attr in attrs) { element[attr] = attrs[attr]; }
+    for (let attr in attrs) { element[attr] = attrs[attr]; }
     if (options) { riot.mount(element,options); }
     return element;
   };
 
-  uR.loadTemplate = function loadTemplate(template_name,data) {
+  uR.loadTemplate = (template_name,data) => {
     template_name = template_name.match(/[^/].+[^/]/)[0].replace(/\//g,"-");
     riot.compile(
       uR.static("templates/"+template_name+".html"),
-      function() { uR.router.routeElement(template_name)(template_name,data); }
+      () => { uR.router.routeElement(template_name)(template_name,data); }
     );
   };
 
@@ -62,14 +61,14 @@
 
   uR.pushState = uR.debounce(pushState,100);
 
-  uR.route = function route(href,data={}) {
-    var new_url = new URL(href,href.match("://")?undefined:window.location.origin);
-    var old_url = new URL(window.location.href);
-    var pathname = (new_url.pathname || href).replace(window.location.origin,"");
+  uR.route = (href,data={}) => {
+    const new_url = new URL(href,href.match("://")?undefined:window.location.origin);
+    const old_url = new URL(window.location.href);
+    const pathname = (new_url.pathname || href).replace(window.location.origin,"");
 
-    uR.forEach(uR._on_routes,function(f) {f(pathname,data);});
-    var path_match = uR.router.resolve(pathname);
-    var hash_match = new_url && uR.router.resolve(new_url.hash);
+    uR._on_routes.forEach(f => f(pathname,data));
+    const path_match = uR.router.resolve(pathname);
+    const hash_match = new_url && uR.router.resolve(new_url.hash);
 
     if (hash_match) {
       _.extend(data,{
@@ -117,9 +116,9 @@
         || e.defaultPrevented // or default prevented
     ) return;
 
-    var el = e.target, loc = (window.history.location || window.location);
+    let el = e.target, loc = (window.history.location || window.location);
     if (el && el.nodeName) {
-      var selector = el.nodeName;
+      let selector = el.nodeName;
       if (el.id) { "#"+el.id; }
       if (el.className) { selector += "." + el.className; }
       if (el.name) { selector += "[name="+el.name+"]"; }
@@ -146,7 +145,7 @@
     uR.route(el.href);
   }
 
-  var RouterMixin = {
+  const RouterMixin = {
     init: function() {
       if (this.opts.opts) { // should probably be in a more generic mixin
         _.extend(this.opts,this.opts.opts);
