@@ -179,9 +179,9 @@
       return out;
     }
 
-    openEditor(tag_opts) {
+    openEditor(tag_opts={}) {
       var self=this, dirty;
-      var opts = {
+      uR.defaults(tag_opts,{
         schema: self.getSchema(),
         submit: function (riot_tag) {
           self.update(riot_tag.getData());
@@ -192,12 +192,13 @@
           tag_opts && tag_opts.cancel && tag_opts.cancel();
           dirty && window.location.reload();
         },
-      };
-      uR.forEach(opts.schema,(s)=> {
+      });
+      uR.forEach(tag_opts.schema,(s)=> {
         s._default = s.value;
         s.value = self.get(s.name);
       });
-      uR.alertElement("ur-form",opts);
+      tag_opts.ur_modal = !tag_opts.mount_to;
+      uR.alertElement("ur-form",tag_opts);
     }    
   }
 
