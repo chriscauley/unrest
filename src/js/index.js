@@ -112,9 +112,8 @@
     delete: function (name) { this.set(name,"",-1); }
   };
 
-  uR.debounce = function debounce(func, wait, immediate) {
+  uR.debounce = function debounce(func, wait=200, immediate=false) {
     var timeout;
-    wait = wait || 200;
     return function() {
       var context = this, args = arguments;
       var later = function() {
