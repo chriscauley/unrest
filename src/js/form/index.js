@@ -26,7 +26,7 @@
     if (typeof choices == "function") { choices = choices(); }
     return choices.map(function(c) {
       if (typeof(c) == "undefined") { return ["","None"]; }
-      if (typeof(c) == "string") { return [c,c];}
+      if (typeof(c) == "string") { return [uR.slugify(c),c];}
       return c;
     });
   };

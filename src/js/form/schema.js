@@ -102,7 +102,7 @@ uR.schema.prepFieldOptions = (opts) => {
       return {
         label: choice_tuple[1],
         id: opts.id+"__"+index,
-        value: uR.slugify(choice_tuple[0]),
+        value: choice_tuple[0],
       };
     });
   }
